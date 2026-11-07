@@ -11,9 +11,9 @@
 <link rel="stylesheet" href="shared-game.css?v=fullscreen-1">
 <link rel="stylesheet" href="pasjans.css?v=23">
 <link rel="stylesheet" href="shared-victory.css?v=1">
-<link rel="stylesheet" href="games-chest-menu.css"><script defer src="games-chest-menu.js" data-game="eight-aces"></script></head>
+<link rel="stylesheet" href="games-chest-menu.css?v=recent-1"><script defer src="games-chest-menu.js?v=recent-1" data-game="eight-aces"></script></head>
 <body>
-<header><a class="brand" href="./"><img class="brand-logo" src="logo.svg" alt=""><span class="brand-name" translate="no">Osiem Asów</span></a><div class="header-controls"><div class="accessibility-controls"><button id="contrast" translate="no" aria-pressed="false"></button><label class="text-size-control"><input type="checkbox" id="large"><span id="large-label"></span></label></div><div class="preferences"><label><span id="language-label"></span><select id="language"><option value="pl">Polski</option><option value="en">English</option></select></label><label><span id="theme-label"></span><select id="theme"></select></label></div></div><details class="games-chest-menu" translate="no"><summary>Gry</summary><ul><li><a href="https://games-chest.com/">Wszystkie gry</a></li></ul></details></header>
+<header><a class="brand" href="./"><img class="brand-logo" src="logo.svg" alt=""><span class="brand-name" translate="no">Osiem Asów</span></a><div class="header-controls"><div class="accessibility-controls"><button id="contrast" translate="no" aria-pressed="false"></button><label class="text-size-control"><input type="checkbox" id="large"><span id="large-label"></span></label></div><div class="preferences"><label><span id="language-label"></span><select id="language"><option value="pl">Polski</option><option value="en">English</option></select></label><label><span id="theme-label"></span><select id="theme"></select></label></div></div></header>
 <main class="solitaire">
   <div class="game-toolbar">
     <button class="primary" id="new-game" translate="no">Nowy pasjans</button>
@@ -31,7 +31,9 @@
     <p id="status" role="status"></p>
   </section>
 </main>
-<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v0.1.0</span><span id="save-note"></span></footer>
+<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v0.1.0</span><span id="save-note"></span>
+<nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div><a class="all-games" href="https://games-chest.com/">Wszystkie gry</a></nav>
+</footer>
 <dialog id="settings" aria-labelledby="settings-title">
   <form method="dialog">
     <div class="dialog-heading"><h2 id="settings-title">Settings</h2><button aria-label="Close">×</button></div>
