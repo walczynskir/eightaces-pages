@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pl" data-theme="porcelain">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Osiem Asów</title>
+<link rel="icon" href="logo.svg">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="shared-palettes.css">
+<link rel="stylesheet" href="themes.css">
+<link rel="stylesheet" href="shared-game.css">
+<link rel="stylesheet" href="pasjans.css?v=23">
+<link rel="stylesheet" href="shared-victory.css?v=1">
+</head>
+<body>
+<header><a class="brand" href="./"><img class="brand-logo" src="logo.svg" alt=""><span class="brand-name" translate="no">Osiem Asów</span></a><div class="header-controls"><div class="accessibility-controls"><button id="contrast" translate="no" aria-pressed="false"></button><label class="text-size-control"><input type="checkbox" id="large"><span id="large-label"></span></label></div><div class="preferences"><label><span id="language-label"></span><select id="language"><option value="pl">Polski</option><option value="en">English</option></select></label><label><span id="theme-label"></span><select id="theme"></select></label></div></div></header>
+<main class="solitaire">
+  <div class="game-toolbar">
+    <button class="primary" id="new-game" translate="no">Nowy pasjans</button>
+    <div class="game-tools">
+      <button id="fullscreen" translate="no" aria-pressed="false"></button>
+      <button id="undo" hidden></button>
+      <button id="redo" translate="no" hidden></button>
+      <button id="help-button" translate="no" aria-haspopup="dialog">How to play</button>
+      <button id="settings-button" class="shared-settings-button" aria-label="Settings" aria-haspopup="dialog"></button>
+    </div>
+  </div>
+  <section class="card game">
+    <div id="tableau" class="solitaire-board" dir="ltr"></div>
+    <div id="supply" class="supply"></div>
+    <p id="status" role="status"></p>
+  </section>
+</main>
+<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v0.1.0</span><span id="save-note"></span></footer>
+<dialog id="settings" aria-labelledby="settings-title">
+  <form method="dialog">
+    <div class="dialog-heading"><h2 id="settings-title">Settings</h2><button aria-label="Close">×</button></div>
+    <p id="next-rules"></p>
+    <div class="setting-item">
+      <div class="setting-row">
+        <label><input type="checkbox" id="sameSuit"> <span id="same-label"></span></label>
+        <button class="setting-info" type="button" aria-expanded="false" aria-controls="sameSuit-note" aria-labelledby="same-label">ⓘ</button>
+      </div>
+      <p class="setting-description small muted" id="sameSuit-note" hidden></p>
+    </div>
+    <div class="setting-item">
+      <div class="setting-row">
+        <label><input type="checkbox" id="recycle"> <span id="recycle-label"></span></label>
+        <button class="setting-info" type="button" aria-expanded="false" aria-controls="recycle-note" aria-labelledby="recycle-label">ⓘ</button>
+      </div>
+      <p class="setting-description small muted" id="recycle-note" hidden></p>
+    </div>
+    <div class="setting-item">
+      <div class="setting-row">
+        <label><input type="checkbox" id="showCounts"> <span id="showCounts-label" translate="no"></span></label>
+        <button class="setting-info" type="button" aria-expanded="false" aria-controls="showCounts-note" aria-labelledby="showCounts-label">ⓘ</button>
+      </div>
+      <p class="setting-description small muted" id="showCounts-note" translate="no" hidden></p>
+    </div>
+    <div class="setting-item">
+      <div class="setting-row">
+        <label><input type="checkbox" id="showUndo"> <span id="showUndo-label" translate="no"></span></label>
+        <button class="setting-info" type="button" aria-expanded="false" aria-controls="showUndo-note" aria-labelledby="showUndo-label">ⓘ</button>
+      </div>
+      <p class="setting-description small muted" id="showUndo-note" translate="no" hidden></p>
+    </div>
+    <button class="primary">Done</button>
+  </form>
+</dialog>
+<dialog id="help" aria-labelledby="help-title">
+  <form method="dialog">
+    <div class="dialog-heading"><h2 id="help-title" translate="no">How to play</h2><button aria-label="Close">×</button></div>
+    <p id="rules"></p>
+    <p id="sequence-help" translate="no"></p>
+    <button class="primary">Done</button>
+  </form>
+</dialog>
+<script src="locales.js"></script>
+<script src="i18n.js"></script>
+<script src="engine.js?v=22"></script>
+<script src="strings.js?v=22"></script>
+<script src="shared-victory.js?v=1"></script>
+<script src="app.js?v=21-victory"></script>
+</body>
+</html>

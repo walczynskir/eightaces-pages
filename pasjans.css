@@ -1,0 +1,179 @@
+.solitaire { max-width: 1080px; }
+.solitaire-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  --board-gap: clamp(4px, 1vw, 14px);
+  gap: var(--board-gap);
+  align-items: center;
+  background: var(--wash);
+  border-radius: var(--radius);
+  padding: clamp(4px, 1vw, 14px);
+}
+.solitaire .game { padding: clamp(5px, 2vw, 20px); }
+.card-rows, .goals { display: grid; gap: 8px; }
+.goals { grid-template-columns: repeat(2, var(--card-width)); column-gap: 4px; }
+.card-row { display: flex; min-width: 0; }
+.left-rows .card-row { flex-direction: row-reverse; }
+.supply { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-block-start: 12px; }
+.playing-card, button.playing-card:not(.tile) {
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  width: clamp(27px, 5vw, 64px);
+  min-height: 34px;
+  aspect-ratio: 5 / 7;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+.card-row .playing-card { margin-inline-start: calc(-1 * var(--overlap, 0px)); }
+.card-row .playing-card:first-child { margin-inline-start: 0; }
+
+button.playing-card.empty { background: transparent; border-style: dashed; }
+button.playing-card.red:not(.tile), .playing-card.red { color: #a21832; }
+[data-theme="contrast"] .playing-card.red:not(.tile) { color: #830019; }
+button.playing-card.selected, button.playing-card.legal {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+button.playing-card.selected { background: var(--wash); }
+button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
+.supply > div { display: grid; justify-items: center; gap: 3px; }
+.supply button { min-height: 44px; }
+#status { min-height: 1.55em; margin-block-end: 0; }
+@media (max-width: 520px) {
+  .playing-card, button.playing-card:not(.tile) { font-size: 12px; }
+}
+.solitaire-board {
+  --card-width: clamp(25px, 5vw, 64px);
+  container-type: inline-size;
+}
+.card-row {
+  --step: min(23px, calc((100% - var(--card-width)) / var(--covered-count)));
+}
+.solitaire-board .playing-card,
+.solitaire-board button.playing-card:not(.tile) {
+  width: var(--card-width);
+  height: max(34px, calc(var(--card-width) * 7 / 5));
+}
+.card-row .playing-card:not(:first-child) { margin-inline-start: calc(var(--step) - var(--card-width)); }
+.card-row .covered { overflow: hidden; white-space: nowrap; }
+.supply > button { align-self: end; }
+body.large .playing-card { font-size: 1.05rem; }
+body.large .card-row .covered { font-size: clamp(9px, 1.7vw, 16px); }
+.brand-logo { width: 40px; height: 40px; }
+@media (max-width: 380px) {
+  .solitaire-board { --card-width: 23px; }
+
+}
+
+.left-rows .card-row .playing-card:not(:first-child) {
+  margin-inline-start: 0;
+  margin-inline-end: calc(var(--step) - var(--card-width));
+}
+.card-row .playing-card { position: relative; }
+.card-row button.playing-card { z-index: 1; }
+button.stock-card:not(.tile) {
+  position: relative;
+  border: 1px dashed var(--line);
+  background: transparent;
+}
+button.stock-card.has-stock:not(.tile),
+.stock-pile.revealed-on-stock::before {
+  border: 2px solid var(--paper);
+  outline: 1px solid var(--accent);
+  background: repeating-linear-gradient(45deg, var(--accent) 0 3px, var(--wash) 3px 5px);
+  box-shadow: 2px 2px var(--paper), 3px 3px var(--accent), 4px 4px var(--paper), 5px 5px var(--accent);
+}
+button.stock-card:not(:disabled):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.playing-card { font-variant-numeric: tabular-nums; }
+.card-rank { font-size: clamp(12px, 2.4vw, 24px); }
+.card-suit { font-size: clamp(13px, 2.6vw, 26px); }
+
+body.large .playing-card .card-rank { font-size: clamp(15px, 3vw, 28px); }
+body.large .playing-card .card-suit { font-size: clamp(16px, 3.2vw, 30px); }
+
+#settings .setting-item { margin-block: 12px; }
+#settings .setting-row { display: flex; align-items: center; gap: 8px; }
+#settings .setting-info { min-width: 32px; min-height: 32px; padding: 0; }
+#settings .setting-description { margin-block: 6px 0; }
+
+.stock-pile {
+  position: relative;
+  display: grid;
+  padding: 0 6px 6px 0;
+}
+.stock-pile.revealed-on-stock::before {
+  content: "";
+  position: absolute;
+  inset: 0 6px 6px 0;
+  border-radius: 5px;
+  pointer-events: none;
+}
+.stock-pile.revealed-on-stock > button {
+  position: relative;
+  transform: translate(6px, 6px);
+}
+
+.playing-card:has(.card-rank):not(.tile) {
+  place-content: start;
+  padding: 5px 3px 0;
+}
+.left-rows .card-row .playing-card:has(.card-rank):not(.tile) {
+  justify-content: end;
+}
+/* Match the markings across the board, using the tightest tableau row. */
+.solitaire-board .playing-card {
+  --face-step: min(23px, (100cqi - 4 * var(--card-width) - 4px - 2 * var(--board-gap)) / (2 * var(--max-covered-count)));
+}
+.solitaire-board .card-rank {
+  font-size: clamp(9px, calc(var(--face-step) * 0.68), 16px);
+}
+.solitaire-board .card-suit {
+  font-size: clamp(11px, calc(var(--face-step) * 0.78), 19px);
+}
+body.large .solitaire-board .playing-card .card-rank {
+  font-size: clamp(10px, calc(var(--face-step) * 0.73), 18px);
+}
+body.large .solitaire-board .playing-card .card-suit {
+  font-size: clamp(12px, calc(var(--face-step) * 0.83), 21px);
+}
+
+@media (max-width: 600px) {
+  .playing-card:has(.card-rank):not(.tile) {
+    align-content: center;
+    padding-block: 3px 1px;
+    line-height: 0.9;
+  }
+}
+
+.table-only > :is(header, footer) { display: none; }
+.table-only .solitaire {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: auto;
+  max-width: none;
+  margin: 0;
+  padding: 8px;
+  background: var(--bg);
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .table-only .solitaire-board {
+    --card-width: clamp(23px, 7.5vh, 38px);
+    padding: 4px;
+  }
+  .table-only .card-rows, .table-only .goals { row-gap: 4px; }
+  .table-only .game-toolbar { margin-block-end: 4px; }
+  .table-only .supply { margin-block-start: 4px; }
+  .table-only #status { margin-block-start: 4px; }
+}
