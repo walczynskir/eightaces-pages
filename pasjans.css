@@ -164,8 +164,22 @@ body.large .solitaire-board .playing-card .card-suit {
   overflow: auto;
   max-width: none;
   margin: 0;
-  padding: 8px;
+  padding: max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+    max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
   background: var(--bg);
+}
+.table-only .solitaire > .game-toolbar {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  justify-content: center;
+}
+.table-only .solitaire .game-tools {
+  justify-content: center;
+}
+.table-only .game-tools {
+  flex-wrap: wrap;
+  margin-inline-start: 0;
 }
 @media (orientation: landscape) and (max-height: 520px) {
   .table-only .solitaire-board {
