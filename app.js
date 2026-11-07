@@ -154,7 +154,7 @@
     const activeCard = document.activeElement?.dataset.card;
     const activeAction = document.activeElement?.dataset.action;
     const [undo, draw, , stock, drawn, waste, row, goal, empty, victory, instructions,
-      nextRules, sameSuit, recycle, rules] = solitaireStrings[prefs.language] ?? solitaireStrings.pl;
+      nextRules, sameSuit, recycle] = solitaireStrings[prefs.language] ?? solitaireStrings.pl;
     document.documentElement.dataset.theme = prefs.contrast ? 'contrast' : prefs.theme;
     document.body.classList.toggle('large', prefs.large);
     byId('contrast').textContent = prefs.language === 'pl' ? '◐ Kontrast' : tr('◐ Contrast');
@@ -179,7 +179,7 @@
     byId('next-rules').textContent = nextRules;
     byId('same-label').textContent = sameSuit;
     byId('recycle-label').textContent = recycle;
-    byId('rules').textContent = rules;
+    SolitaireHelp(byId('rules'), prefs.language, state.kingsOnly);
     const [sameNote, recycleNote] = solitaireOptionNotes[prefs.language] ?? solitaireOptionNotes.pl;
     byId('sameSuit-note').textContent = sameNote;
     byId('recycle-note').textContent = recycleNote;
@@ -197,13 +197,12 @@
     const finished = engine.won(state);
     GameVictory(finished, victory);
     byId('status').textContent = finished ? victory + ' · 104/104' : instructions + ' · ' + count + '/104';
-    const [full, exit, sequence] = solitaireTableLabels[prefs.language] ?? solitaireTableLabels.pl;
+    const [full, exit] = solitaireTableLabels[prefs.language] ?? solitaireTableLabels.pl;
     const fullscreen = byId('fullscreen');
     const fullscreenLabel = document.body.classList.contains('table-only') ? exit : full;
     fullscreen.querySelector('.fullscreen-label').textContent = fullscreenLabel;
     fullscreen.setAttribute('aria-label', fullscreenLabel);
     fullscreen.title = fullscreenLabel;
-    byId('sequence-help').textContent = sequence;
 
     function supplySlot(label, content) {
       const slot = section('supply-slot');
