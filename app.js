@@ -198,7 +198,11 @@
     GameVictory(finished, victory);
     byId('status').textContent = finished ? victory + ' · 104/104' : instructions + ' · ' + count + '/104';
     const [full, exit, sequence] = solitaireTableLabels[prefs.language] ?? solitaireTableLabels.pl;
-    byId('fullscreen').textContent = document.body.classList.contains('table-only') ? exit : full;
+    const fullscreen = byId('fullscreen');
+    const fullscreenLabel = document.body.classList.contains('table-only') ? exit : full;
+    fullscreen.querySelector('.fullscreen-label').textContent = fullscreenLabel;
+    fullscreen.setAttribute('aria-label', fullscreenLabel);
+    fullscreen.title = fullscreenLabel;
     byId('sequence-help').textContent = sequence;
 
     function supplySlot(label, content) {
