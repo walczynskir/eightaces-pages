@@ -168,6 +168,13 @@ body.large .solitaire-board .playing-card .card-suit {
     max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
   background: var(--bg);
 }
+.table-only .solitaire > .game {
+  max-width: 760px;
+  margin-inline: auto;
+}
+.table-only #status {
+  text-align: center;
+}
 .table-only .solitaire > .game-toolbar {
   width: fit-content;
   max-width: 100%;
