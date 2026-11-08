@@ -31,6 +31,7 @@
     if (card === undefined || source === target) return false;
     switch (to.group) {
       case 'rows':
+        if (rank(card) === 1) return false;
         return last === undefined || (
           rank(card) + 1 === rank(last) && (!state.sameSuit || suit(card) === suit(last))
         );
@@ -54,6 +55,7 @@
   function sequenceLength(state, index) {
     const row = state.rows[index];
     let count = Math.min(1, row.length);
+    if (rank(top(row)) === 1) return count;
     while (count < row.length) {
       const lower = row.at(-count);
       const higher = row.at(-count - 1);
@@ -154,8 +156,12 @@
 
   function moveSelection(state, from, to) {
     const steps = selectionPlan(state, from, to);
-    for (const step of steps) move(state, step.from, step.to);
-    return steps.length > 0;
+    if (steps.length < 2) return steps.length === 1 && move(state, steps[0].from, steps[0].to);
+    const trial = structuredClone(state);
+    if (!steps.every(step => move(trial, step.from, step.to))) return false;
+    state.rows = trial.rows;
+    state.goals = trial.goals;
+    return true;
   }
 
   function finishPlan(state) {

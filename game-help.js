@@ -63,16 +63,16 @@
   };
 
   const emptyRow = {
-    pl: ['Pusty rząd przyjmuje dowolną kartę.', 'Pusty rząd przyjmuje tylko króla.'],
-    en: ['Any card can fill an empty row.', 'Only a king can fill an empty row.'],
-    es: ['Una fila vacía admite cualquier carta.', 'Una fila vacía solo admite un rey.'],
-    de: ['In eine leere Reihe passt jede Karte.', 'In eine leere Reihe passt nur ein König.'],
-    'zh-Hans': ['空列可放任意牌。', '空列只能放 K。'],
-    hi: ['खाली पंक्ति में कोई भी पत्ता रख सकते हैं।', 'खाली पंक्ति में सिर्फ़ बादशाह रख सकते हैं।'],
-    fr: ['Une rangée vide accepte toute carte.', 'Une rangée vide accepte seulement un roi.'],
-    ar: ['يقبل الصف الفارغ أي بطاقة.', 'لا يقبل الصف الفارغ إلا ملكًا.'],
-    it: ['Una fila vuota accetta qualsiasi carta.', 'Una fila vuota accetta solo un re.'],
-    uk: ['Порожній ряд приймає будь-яку карту.', 'Порожній ряд приймає лише короля.']
+    pl: ['Pusty rząd przyjmuje dowolną kartę poza asem.', 'Pusty rząd przyjmuje tylko króla.'],
+    en: ['Any card except an ace can fill an empty row.', 'Only a king can fill an empty row.'],
+    es: ['Una fila vacía admite cualquier carta excepto un as.', 'Una fila vacía solo admite un rey.'],
+    de: ['In eine leere Reihe passt jede Karte außer einem Ass.', 'In eine leere Reihe passt nur ein König.'],
+    'zh-Hans': ['空列可放除 A 以外的任意牌。', '空列只能放 K。'],
+    hi: ['खाली पंक्ति में इक्के को छोड़कर कोई भी पत्ता रख सकते हैं।', 'खाली पंक्ति में सिर्फ़ बादशाह रख सकते हैं।'],
+    fr: ['Une rangée vide accepte toute carte sauf un as.', 'Une rangée vide accepte seulement un roi.'],
+    ar: ['يقبل الصف الفارغ أي بطاقة عدا الآس.', 'لا يقبل الصف الفارغ إلا ملكًا.'],
+    it: ['Una fila vuota accetta qualsiasi carta tranne l’asso.', 'Una fila vuota accetta solo un re.'],
+    uk: ['Порожній ряд приймає будь-яку карту, крім туза.', 'Порожній ряд приймає лише короля.']
   };
 
   window.SolitaireHelp = (container, language, kingsOnly) => {
