@@ -29,6 +29,7 @@
     }
   } catch { /* Start with a fresh deal if storage cannot be read. */ }
   state ??= engine.deal(prefs);
+  state.kingsOnly = prefs.kingsOnly;
   const themeLocked = theme => wins < (rewardWins[theme] ?? 0);
   if (themeLocked(prefs.theme)) prefs.theme = 'porcelain';
   const newGameLabels = ['Nowy pasjans', 'New solitaire', 'Nuevo solitario', 'Neue Patience',
@@ -289,6 +290,10 @@
     if (control.type === 'checkbox') control.checked = prefs[name];
     control.onchange = () => {
       prefs[name] = control.type === 'checkbox' ? control.checked : control.value;
+      if (name === 'kingsOnly') {
+        state.kingsOnly = prefs.kingsOnly;
+        selected = undefined;
+      }
       if (name === 'theme') prefs.contrast = false;
       save();
       render();
@@ -313,6 +318,7 @@
     if (!prefs.showUndo || !from.length) return;
     to.push(state);
     state = from.pop();
+    state.kingsOnly = prefs.kingsOnly;
     selected = undefined;
     save();
     render();
