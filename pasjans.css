@@ -51,10 +51,11 @@ button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offse
 }
 .solitaire-board {
   --card-width: clamp(25px, 5vw, 64px);
+  --card-spacing: 23px;
   container-type: inline-size;
 }
 .card-row {
-  --step: min(23px, calc((100% - var(--card-width)) / var(--covered-count)));
+  --step: min(var(--card-spacing), calc((100% - var(--card-width)) / var(--covered-count)));
 }
 .solitaire-board .playing-card,
 .solitaire-board button.playing-card:not(.tile) {
@@ -133,7 +134,7 @@ body.large .playing-card .card-suit { font-size: clamp(16px, 3.2vw, 30px); }
 }
 /* Match the markings across the board, using the tightest tableau row. */
 .solitaire-board .playing-card {
-  --face-step: min(23px, (100cqi - 4 * var(--card-width) - 4px - 2 * var(--board-gap)) / (2 * var(--max-covered-count)));
+  --face-step: min(var(--card-spacing), (100cqi - 4 * var(--card-width) - 4px - 2 * var(--board-gap)) / (2 * var(--max-covered-count)));
 }
 .solitaire-board .card-rank {
   font-size: clamp(9px, calc(var(--face-step) * 0.68), 16px);
@@ -197,4 +198,16 @@ body.large .solitaire-board .playing-card .card-suit {
   .table-only .game-toolbar { margin-block-end: 4px; }
   .table-only .supply { margin-block-start: 4px; }
   .table-only #status { margin-block-start: 4px; }
+}
+
+@media (min-width: 850px) and (min-height: 560px) and (pointer: fine) {
+  .solitaire-board { --card-spacing: 36px; }
+  .solitaire-board .card-rank { font-size: clamp(12px, calc(var(--face-step) * 0.68), 24px); }
+  .solitaire-board .card-suit { font-size: clamp(13px, calc(var(--face-step) * 0.78), 26px); }
+  body.large .solitaire-board .playing-card .card-rank {
+    font-size: clamp(15px, calc(var(--face-step) * 0.76), 28px);
+  }
+  body.large .solitaire-board .playing-card .card-suit {
+    font-size: clamp(16px, calc(var(--face-step) * 0.84), 30px);
+  }
 }
