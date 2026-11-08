@@ -213,11 +213,31 @@ body.large .solitaire-board .playing-card .card-suit {
   }
 }
 
-:root[data-theme="ink"] .solitaire .playing-card:not(.empty):not(.stock-card) {
-  background-color: #eee5d2;
+/* Matte surfaces for the card game, using each theme's own hue. */
+:root[data-theme="porcelain"] { --bg: #e9e9e3; --paper: #efeee8; --wash: #dce4eb; }
+:root[data-theme="ink"] { --bg: #ebe4d5; --paper: #eee5d2; --wash: #e0d5be; }
+:root[data-theme="sage"] { --bg: #e7e9df; --paper: #eef0e5; --wash: #dce4cf; }
+:root[data-theme="studio"] { --bg: #e6e8eb; --paper: #edf0f3; --wash: #dce2e9; }
+:root[data-theme="forma"] { --bg: #f2e7db; --paper: #f5eadd; --wash: #ead8cb; }
+:root[data-theme="energy"] { --bg: #eae4f5; --paper: #f0e9f8; --wash: #e2d8f1; }
+:root[data-theme="tangerine"] { --bg: #eee6d7; --paper: #f3ead9; --wash: #f0e0b9; }
+:root[data-theme="ukraine"] { --bg: #e4ebf4; --paper: #edf1f7; --wash: #d7e5f4; }
+:root[data-theme="copper"] { --bg: #f0e1d5; --paper: #f3e5da; --wash: #eed6c6; }
+:root[data-theme="night-sky"] { --bg: #161c2c; --paper: #222b42; --wash: #2f3a58; }
+:root[data-theme="contrast"] { --bg: #eee; --paper: #f4f2eb; --wash: #ddd; }
+:root[data-theme="porcelain"] header,
+:root:is([data-theme="energy"], [data-theme="ukraine"]) .preferences :is(select, button) {
+  background-color: var(--paper);
+  border-color: var(--line);
 }
-:root[data-theme="ink"] .solitaire .playing-card.selected {
-  background-color: #e3d5ba;
+.solitaire .playing-card:not(.empty):not(.stock-card):not(.selected) {
+  background-color: color-mix(in srgb, var(--paper) 88%, var(--wash));
+}
+.solitaire .playing-card.selected {
+  background-color: color-mix(in srgb, var(--wash) 82%, var(--accent));
+}
+:root[data-theme="night-sky"] .solitaire .playing-card.red {
+  color: #ff9fb1;
 }
 .table-only .solitaire > .game.game-won {
   max-width: 520px;
