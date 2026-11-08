@@ -201,6 +201,7 @@ body.large .solitaire-board .playing-card .card-suit {
 }
 
 @media (min-width: 850px) and (min-height: 560px) and (pointer: fine) {
+  .table-only .solitaire > .game { max-width: 1032px; }
   .solitaire-board { --card-spacing: 36px; }
   .solitaire-board .card-rank { font-size: clamp(12px, calc(var(--face-step) * 0.68), 24px); }
   .solitaire-board .card-suit { font-size: clamp(13px, calc(var(--face-step) * 0.78), 26px); }
