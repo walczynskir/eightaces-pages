@@ -242,3 +242,14 @@ body.large .solitaire-board .playing-card .card-suit {
 .table-only .solitaire > .game.game-won {
   max-width: 520px;
 }
+:root[data-theme="ink"] :is(header, .game-toolbar) :is(button:not(.primary), select):not(:disabled) {
+  border-color: #938570;
+  background-color: #f5eddd;
+}
+:root[data-theme="ink"] :is(header, .game-toolbar) :is(button:not(.primary), select):not(:disabled):hover {
+  background-color: #e4d8bf;
+}
+:root[data-theme="ink"] .game-toolbar #fullscreen[aria-pressed="true"] {
+  border-color: var(--accent);
+  background-color: var(--wash);
+}
