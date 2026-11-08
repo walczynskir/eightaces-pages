@@ -8,7 +8,7 @@
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
     copper: 'Copper', 'night-sky': 'Night sky'
   };
-  const prefs = { language: 'pl', theme: 'porcelain', contrast: false, large: false, sameSuit: false, recycle: false, showCounts: false, showUndo: false };
+  const prefs = { language: 'pl', theme: 'porcelain', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
   let wins = 0;
   let rewarded = false;
@@ -179,7 +179,10 @@
     byId('next-rules').textContent = nextRules;
     byId('same-label').textContent = sameSuit;
     byId('recycle-label').textContent = recycle;
+    const [kingLabel, kingNote] = solitaireKingOption[prefs.language] ?? solitaireKingOption.pl;
     SolitaireHelp(byId('rules'), prefs.language, state.kingsOnly);
+    byId('kingsOnly-label').textContent = kingLabel;
+    byId('kingsOnly-note').textContent = kingNote;
     const [sameNote, recycleNote] = solitaireOptionNotes[prefs.language] ?? solitaireOptionNotes.pl;
     byId('sameSuit-note').textContent = sameNote;
     byId('recycle-note').textContent = recycleNote;
@@ -281,7 +284,7 @@
     option.translate = false;
     byId('theme').append(option);
   }
-  for (const name of ['language', 'theme', 'large', 'sameSuit', 'recycle', 'showCounts', 'showUndo']) {
+  for (const name of ['language', 'theme', 'large', 'sameSuit', 'recycle', 'kingsOnly', 'showCounts', 'showUndo']) {
     const control = byId(name);
     if (control.type === 'checkbox') control.checked = prefs[name];
     control.onchange = () => {

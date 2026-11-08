@@ -3,7 +3,7 @@
   const suit = card => Math.floor(card / 13) % 4;
   const top = pile => pile.at(-1);
 
-  function deal({ sameSuit = false, recycle = false } = {}, random = Math.random) {
+  function deal({ sameSuit = false, recycle = false, kingsOnly = true } = {}, random = Math.random) {
     const deck = Array.from({ length: 104 }, (_, index) => index);
     for (let index = deck.length - 1; index > 0; index--) {
       const other = Math.floor(random() * (index + 1));
@@ -12,7 +12,7 @@
     return {
       rows: Array.from({ length: 8 }, () => deck.splice(0, 5)),
       goals: Array.from({ length: 8 }, () => []),
-      stock: deck, drawn: [], waste: [], sameSuit, recycle
+      stock: deck, drawn: [], waste: [], sameSuit, recycle, kingsOnly
     };
   }
 
@@ -20,6 +20,12 @@
     return ref.group === 'rows' || ref.group === 'goals'
       ? state[ref.group][ref.index]
       : state[ref.group];
+  }
+
+  function fitsRow(state, card, last) {
+    return last === undefined
+      ? !state.kingsOnly || rank(card) === 13
+      : rank(card) + 1 === rank(last) && (!state.sameSuit || suit(card) === suit(last));
   }
 
   function canMove(state, from, to) {
@@ -32,9 +38,7 @@
     switch (to.group) {
       case 'rows':
         if (rank(card) === 1) return false;
-        return last === undefined || (
-          rank(card) + 1 === rank(last) && (!state.sameSuit || suit(card) === suit(last))
-        );
+        return fitsRow(state, card, last);
       case 'goals':
         return from.group !== 'goals' && (last === undefined
           ? rank(card) === 1
@@ -132,9 +136,9 @@
     if (count > sequenceLength(state, from.index)) return [];
     const card = state.rows[from.index].at(-count);
     const last = top(state.rows[to.index]);
-    if (last !== undefined && (rank(card) + 1 !== rank(last) || (state.sameSuit && suit(card) !== suit(last)))) return [];
+    if (!fitsRow(state, card, last)) return [];
     const free = spareRows(state, from.index, to.index);
-    if (count > 2 ** free.length) return assistedPlan(state, from, to, count);
+    if (state.kingsOnly || count > 2 ** free.length) return assistedPlan(state, from, to, count);
 
     const steps = [];
     function transfer(source, target, size, freeRows) {
