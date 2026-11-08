@@ -199,6 +199,7 @@
     const pileLabel = (label, count) => prefs.showCounts ? label + ' · ' + count : label;
     const count = state.goals.reduce((total, pile) => total + pile.length, 0);
     const finished = engine.won(state);
+    byId("tableau").closest(".game").classList.toggle("game-won", finished);
     GameVictory(finished, victory);
     byId('status').textContent = finished ? victory + ' · 104/104' : instructions + ' · ' + count + '/104';
     const [full, exit] = solitaireTableLabels[prefs.language] ?? solitaireTableLabels.pl;

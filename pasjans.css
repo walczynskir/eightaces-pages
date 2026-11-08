@@ -212,3 +212,13 @@ body.large .solitaire-board .playing-card .card-suit {
     font-size: clamp(16px, calc(var(--face-step) * 0.84), 30px);
   }
 }
+
+:root[data-theme="ink"] .solitaire .playing-card:not(.empty):not(.stock-card) {
+  background-color: #eee5d2;
+}
+:root[data-theme="ink"] .solitaire .playing-card.selected {
+  background-color: #e3d5ba;
+}
+.table-only .solitaire > .game.game-won {
+  max-width: 520px;
+}
