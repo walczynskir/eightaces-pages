@@ -73,7 +73,10 @@
     }
   }
 
+  let lastRowTap;
+
   async function action(apply, nextSelection) {
+    lastRowTap = undefined;
     const previous = structuredClone(state);
     if (!apply()) {
       render();
@@ -95,12 +98,23 @@
     render();
   }
 
-  function choose(ref) {
+  function choose(ref, event) {
     if (engine.won(state)) return;
+    const previousTap = lastRowTap;
+    lastRowTap = undefined;
+    const card = engine.top(engine.pile(state, ref));
+    const rowTap = event.detail > 0 && ref.group === 'rows' && !ref.count && card !== undefined;
+    const now = performance.now();
+    if (rowTap && previousTap?.row === ref.index && previousTap.card === card && now - previousTap.time <= 400) {
+      const rtl = document.documentElement.dir === 'rtl';
+      action(() => engine.collectRow(state, ref.index, rtl));
+      return;
+    }
     if (!ref.count && selected && engine.canMoveSelection(state, selected, ref)) {
       action(() => engine.moveSelection(state, selected, ref));
       return;
     }
+    if (rowTap) lastRowTap = { row: ref.index, card, time: now };
     selected = engine.pile(state, ref).length && refKey(ref) !== (selected && refKey(selected))
       ? ref : undefined;
     render();
@@ -119,7 +133,7 @@
     const rank = ranks[engine.rank(card) - 1];
     const suit = suits[engine.suit(card)];
     const face = card === undefined ? '' : rank + suit;
-    const element = ref ? button('', () => choose(ref)) : document.createElement('span');
+    const element = ref ? button('', event => choose(ref, event)) : document.createElement('span');
     if (face) {
       const value = document.createElement('span');
       value.className = 'card-rank';
@@ -323,6 +337,7 @@
   };
 
   function startNewGame() {
+    lastRowTap = undefined;
     state = engine.deal(prefs);
     rewarded = false;
     history = [];
@@ -333,6 +348,7 @@
   }
   function stepHistory(from, to) {
     if (!prefs.showUndo || !from.length) return;
+    lastRowTap = undefined;
     to.push(state);
     state = from.pop();
     state.kingsOnly = prefs.kingsOnly;

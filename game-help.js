@@ -75,6 +75,19 @@
     uk: ['Порожній ряд приймає будь-яку карту, крім туза.', 'Порожній ряд приймає лише короля.']
   };
 
+  const shortcuts = {
+    pl: 'Kliknij dwukrotnie kartę na końcu rzędu lub stuknij ją szybko dwa razy. Gra zbierze z tego rzędu kolejne pasujące karty na jeden środkowy stos.',
+    en: 'Double-click or quickly double-tap the end card to collect consecutive fitting cards from that row onto one foundation.',
+    es: 'Haz doble clic o toca dos veces la última carta para llevar las cartas consecutivas compatibles de esa fila a una base.',
+    de: 'Klicke oder tippe zweimal schnell auf die Endkarte, um passende aufeinanderfolgende Karten dieser Reihe auf einen Zielstapel zu legen.',
+    'zh-Hans': '双击或快速点按两次末端牌，可将该列连续符合条件的牌移到同一个目标堆。',
+    hi: 'पंक्ति के आखिरी पत्ते पर दो बार जल्दी क्लिक या टैप करें। लगातार मेल खाने वाले पत्ते एक ही लक्ष्य ढेर में चले जाएँगे।',
+    fr: 'Double-cliquez ou touchez rapidement deux fois la dernière carte pour envoyer les cartes consécutives compatibles sur une même fondation.',
+    ar: 'انقر أو المس بطاقة نهاية الصف مرتين بسرعة لنقل البطاقات المتتالية المطابقة من الصف إلى كومة هدف واحدة.',
+    it: 'Fai doppio clic o tocca rapidamente due volte l’ultima carta per raccogliere su una sola base le carte consecutive compatibili della fila.',
+    uk: 'Двічі швидко натисніть крайню карту, щоб зібрати послідовні відповідні карти ряду на одну цільову стопку.'
+  };
+
   window.SolitaireHelp = (container, language, kingsOnly) => {
     const copy = sections[language] ?? sections.pl;
     const vacancy = (emptyRow[language] ?? emptyRow.pl)[Number(Boolean(kingsOnly))];
@@ -83,7 +96,7 @@
       const heading = document.createElement('h3');
       heading.textContent = title;
       const paragraph = document.createElement('p');
-      paragraph.textContent = index === 1 ? text + ' ' + vacancy : text;
+      paragraph.textContent = index === 1 ? text + ' ' + vacancy + ' ' + (shortcuts[language] ?? shortcuts.pl) : text;
       section.append(heading, paragraph);
       return section;
     }));
