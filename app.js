@@ -305,8 +305,24 @@
     save();
     render();
   };
+  const newGameDialog = byId('confirm-new-game');
   byId('new-game').onclick = () => {
-    if (!engine.won(state) && history.length && !confirm(tr('Start a new game?'))) return;
+    if (!engine.won(state) && (history.length || future.length)) {
+      byId('confirm-new-title').textContent = tr('Start a new game?');
+      byId('confirm-new-description').textContent = tr('This replaces your current game. Your statistics will be kept.');
+      byId('cancel-new').textContent = tr('Return to game');
+      byId('accept-new').textContent = byId('new-game').textContent;
+      newGameDialog.returnValue = 'cancel';
+      newGameDialog.showModal();
+      return;
+    }
+    startNewGame();
+  };
+  newGameDialog.onclose = () => {
+    if (newGameDialog.returnValue === 'start') startNewGame();
+  };
+
+  function startNewGame() {
     state = engine.deal(prefs);
     rewarded = false;
     history = [];
@@ -314,7 +330,7 @@
     selected = undefined;
     save();
     render();
-  };
+  }
   function stepHistory(from, to) {
     if (!prefs.showUndo || !from.length) return;
     to.push(state);
