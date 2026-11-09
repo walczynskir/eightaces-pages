@@ -129,6 +129,29 @@
     return [];
   }
 
+  function borrowedSupportPlan(state, from, to) {
+    const supportRank = rank(top(pile(state, from))) + 1;
+    for (const [index, cards] of state.goals.entries()) {
+      if (rank(top(cards)) < supportRank || !cards.length) continue;
+      const foundation = { group: 'goals', index };
+      const borrowed = rank(top(cards)) - supportRank + 1;
+      for (const [rowIndex, row] of state.rows.entries()) {
+        if (rowIndex === from.index || rowIndex === to.index || !fitsRow(state, top(cards), top(row))) continue;
+        const temporary = { group: 'rows', index: rowIndex };
+        const steps = [
+          ...Array.from({ length: borrowed }, () => ({ from: foundation, to: temporary })),
+          { from, to: temporary },
+          { from, to },
+          { from: temporary, to },
+          ...Array.from({ length: borrowed }, () => ({ from: temporary, to: foundation }))
+        ];
+        const trial = structuredClone(state);
+        if (steps.every(step => move(trial, step.from, step.to))) return steps;
+      }
+    }
+    return [];
+  }
+
   function selectionPlan(state, from, to) {
     const count = from.count ?? 1;
     if (count === 1) return canMove(state, from, to) ? [{ from, to }] : [];
@@ -138,7 +161,13 @@
     const last = top(state.rows[to.index]);
     if (!fitsRow(state, card, last)) return [];
     const free = spareRows(state, from.index, to.index);
-    if (state.kingsOnly || count > 2 ** free.length) return assistedPlan(state, from, to, count);
+    if (state.kingsOnly || count > 2 ** free.length) {
+      if (count === 2) {
+        const borrowed = borrowedSupportPlan(state, from, to);
+        if (borrowed.length) return borrowed;
+      }
+      return assistedPlan(state, from, to, count);
+    }
 
     const steps = [];
     function transfer(source, target, size, freeRows) {
