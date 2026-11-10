@@ -217,15 +217,18 @@
     return true;
   }
 
-  function collectRow(state, index, rtl = false) {
-    const from = { group: 'rows', index };
+  function collectToFoundation(state, from, rtl = false) {
+    if (from.group !== 'rows' && from.group !== 'waste') return false;
     // The two visible columns contain alternating foundation indices.
     const first = rtl ? 1 : 0;
     const targets = state.goals.map((_, index) => ({ group: 'goals', index }));
     const to = targets.find(target => target.index % 2 === first && canMove(state, from, target))
       ?? targets.find(target => canMove(state, from, target));
     if (!to) return false;
-    while (move(state, from, to)) { /* Continue only on the same foundation. */ }
+    move(state, from, to);
+    if (from.group === 'rows') {
+      while (move(state, from, to)) { /* Continue only on the same foundation. */ }
+    }
     return true;
   }
 
@@ -264,7 +267,7 @@
   }
 
   const won = state => state.goals.every(goal => goal.length === 13);
-  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, canMoveSelection, moveSelection, collectRow, finishPlan, finish, draw, won };
+  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won };
   if (typeof module !== 'undefined') module.exports = engine;
   else root.PasjansEngine = engine;
 })(globalThis);

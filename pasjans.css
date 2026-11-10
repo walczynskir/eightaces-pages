@@ -243,4 +243,4 @@ body.large .solitaire-board .playing-card .card-suit {
   background-color: var(--wash);
 }
 
-.card-row button.playing-card { touch-action: manipulation; }
+.card-row button.playing-card, button[data-card="waste"] { touch-action: manipulation; }
