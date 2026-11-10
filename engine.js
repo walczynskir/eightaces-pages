@@ -73,7 +73,7 @@
     return state.rows.flatMap((row, index) => row.length || index === from || index === to ? [] : [index]);
   }
 
-  function assistedPlan(state, from, to, count) {
+  function searchAssistedPlan(state, from, to, count, { budget, maxDepth, groupMoves }) {
     const refs = [...state.rows.map((_, index) => ({ group: 'rows', index })),
       ...state.goals.map((_, index) => ({ group: 'goals', index }))];
     const initial = [...state.rows, ...state.goals];
@@ -86,7 +86,7 @@
       const goal = expected[index];
       let prefix = 0;
       while (prefix < cards.length && cards[prefix] === goal[prefix]) prefix++;
-      return total + cards.length - prefix;
+      return total + (!groupMoves || index === from.index || index === to.index ? cards.length - prefix : Number(cards.length !== prefix));
     }, 0);
 
     // Best-first search is bounded so highlighting remains responsive.
@@ -97,36 +97,56 @@
       pending.get(score).push(node);
     };
     enqueue({ piles: initial, depth: 0 }, 0);
-    for (let expanded = 0; expanded < 1600 && pending.size; expanded++) {
+    for (let expanded = 0; expanded < budget && pending.size; expanded++) {
       const score = Math.min(...pending.keys());
       const bucket = pending.get(score);
       const node = bucket.pop();
       if (!bucket.length) pending.delete(score);
-      if (node.depth >= 16) continue;
+      if (node.depth >= maxDepth) continue;
       const trial = { ...state, rows: node.piles.slice(0, state.rows.length), goals: node.piles.slice(state.rows.length) };
       for (const [sourceIndex, source] of refs.entries()) {
         if (!node.piles[sourceIndex].length) continue;
         for (const [targetIndex, target] of refs.entries()) {
           if (!canMove(trial, source, target)) continue;
+          if (rank(top(node.piles[sourceIndex])) === 1) continue;
+          const cards = node.piles[sourceIndex].slice();
+          const targetCards = node.piles[targetIndex].slice();
           const piles = node.piles.slice();
-          const sourceCards = piles[sourceIndex];
-          piles[sourceIndex] = sourceCards.slice(0, -1);
-          piles[targetIndex] = piles[targetIndex].concat(top(sourceCards));
-          const key = keyOf(piles);
+          piles[sourceIndex] = cards;
+          piles[targetIndex] = targetCards;
+          const nextState = { ...state, rows: piles.slice(0, state.rows.length), goals: piles.slice(state.rows.length) };
+          const step = { from: source, to: target };
           const depth = node.depth + 1;
-          if ((visited.get(key) ?? Infinity) <= depth) continue;
-          const next = { piles, depth, parent: node, step: { from: source, to: target } };
-          if (key === expectedKey) {
-            const steps = [];
-            for (let current = next; current.step; current = current.parent) steps.push(current.step);
-            return steps.reverse();
+          let length = 0;
+          while ((groupMoves || length === 0) && move(nextState, source, target)) {
+            length++;
+            const key = keyOf(piles);
+            if ((visited.get(key) ?? Infinity) <= depth) continue;
+            const nextPiles = piles.slice();
+            nextPiles[sourceIndex] = cards.slice();
+            nextPiles[targetIndex] = targetCards.slice();
+            const next = { piles: nextPiles, depth, parent: node, step, length };
+            if (key === expectedKey) {
+              const steps = [];
+              for (let current = next; current.step; current = current.parent) {
+                for (let i = 0; i < current.length; i++) steps.push(current.step);
+              }
+              return steps.reverse();
+            }
+            visited.set(key, depth);
+            enqueue(next, depth + 3 * distance(piles));
           }
-          visited.set(key, depth);
-          enqueue(next, depth + 3 * distance(piles));
         }
       }
     }
     return [];
+  }
+
+  function assistedPlan(state, from, to, count) {
+    const quick = searchAssistedPlan(state, from, to, count, { budget: 1600, maxDepth: 16, groupMoves: false });
+    if (quick.length) return quick;
+    const groupMoves = pile(state, to).length > 0;
+    return searchAssistedPlan(state, from, to, count, { budget: 6000, maxDepth: 24, groupMoves });
   }
 
   function borrowedSupportPlan(state, from, to) {
