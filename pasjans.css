@@ -244,3 +244,9 @@ body.large .solitaire-board .playing-card .card-suit {
 }
 
 .card-row button.playing-card, button[data-card="waste"] { touch-action: manipulation; }
+
+/* Only the exposed waste card has room for larger markings. */
+button[data-card="waste"] .card-rank { font-size: clamp(16px, 2.8vw, 30px); }
+button[data-card="waste"] .card-suit { font-size: clamp(18px, 3.1vw, 34px); }
+body.large button[data-card="waste"] .card-rank { font-size: clamp(17px, 3.2vw, 32px); }
+body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 36px); }
