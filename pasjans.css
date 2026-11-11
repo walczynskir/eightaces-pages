@@ -272,37 +272,48 @@ body.large button[data-card="waste"] .card-rank { font-size: clamp(17px, 3.2vw, 
 body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 36px); }
 
 .garden-theme {
-  --garden-background: linear-gradient(#17251738, #17251738), url("garden.webp") center / cover no-repeat;
+  --scenic-background: linear-gradient(#17251738, #17251738), url("garden.webp") center / cover no-repeat;
   background-color: var(--bg);
 }
-.garden-theme body,
-.garden-theme .table-only .solitaire {
-  background: var(--garden-background) var(--bg);
+:root[data-theme="tropics"] {
+  --bg: #e4edf0;
+  --paper: #f3f4eb;
+  --ink: #152f42;
+  --muted: #38596b;
+  --accent: #184e77;
+  --line: #9eb6bf;
+  --wash: #dcebef;
+  --scenic-background: linear-gradient(#12304b30, #0d354230), url("tropics.webp") center / cover no-repeat;
+  background-color: var(--bg);
 }
-.garden-theme body > :is(header, footer) {
+:is(.garden-theme, [data-theme="tropics"]) body,
+:is(.garden-theme, [data-theme="tropics"]) .table-only .solitaire {
+  background: var(--scenic-background) var(--bg);
+}
+:is(.garden-theme, [data-theme="tropics"]) body > :is(header, footer) {
   background-color: color-mix(in srgb, var(--paper) 92%, transparent);
 }
-.garden-theme .game-toolbar button:not(.primary):not(:disabled) {
+:is(.garden-theme, [data-theme="tropics"]) .game-toolbar button:not(.primary):not(:disabled) {
   background-color: var(--paper);
 }
-.garden-theme .game-toolbar button:disabled {
+:is(.garden-theme, [data-theme="tropics"]) .game-toolbar button:disabled {
   background-color: var(--paper);
   color: var(--muted);
   opacity: 1;
 }
-.garden-theme .game,
-.garden-theme .solitaire-board {
+:is(.garden-theme, [data-theme="tropics"]) .game,
+:is(.garden-theme, [data-theme="tropics"]) .solitaire-board {
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
 }
-.garden-theme .playing-card.empty,
-.garden-theme .stock-card:not(.has-stock) {
+:is(.garden-theme, [data-theme="tropics"]) .playing-card.empty,
+:is(.garden-theme, [data-theme="tropics"]) .stock-card:not(.has-stock) {
   border-color: #e5ead6;
   color: #f5f5ec;
 }
 @media (max-width: 600px) and (orientation: portrait) {
-  .garden-theme body:not(.table-only) .solitaire { padding-block-start: 44px; }
+  :is(.garden-theme, [data-theme="tropics"]) body:not(.table-only) .solitaire { padding-block-start: 44px; }
 }
 
 /* Keep the full portrait board visible and size covered marks per row. */
@@ -390,8 +401,8 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   outline-color: #fff4bd;
   outline-offset: 2px;
 }
-[data-theme="classic"] button.stock-card.has-stock:not(.tile),
-[data-theme="classic"] .stock-pile.revealed-on-stock::before {
+:is([data-theme="classic"], [data-theme="tropics"]) button.stock-card.has-stock:not(.tile),
+:is([data-theme="classic"], [data-theme="tropics"]) .stock-pile.revealed-on-stock::before {
   background:
     repeating-linear-gradient(45deg, transparent 0 3px, #8cc4ec44 3px 4px),
     repeating-linear-gradient(-45deg, transparent 0 3px, #8cc4ec44 3px 4px),

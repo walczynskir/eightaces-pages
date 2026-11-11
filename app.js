@@ -4,7 +4,7 @@
   const byId = id => document.getElementById(id);
   const key = 'pasjans.v1';
   const themes = {
-    garden: 'Garden', classic: 'Classic', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
+    garden: 'Garden', classic: 'Classic', tropics: 'Tropics', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
     copper: 'Copper', 'night-sky': 'Night sky'
   };
@@ -18,7 +18,11 @@
     pl: 'Klasyczny', en: 'Classic', es: 'Clásico', de: 'Klassisch', 'zh-Hans': '经典',
     hi: 'क्लासिक', fr: 'Classique', ar: 'كلاسيكي', it: 'Classico', uk: 'Класичний'
   };
-  const customThemeLabels = { garden: gardenLabels, classic: classicLabels };
+  const tropicsLabels = {
+    pl: 'Tropiki', en: 'Tropics', es: 'Trópicos', de: 'Tropen', 'zh-Hans': '热带',
+    hi: 'उष्णकटिबंध', fr: 'Tropiques', ar: 'المناطق الاستوائية', it: 'Tropici', uk: 'Тропіки'
+  };
+  const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels };
   const prefs = { language: 'pl', theme: 'garden', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
   let wins = 0;
