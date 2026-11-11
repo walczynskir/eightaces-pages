@@ -1,4 +1,4 @@
-.solitaire { max-width: 1080px; }
+.solitaire { max-width: 1080px; --card-width: clamp(25px, 5vw, 64px); }
 .solitaire-board {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -50,7 +50,6 @@ button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offse
   .playing-card, button.playing-card:not(.tile) { font-size: 12px; }
 }
 .solitaire-board {
-  --card-width: clamp(25px, 5vw, 64px);
   --card-spacing: 23px;
   container-type: inline-size;
 }
@@ -69,7 +68,7 @@ body.large .playing-card { font-size: 1.05rem; }
 body.large .card-row .covered { font-size: clamp(9px, 1.7vw, 16px); }
 .brand-logo { width: 40px; height: 40px; }
 @media (max-width: 380px) {
-  .solitaire-board { --card-width: 23px; }
+  .solitaire { --card-width: 23px; }
 
 }
 
@@ -277,4 +276,16 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
 }
 @media (max-width: 600px) and (orientation: portrait) {
   .garden-theme body:not(.table-only) .solitaire { padding-block-start: 44px; }
+}
+
+/* In portrait play, the waste card follows the smaller tabletop scale. */
+@media (max-width: 600px) and (orientation: portrait) {
+  body:not(.table-only) .supply button[data-card="waste"] {
+    width: var(--card-width);
+    min-height: 34px;
+  }
+  body:not(.table-only) button[data-card="waste"] .card-rank { font-size: clamp(12px, 2.6vw, 16px); }
+  body:not(.table-only) button[data-card="waste"] .card-suit { font-size: clamp(14px, 2.9vw, 18px); }
+  body.large:not(.table-only) button[data-card="waste"] .card-rank { font-size: clamp(14px, 3vw, 18px); }
+  body.large:not(.table-only) button[data-card="waste"] .card-suit { font-size: clamp(16px, 3.3vw, 20px); }
 }
