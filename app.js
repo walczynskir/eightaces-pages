@@ -4,17 +4,17 @@
   const byId = id => document.getElementById(id);
   const key = 'pasjans.v1';
   const themes = {
-    porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
+    garden: 'Garden', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
-    copper: 'Copper', 'night-sky': 'Night sky', garden: 'Garden'
+    copper: 'Copper', 'night-sky': 'Night sky'
   };
   const gardenLabels = {
-    pl: 'Ogród (eksperyment)', en: 'Garden (experimental)', es: 'Jardín (experimental)',
-    de: 'Garten (experimentell)', 'zh-Hans': '花园（实验）', hi: 'बगीचा (प्रयोगात्मक)',
-    fr: 'Jardin (expérimental)', ar: 'الحديقة (تجريبي)', it: 'Giardino (sperimentale)',
-    uk: 'Сад (експеримент)'
+    pl: 'Ogród', en: 'Garden', es: 'Jardín',
+    de: 'Garten', 'zh-Hans': '花园', hi: 'बगीचा',
+    fr: 'Jardin', ar: 'الحديقة', it: 'Giardino',
+    uk: 'Сад'
   };
-  const prefs = { language: 'pl', theme: 'porcelain', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
+  const prefs = { language: 'pl', theme: 'garden', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
   let wins = 0;
   let rewarded = false;
@@ -37,7 +37,7 @@
   state ??= engine.deal(prefs);
   state.kingsOnly = prefs.kingsOnly;
   const themeLocked = theme => wins < (rewardWins[theme] ?? 0);
-  if (themeLocked(prefs.theme)) prefs.theme = 'porcelain';
+  if (themeLocked(prefs.theme) || !Object.hasOwn(themes, prefs.theme)) prefs.theme = 'garden';
   const newGameLabels = ['Nowy pasjans', 'New solitaire', 'Nuevo solitario', 'Neue Patience',
     '新接龙', 'नया सॉलिटेयर', 'Nouveau solitaire', 'سوليتير جديد', 'Nuovo solitario', 'Новий пасьянс'];
 
