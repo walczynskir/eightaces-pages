@@ -410,3 +410,12 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   outline-color: #164676;
   box-shadow: 2px 2px var(--paper), 3px 3px #164676, 4px 4px var(--paper), 5px 5px #164676;
 }
+
+@media (max-width: 600px) and (orientation: portrait) {
+  [data-theme="tropics"] body:not(.table-only) {
+    background: var(--bg);
+  }
+  [data-theme="tropics"] body:not(.table-only) .solitaire {
+    background: var(--scenic-background) var(--bg);
+  }
+}
