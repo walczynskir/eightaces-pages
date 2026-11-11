@@ -278,14 +278,26 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   .garden-theme body:not(.table-only) .solitaire { padding-block-start: 44px; }
 }
 
-/* In portrait play, the waste card follows the smaller tabletop scale. */
+/* Match exposed tabletop cards to the waste card in portrait play. */
 @media (max-width: 600px) and (orientation: portrait) {
-  body:not(.table-only) .supply button[data-card="waste"] {
-    width: var(--card-width);
-    min-height: 34px;
+  body:not(.table-only) .solitaire {
+    --card-width: clamp(27px, 5vw, 64px);
+    --portrait-rank: clamp(16px, 2.8vw, 30px);
+    --portrait-suit: clamp(18px, 3.1vw, 34px);
   }
-  body:not(.table-only) button[data-card="waste"] .card-rank { font-size: clamp(12px, 2.6vw, 16px); }
-  body:not(.table-only) button[data-card="waste"] .card-suit { font-size: clamp(14px, 2.9vw, 18px); }
-  body.large:not(.table-only) button[data-card="waste"] .card-rank { font-size: clamp(14px, 3vw, 18px); }
-  body.large:not(.table-only) button[data-card="waste"] .card-suit { font-size: clamp(16px, 3.3vw, 20px); }
+  body.large:not(.table-only) .solitaire {
+    --portrait-rank: clamp(17px, 3.2vw, 32px);
+    --portrait-suit: clamp(20px, 3.5vw, 36px);
+  }
+  body:not(.table-only) .solitaire-board .playing-card {
+    min-height: 44px;
+  }
+  body:not(.table-only) .solitaire-board .playing-card:not(.covered) .card-rank,
+  body.large:not(.table-only) .solitaire-board .playing-card:not(.covered) .card-rank {
+    font-size: var(--portrait-rank);
+  }
+  body:not(.table-only) .solitaire-board .playing-card:not(.covered) .card-suit,
+  body.large:not(.table-only) .solitaire-board .playing-card:not(.covered) .card-suit {
+    font-size: var(--portrait-suit);
+  }
 }
