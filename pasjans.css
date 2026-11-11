@@ -43,7 +43,23 @@ button.playing-card.selected, button.playing-card.legal {
 }
 button.playing-card.selected { background: var(--wash); }
 button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
-.supply > div { display: grid; justify-items: center; gap: 3px; }
+.supply-slot {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+  align-items: start;
+  gap: 3px;
+}
+.supply-count {
+  min-width: 2em;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
 .supply button { min-height: 44px; }
 #status { min-height: 1.55em; margin-block-end: 0; }
 @media (max-width: 520px) {
@@ -274,12 +290,6 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
-}
-.garden-theme .supply-slot > span {
-  background-color: var(--paper);
-  color: var(--ink);
-  border-radius: var(--control-radius);
-  padding: 1px 8px;
 }
 .garden-theme .playing-card.empty,
 .garden-theme .stock-card:not(.has-stock) {

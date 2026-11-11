@@ -235,11 +235,16 @@
     fullscreen.setAttribute('aria-label', fullscreenLabel);
     fullscreen.title = fullscreenLabel;
 
-    function supplySlot(label, content) {
+    function supplySlot(content, count) {
       const slot = section('supply-slot');
-      const title = document.createElement('span');
-      title.textContent = label;
-      slot.append(title, content);
+      slot.append(content);
+      if (prefs.showCounts) {
+        const badge = document.createElement('span');
+        badge.className = 'supply-count';
+        badge.setAttribute('aria-hidden', 'true');
+        badge.textContent = count;
+        slot.append(badge);
+      }
       return slot;
     }
     const canDraw = state.stock.length || (state.recycle && state.waste.length);
@@ -251,22 +256,22 @@
           action(() => engine.draw(state), drawnRef);
           document.querySelector('[data-card="drawn"]')?.focus();
         }, !canDraw)
-      : cardNode(drawnTop, drawn, empty, drawnRef);
+      : cardNode(drawnTop, pileLabel(drawn, state.stock.length), empty, drawnRef);
     if (drawnTop === undefined) {
       stockCard.dataset.action = 'draw';
       stockCard.className = 'playing-card stock-card';
-      stockCard.setAttribute('aria-label', pileLabel(draw, state.stock.length));
+      stockCard.setAttribute('aria-label', draw + ' · ' + pileLabel(stock, state.stock.length));
       stockCard.title = draw;
       stockCard.classList.toggle('has-stock', Boolean(canDraw));
     }
     const stockPile = section('stock-pile');
     stockPile.classList.toggle('revealed-on-stock', drawnTop !== undefined && state.stock.length > 0);
     stockPile.append(stockCard);
-    const wasteCard = cardNode(engine.top(state.waste), waste, empty, wasteRef);
+    const wasteCard = cardNode(engine.top(state.waste), pileLabel(waste, state.waste.length), empty, wasteRef);
     wasteCard.disabled = !state.waste.length && selected?.group !== 'drawn';
     byId('supply').replaceChildren(
-      supplySlot(pileLabel(stock, state.stock.length), stockPile),
-      supplySlot(pileLabel(waste, state.waste.length), wasteCard)
+      supplySlot(stockPile, state.stock.length),
+      supplySlot(wasteCard, state.waste.length)
     );
     const left = section('card-rows left-rows');
     const right = section('card-rows');
