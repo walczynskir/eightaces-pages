@@ -286,34 +286,46 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   --scenic-background: linear-gradient(#12304b30, #0d354230), url("tropics.webp") center / cover no-repeat;
   background-color: var(--bg);
 }
-:is(.garden-theme, [data-theme="tropics"]) body,
-:is(.garden-theme, [data-theme="tropics"]) .table-only .solitaire {
+:root[data-theme="beach"] {
+  --bg: #ebddc5;
+  --paper: #f7f2e7;
+  --ink: #12363f;
+  --muted: #3e5b60;
+  --accent: #07586a;
+  --line: #9eaeb0;
+  --wash: #e7eee8;
+  --control-radius: 3px;
+  --scenic-background: linear-gradient(#123c451a, #123c4538), url("beach.webp") center / cover no-repeat;
+  background-color: var(--bg);
+}
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) body,
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .table-only .solitaire {
   background: var(--scenic-background) var(--bg);
 }
-:is(.garden-theme, [data-theme="tropics"]) body > :is(header, footer) {
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) body > :is(header, footer) {
   background-color: color-mix(in srgb, var(--paper) 92%, transparent);
 }
-:is(.garden-theme, [data-theme="tropics"]) .game-toolbar button:not(.primary):not(:disabled) {
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .game-toolbar button:not(.primary):not(:disabled) {
   background-color: var(--paper);
 }
-:is(.garden-theme, [data-theme="tropics"]) .game-toolbar button:disabled {
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .game-toolbar button:disabled {
   background-color: var(--paper);
   color: var(--muted);
   opacity: 1;
 }
-:is(.garden-theme, [data-theme="tropics"]) .game,
-:is(.garden-theme, [data-theme="tropics"]) .solitaire-board {
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .game,
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .solitaire-board {
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
 }
-:is(.garden-theme, [data-theme="tropics"]) .playing-card.empty,
-:is(.garden-theme, [data-theme="tropics"]) .stock-card:not(.has-stock) {
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .playing-card.empty,
+:is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) .stock-card:not(.has-stock) {
   border-color: #e5ead6;
   color: #f5f5ec;
 }
 @media (max-width: 600px) and (orientation: portrait) {
-  :is(.garden-theme, [data-theme="tropics"]) body:not(.table-only) .solitaire { padding-block-start: 44px; }
+  :is(.garden-theme, [data-theme="tropics"], [data-theme="beach"]) body:not(.table-only) .solitaire { padding-block-start: 44px; }
 }
 
 /* Keep the full portrait board visible and size covered marks per row. */
@@ -401,8 +413,8 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   outline-color: #fff4bd;
   outline-offset: 2px;
 }
-:is([data-theme="classic"], [data-theme="tropics"]) button.stock-card.has-stock:not(.tile),
-:is([data-theme="classic"], [data-theme="tropics"]) .stock-pile.revealed-on-stock::before {
+:is([data-theme="classic"], [data-theme="tropics"], [data-theme="beach"]) button.stock-card.has-stock:not(.tile),
+:is([data-theme="classic"], [data-theme="tropics"], [data-theme="beach"]) .stock-pile.revealed-on-stock::before {
   background:
     repeating-linear-gradient(45deg, transparent 0 3px, #8cc4ec44 3px 4px),
     repeating-linear-gradient(-45deg, transparent 0 3px, #8cc4ec44 3px 4px),
@@ -412,10 +424,10 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
-  [data-theme="tropics"] body:not(.table-only) {
+  :is([data-theme="tropics"], [data-theme="beach"]) body:not(.table-only) {
     background: var(--bg);
   }
-  [data-theme="tropics"] body:not(.table-only) .solitaire {
+  :is([data-theme="tropics"], [data-theme="beach"]) body:not(.table-only) .solitaire {
     background: var(--scenic-background) var(--bg);
   }
 }

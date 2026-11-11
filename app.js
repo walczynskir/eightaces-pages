@@ -4,7 +4,7 @@
   const byId = id => document.getElementById(id);
   const key = 'pasjans.v1';
   const themes = {
-    garden: 'Garden', classic: 'Classic', tropics: 'Tropics', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
+    garden: 'Garden', classic: 'Classic', tropics: 'Tropics', beach: 'Beach', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
     copper: 'Copper', 'night-sky': 'Night sky'
   };
@@ -22,7 +22,11 @@
     pl: 'Tropiki', en: 'Tropics', es: 'Trópicos', de: 'Tropen', 'zh-Hans': '热带',
     hi: 'उष्णकटिबंध', fr: 'Tropiques', ar: 'المناطق الاستوائية', it: 'Tropici', uk: 'Тропіки'
   };
-  const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels };
+  const beachLabels = {
+    pl: 'Plaża', en: 'Beach', es: 'Playa', de: 'Strand', 'zh-Hans': '海滩',
+    hi: 'समुद्र तट', fr: 'Plage', ar: 'الشاطئ', it: 'Spiaggia', uk: 'Пляж'
+  };
+  const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels, beach: beachLabels };
   const prefs = { language: 'pl', theme: 'classic', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
   let wins = 0;
