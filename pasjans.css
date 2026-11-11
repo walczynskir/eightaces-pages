@@ -210,9 +210,14 @@ body.large .solitaire-board .playing-card .card-suit {
     padding: 4px;
   }
   .table-only .card-rows, .table-only .goals { row-gap: 4px; }
-  .table-only .game-toolbar { margin-block-end: 4px; }
-  .table-only .supply { margin-block-start: 4px; }
-  .table-only #status { margin-block-start: 4px; }
+  .table-only .game-toolbar { margin-block-end: 2px; }
+  .table-only .solitaire > .game { padding-block: 4px; }
+  .table-only .supply { margin-block-start: 2px; }
+  .table-only #status {
+    margin-block-start: 3px;
+    padding-block: 4px;
+  }
+  .table-only .supply-count { line-height: 1.15; }
 }
 
 @media (min-width: 850px) and (min-height: 560px) and (pointer: fine) {
@@ -338,5 +343,19 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   }
   body:not(.table-only) .solitaire-board .card-row .covered .card-suit {
     font-size: clamp(9px, calc((var(--visible-edge) - 4px) * 0.9), var(--portrait-suit));
+  }
+}
+
+.history-icon { display: none; }
+@media (max-width: 600px) and (orientation: portrait) {
+  body:not(.table-only) .history-label { display: none; }
+  body:not(.table-only) .history-icon { display: inline-block; font-size: 1.25rem; line-height: 1; }
+  html[dir="rtl"] body:not(.table-only) .history-icon { transform: scaleX(-1); }
+  body:not(.table-only) .game-toolbar { gap: 5px; }
+  body:not(.table-only) .game-tools { gap: 4px; }
+  body:not(.table-only) .game-toolbar :is(#undo, #redo) {
+    min-inline-size: 38px;
+    min-block-size: 44px;
+    padding-inline: 6px;
   }
 }

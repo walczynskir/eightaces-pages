@@ -200,7 +200,9 @@
       option.textContent = label + progress;
     }
     byId('theme').value = prefs.theme;
-    byId('undo').textContent = undo;
+    byId('undo').querySelector('.history-label').textContent = undo;
+    byId('undo').setAttribute('aria-label', undo);
+    byId('undo').title = undo;
     byId('undo').hidden = !prefs.showUndo;
     byId('undo').disabled = history.length === 0;
     byId('next-rules').textContent = nextRules;
@@ -219,7 +221,9 @@
     byId('showCounts-note').textContent = countsNote;
     byId('showUndo-label').textContent = undoLabel;
     byId('showUndo-note').textContent = undoNote;
-    byId('redo').textContent = redo;
+    byId('redo').querySelector('.history-label').textContent = redo;
+    byId('redo').setAttribute('aria-label', redo);
+    byId('redo').title = redo;
     byId('redo').hidden = !prefs.showUndo;
     byId('redo').disabled = future.length === 0;
     const pileLabel = (label, count) => prefs.showCounts ? label + ' · ' + count : label;
