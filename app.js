@@ -4,7 +4,7 @@
   const byId = id => document.getElementById(id);
   const key = 'pasjans.v1';
   const themes = {
-    garden: 'Garden', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
+    garden: 'Garden', classic: 'Classic', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
     copper: 'Copper', 'night-sky': 'Night sky'
   };
@@ -14,6 +14,11 @@
     fr: 'Jardin', ar: 'الحديقة', it: 'Giardino',
     uk: 'Сад'
   };
+  const classicLabels = {
+    pl: 'Klasyczny', en: 'Classic', es: 'Clásico', de: 'Klassisch', 'zh-Hans': '经典',
+    hi: 'क्लासिक', fr: 'Classique', ar: 'كلاسيكي', it: 'Classico', uk: 'Класичний'
+  };
+  const customThemeLabels = { garden: gardenLabels, classic: classicLabels };
   const prefs = { language: 'pl', theme: 'garden', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
   let wins = 0;
@@ -194,9 +199,8 @@
     for (const option of byId('theme').options) {
       option.disabled = themeLocked(option.value);
       const progress = option.disabled ? ' · ' + wins + '/' + rewardWins[option.value] : '';
-      const label = option.value === 'garden'
-        ? gardenLabels[prefs.language] ?? gardenLabels.en
-        : tr(themes[option.value]);
+      const labels = customThemeLabels[option.value];
+      const label = labels ? labels[prefs.language] ?? labels.en : tr(themes[option.value]);
       option.textContent = label + progress;
     }
     byId('theme').value = prefs.theme;

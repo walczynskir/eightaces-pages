@@ -359,3 +359,43 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
     padding-inline: 6px;
   }
 }
+
+:root[data-theme="classic"] {
+  --bg: #e7eee5;
+  --paper: #f7f5eb;
+  --ink: #182d20;
+  --muted: #496151;
+  --accent: #225e3b;
+  --line: #acbeae;
+  --wash: #deebdd;
+  --classic-felt: radial-gradient(ellipse at 50% 38%, #287846, #125032 78%);
+}
+[data-theme="classic"] .solitaire > .game,
+[data-theme="classic"] .table-only .solitaire {
+  background: var(--classic-felt);
+}
+[data-theme="classic"] .solitaire-board {
+  background-color: transparent;
+}
+[data-theme="classic"] .supply-count {
+  border-color: #e0ebdc;
+}
+[data-theme="classic"] .playing-card.empty,
+[data-theme="classic"] .stock-card:not(.has-stock) {
+  border-color: #dbe9da;
+  color: #f7f5eb;
+}
+[data-theme="classic"] .solitaire .playing-card.red { color: #b22132; }
+[data-theme="classic"] .solitaire .playing-card:focus-visible {
+  outline-color: #fff4bd;
+  outline-offset: 2px;
+}
+[data-theme="classic"] button.stock-card.has-stock:not(.tile),
+[data-theme="classic"] .stock-pile.revealed-on-stock::before {
+  background:
+    repeating-linear-gradient(45deg, transparent 0 3px, #8cc4ec44 3px 4px),
+    repeating-linear-gradient(-45deg, transparent 0 3px, #8cc4ec44 3px 4px),
+    #12579a;
+  outline-color: #164676;
+  box-shadow: 2px 2px var(--paper), 3px 3px #164676, 4px 4px var(--paper), 5px 5px #164676;
+}
