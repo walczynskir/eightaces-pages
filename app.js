@@ -23,7 +23,7 @@
     hi: 'उष्णकटिबंध', fr: 'Tropiques', ar: 'المناطق الاستوائية', it: 'Tropici', uk: 'Тропіки'
   };
   const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels };
-  const prefs = { language: 'pl', theme: 'garden', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
+  const prefs = { language: 'pl', theme: 'classic', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
   let wins = 0;
   let rewarded = false;
@@ -46,7 +46,7 @@
   state ??= engine.deal(prefs);
   state.kingsOnly = prefs.kingsOnly;
   const themeLocked = theme => wins < (rewardWins[theme] ?? 0);
-  if (themeLocked(prefs.theme) || !Object.hasOwn(themes, prefs.theme)) prefs.theme = 'garden';
+  if (themeLocked(prefs.theme) || !Object.hasOwn(themes, prefs.theme)) prefs.theme = 'classic';
   const newGameLabels = ['Nowy pasjans', 'New solitaire', 'Nuevo solitario', 'Neue Patience',
     '新接龙', 'नया सॉलिटेयर', 'Nouveau solitaire', 'سوليتير جديد', 'Nuovo solitario', 'Новий пасьянс'];
 
