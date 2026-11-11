@@ -6,7 +6,13 @@
   const themes = {
     porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
-    copper: 'Copper', 'night-sky': 'Night sky'
+    copper: 'Copper', 'night-sky': 'Night sky', garden: 'Garden'
+  };
+  const gardenLabels = {
+    pl: 'Ogród (eksperyment)', en: 'Garden (experimental)', es: 'Jardín (experimental)',
+    de: 'Garten (experimentell)', 'zh-Hans': '花园（实验）', hi: 'बगीचा (प्रयोगात्मक)',
+    fr: 'Jardin (expérimental)', ar: 'الحديقة (تجريبي)', it: 'Giardino (sperimentale)',
+    uk: 'Сад (експеримент)'
   };
   const prefs = { language: 'pl', theme: 'porcelain', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
   const rewardWins = { copper: 3, 'night-sky': 10 };
@@ -170,7 +176,10 @@
     const activeAction = document.activeElement?.dataset.action;
     const [undo, draw, , stock, drawn, waste, row, goal, empty, victory, instructions,
       nextRules, sameSuit, recycle] = solitaireStrings[prefs.language] ?? solitaireStrings.pl;
-    document.documentElement.dataset.theme = prefs.contrast ? 'contrast' : prefs.theme;
+    const garden = prefs.theme === 'garden' && !prefs.contrast;
+    const root = document.documentElement;
+    root.dataset.theme = prefs.contrast ? 'contrast' : garden ? 'sage' : prefs.theme;
+    root.classList.toggle('garden-theme', garden);
     document.body.classList.toggle('large', prefs.large);
     byId('contrast').textContent = prefs.language === 'pl' ? '◐ Kontrast' : tr('◐ Contrast');
     byId('contrast').setAttribute('aria-pressed', prefs.contrast);
@@ -185,7 +194,10 @@
     for (const option of byId('theme').options) {
       option.disabled = themeLocked(option.value);
       const progress = option.disabled ? ' · ' + wins + '/' + rewardWins[option.value] : '';
-      option.textContent = tr(themes[option.value]) + progress;
+      const label = option.value === 'garden'
+        ? gardenLabels[prefs.language] ?? gardenLabels.en
+        : tr(themes[option.value]);
+      option.textContent = label + progress;
     }
     byId('theme').value = prefs.theme;
     byId('undo').textContent = undo;

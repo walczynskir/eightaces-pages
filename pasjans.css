@@ -250,3 +250,31 @@ button[data-card="waste"] .card-rank { font-size: clamp(16px, 2.8vw, 30px); }
 button[data-card="waste"] .card-suit { font-size: clamp(18px, 3.1vw, 34px); }
 body.large button[data-card="waste"] .card-rank { font-size: clamp(17px, 3.2vw, 32px); }
 body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 36px); }
+
+.garden-theme {
+  --garden-background: linear-gradient(#17251738, #17251738), url("garden.webp") center / cover no-repeat;
+}
+.garden-theme body,
+.garden-theme .table-only .solitaire {
+  background: var(--garden-background) var(--bg);
+}
+.garden-theme body > :is(header, footer) {
+  background-color: var(--paper);
+}
+.garden-theme .game-toolbar button:not(.primary):not(:disabled) {
+  background-color: var(--paper);
+}
+.garden-theme .game-toolbar button:disabled {
+  background-color: var(--paper);
+  color: var(--muted);
+  opacity: 1;
+}
+.garden-theme .game {
+  background-color: var(--paper);
+}
+.garden-theme .solitaire-board {
+  background-color: var(--wash);
+}
+@media (max-width: 600px) and (orientation: portrait) {
+  .garden-theme body:not(.table-only) .solitaire { padding-block-start: 44px; }
+}
