@@ -19,9 +19,10 @@
   display: inline-grid;
   place-content: center;
   flex: none;
-  width: clamp(27px, 5vw, 64px);
-  min-height: 34px;
-  aspect-ratio: 5 / 7;
+  box-sizing: border-box;
+  width: var(--card-width);
+  height: max(var(--card-min-height, 34px), calc(var(--card-width) * 7 / 5));
+  min-height: 0;
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 5px;
@@ -60,7 +61,6 @@ button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offse
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
-.supply button { min-height: 44px; }
 #status { min-height: 1.55em; margin-block-end: 0; }
 @media (max-width: 520px) {
   .playing-card, button.playing-card:not(.tile) { font-size: 12px; }
@@ -71,11 +71,6 @@ button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offse
 }
 .card-row {
   --step: min(var(--card-spacing), calc((100% - var(--card-width)) / var(--covered-count)));
-}
-.solitaire-board .playing-card,
-.solitaire-board button.playing-card:not(.tile) {
-  width: var(--card-width);
-  height: max(34px, calc(var(--card-width) * 7 / 5));
 }
 .card-row .playing-card:not(:first-child) { margin-inline-start: calc(var(--step) - var(--card-width)); }
 .card-row .covered { overflow: hidden; white-space: nowrap; }
@@ -205,10 +200,8 @@ body.large .solitaire-board .playing-card .card-suit {
   margin-inline-start: 0;
 }
 @media (orientation: landscape) and (max-height: 520px) {
-  .table-only .solitaire-board {
-    --card-width: clamp(23px, 7.5vh, 38px);
-    padding: 4px;
-  }
+  .table-only .solitaire { --card-width: clamp(23px, 7.5vh, 38px); }
+  .table-only .solitaire-board { padding: 4px; }
   .table-only .card-rows, .table-only .goals { row-gap: 4px; }
   .table-only .game-toolbar { margin-block-end: 2px; }
   .table-only .solitaire > .game { padding-block: 4px; }
@@ -263,7 +256,7 @@ body.large .solitaire-board .playing-card .card-suit {
   background-color: var(--wash);
 }
 
-.card-row button.playing-card, button[data-card="waste"] { touch-action: manipulation; }
+.card-row button.playing-card, .supply button.playing-card { touch-action: manipulation; }
 
 /* Only the exposed waste card has room for larger markings. */
 button[data-card="waste"] .card-rank { font-size: clamp(16px, 2.8vw, 30px); }
@@ -332,6 +325,7 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
 @media (max-width: 600px) and (orientation: portrait) {
   body:not(.table-only) .solitaire {
     --card-width: clamp(27px, 5vw, 64px);
+    --card-min-height: 44px;
     --portrait-card-spacing: 24px;
     --portrait-rank: clamp(16px, 2.8vw, 30px);
     --portrait-suit: clamp(18px, 3.1vw, 34px);
@@ -349,9 +343,6 @@ body.large button[data-card="waste"] .card-suit { font-size: clamp(20px, 3.5vw, 
   }
   body:not(.table-only) .card-row .covered {
     --visible-edge: min(var(--card-spacing), (100cqi - var(--card-width)) / var(--covered-count));
-  }
-  body:not(.table-only) .solitaire-board .playing-card {
-    min-height: 44px;
   }
   body:not(.table-only) .solitaire-board .playing-card .card-rank,
   body.large:not(.table-only) .solitaire-board .playing-card .card-rank {

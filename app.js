@@ -122,7 +122,9 @@
     const previousTap = lastCollectTap;
     lastCollectTap = undefined;
     const card = engine.top(engine.pile(state, ref));
-    const collectTap = event.detail > 0 && (ref.group === 'rows' || ref.group === 'waste') && !ref.count && card !== undefined;
+    const canCollect = ref.group === 'rows' || ref.group === 'waste'
+      || (ref.group === 'drawn' && engine.rank(card) === 1);
+    const collectTap = event.detail > 0 && canCollect && !ref.count && card !== undefined;
     const now = performance.now();
     if (collectTap && previousTap?.key === refKey(ref) && previousTap.card === card && now - previousTap.time <= 400) {
       const rtl = document.documentElement.dir === 'rtl';

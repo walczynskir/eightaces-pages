@@ -217,12 +217,43 @@
     return true;
   }
 
+  function aceFoundation(state, from, rtl) {
+    const aceSuit = suit(top(pile(state, from)));
+    const occupied = state.goals.map(cards => cards.length ? suit(cards[0]) : undefined);
+    let best;
+    let bestScore = -1;
+
+    // Each row holds both aces of one suit. Try both color orders and both
+    // suit orders within each color, retaining as many existing piles as possible.
+    for (const firstColor of [0, 1]) {
+      for (const firstSuit of [firstColor, firstColor + 2]) {
+        const otherColor = 1 - firstColor;
+        for (const secondSuit of [otherColor, otherColor + 2]) {
+          const rowSuits = [firstSuit, secondSuit, (firstSuit + 2) % 4, (secondSuit + 2) % 4];
+          const left = 2 * rowSuits.indexOf(aceSuit) + (rtl ? 1 : 0);
+          const index = occupied[left] === undefined ? left : left ^ 1;
+          if (occupied[index] !== undefined) continue;
+          const score = occupied.reduce((total, existing, slot) =>
+            total + Number(existing === rowSuits[Math.floor(slot / 2)]), 0);
+          if (score > bestScore || (score === bestScore && index < best)) {
+            best = index;
+            bestScore = score;
+          }
+        }
+      }
+    }
+    return best === undefined ? undefined : { group: 'goals', index: best };
+  }
+
   function collectToFoundation(state, from, rtl = false) {
-    if (from.group !== 'rows' && from.group !== 'waste') return false;
+    const card = top(pile(state, from));
+    const isAce = rank(card) === 1;
+    if (from.group !== 'rows' && from.group !== 'waste' && !(from.group === 'drawn' && isAce)) return false;
     // The two visible columns contain alternating foundation indices.
     const first = rtl ? 1 : 0;
     const targets = state.goals.map((_, index) => ({ group: 'goals', index }));
-    const to = targets.find(target => target.index % 2 === first && canMove(state, from, target))
+    const preferred = isAce ? aceFoundation(state, from, rtl) : undefined;
+    const to = preferred ?? targets.find(target => target.index % 2 === first && canMove(state, from, target))
       ?? targets.find(target => canMove(state, from, target));
     if (!to) return false;
     move(state, from, to);
