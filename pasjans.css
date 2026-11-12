@@ -200,17 +200,30 @@ body.large .solitaire-board .playing-card .card-suit {
   margin-inline-start: 0;
 }
 @media (orientation: landscape) and (max-height: 520px) {
-  .table-only .solitaire { --card-width: clamp(23px, 7.5vh, 38px); }
+  .table-only .solitaire {
+    /* Reserve room for the controls, status and pile counters before sizing five card heights. */
+    --card-space: calc(100dvh - 126px - max(4px, env(safe-area-inset-top)) - max(4px, env(safe-area-inset-bottom)));
+    --card-width: clamp(23px, calc(var(--card-space) / 7), 56px);
+  }
   .table-only .solitaire-board { padding: 4px; }
   .table-only .card-rows, .table-only .goals { row-gap: 4px; }
   .table-only .game-toolbar { margin-block-end: 2px; }
-  .table-only .solitaire > .game { padding-block: 4px; }
+  .table-only .solitaire > .game { padding-block: 4px !important; }
   .table-only .supply { margin-block-start: 2px; }
   .table-only #status {
     margin-block-start: 3px;
     padding-block: 4px;
   }
-  .table-only .supply-count { line-height: 1.15; }
+  .table-only .supply-slot:has(.supply-count) {
+    position: relative;
+    padding-inline-end: 2.75rem;
+  }
+  .table-only .supply-count {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    line-height: 1.15;
+  }
 }
 
 @media (min-width: 850px) and (min-height: 560px) and (pointer: fine) {
