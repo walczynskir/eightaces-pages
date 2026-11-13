@@ -435,3 +435,36 @@ body.large button[data-card="waste"] .card-suit { font-size: min(clamp(20px, 3.5
     background: var(--scenic-background) var(--bg);
   }
 }
+
+.tangerine-grove-theme body,
+.tangerine-grove-theme .table-only .solitaire {
+  background: linear-gradient(90deg, transparent, #14220c38 28% 72%, transparent), url("orange-grove.webp") center / cover no-repeat fixed #19240d;
+}
+.tangerine-grove-theme body > footer {
+  background: var(--paper);
+}
+.tangerine-grove-theme .solitaire > .game,
+.tangerine-grove-theme .solitaire-board {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.tangerine-grove-theme .game-toolbar button:not(.primary) {
+  background: var(--paper);
+}
+.tangerine-grove-theme .supply {
+  background: transparent;
+  color: #fff2d5;
+  text-shadow: 0 1px 3px #17220e, 0 0 6px #17220e;
+}
+.tangerine-grove-theme .playing-card.empty {
+  border-color: #fff2d5;
+  color: #fff2d5;
+}
+@media (max-width: 600px) {
+  .tangerine-grove-theme body:not(.table-only) {
+    background: linear-gradient(90deg, transparent, #19240d55 30% 70%, transparent),
+      linear-gradient(to bottom, transparent 68%, #19240d) center 110px / 100% calc(100vw * 2 / 3) no-repeat,
+      url("orange-grove.webp") center 110px / 100% auto no-repeat #19240d;
+  }
+}

@@ -4,9 +4,9 @@
   const byId = id => document.getElementById(id);
   const key = 'pasjans.v1';
   const themes = {
-    garden: 'Garden', classic: 'Classic', tropics: 'Tropics', beach: 'Beach', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
+    classic: 'Classic', garden: 'Garden', tropics: 'Tropics', beach: 'Beach', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
-    copper: 'Copper', 'night-sky': 'Night sky'
+    copper: 'Copper', 'night-sky': 'Night sky', 'tangerine-grove': 'Orange Grove'
   };
   const gardenLabels = {
     pl: 'Ogród', en: 'Garden', es: 'Jardín',
@@ -26,9 +26,26 @@
     pl: 'Plaża', en: 'Beach', es: 'Playa', de: 'Strand', 'zh-Hans': '海滩',
     hi: 'समुद्र तट', fr: 'Plage', ar: 'الشاطئ', it: 'Spiaggia', uk: 'Пляж'
   };
-  const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels, beach: beachLabels };
+  const groveLabels = {
+    pl: 'Pomarańczowy gaj', en: 'Orange Grove', es: 'Mandarinal', de: 'Mandarinenhain', 'zh-Hans': '橘子林',
+    hi: 'संतरों का बाग', fr: 'Verger de mandariniers', ar: 'بستان اليوسفي', it: 'Mandarineto', uk: 'Мандариновий гай'
+  };
+  const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels, beach: beachLabels, 'tangerine-grove': groveLabels };
+  const featuredThemes = ['classic', 'garden', 'tropics', 'beach'];
+  const themeGroupLabels = {
+    pl: ['Więcej motywów', 'Motywy za osiągnięcia'],
+    en: ['More themes', 'Achievement themes'],
+    es: ['Más temas', 'Temas por logros'],
+    de: ['Weitere Designs', 'Designs für Erfolge'],
+    'zh-Hans': ['更多主题', '成就主题'],
+    hi: ['और थीम', 'उपलब्धि थीम'],
+    fr: ['Autres thèmes', 'Thèmes de récompense'],
+    ar: ['المزيد من السمات', 'سمات الإنجازات'],
+    it: ['Altri temi', 'Temi per i traguardi'],
+    uk: ['Більше тем', 'Теми за досягнення'],
+  };
   const prefs = { language: 'pl', theme: 'classic', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
-  const rewardWins = { copper: 3, 'night-sky': 10 };
+  const rewardWins = { copper: 3, 'night-sky': 10, 'tangerine-grove': 3 };
   let wins = 0;
   let rewarded = false;
   let state;
@@ -192,8 +209,10 @@
     const [undo, draw, , stock, drawn, waste, row, goal, empty, victory, instructions,
       nextRules, sameSuit, recycle] = solitaireStrings[prefs.language] ?? solitaireStrings.pl;
     const garden = prefs.theme === 'garden' && !prefs.contrast;
+    const grove = prefs.theme === 'tangerine-grove' && !prefs.contrast;
     const root = document.documentElement;
-    root.dataset.theme = prefs.contrast ? 'contrast' : garden ? 'sage' : prefs.theme;
+    root.dataset.theme = prefs.contrast ? 'contrast' : garden ? 'sage' : grove ? 'tangerine' : prefs.theme;
+    root.classList.toggle('tangerine-grove-theme', grove);
     root.classList.toggle('garden-theme', garden);
     document.body.classList.toggle('large', prefs.large);
     byId('contrast').textContent = prefs.language === 'pl' ? '◐ Kontrast' : tr('◐ Contrast');
@@ -206,14 +225,17 @@
     byId('new-game').textContent = newGameLabels[i18n.languages.indexOf(prefs.language)] ?? newGameLabels[0];
     byId('language-label').textContent = tr('Language');
     byId('theme-label').textContent = tr('Appearance');
-    for (const option of byId('theme').options) {
+    const [moreLabel, rewardsLabel] = themeGroupLabels[prefs.language] ?? themeGroupLabels.en;
+    moreThemes.label = moreLabel;
+    rewardThemes.label = rewardsLabel;
+    for (const option of themeSelect.options) {
       option.disabled = themeLocked(option.value);
       const progress = option.disabled ? ' · ' + wins + '/' + rewardWins[option.value] : '';
       const labels = customThemeLabels[option.value];
       const label = labels ? labels[prefs.language] ?? labels.en : tr(themes[option.value]);
       option.textContent = label + progress;
     }
-    byId('theme').value = prefs.theme;
+    themeSelect.value = prefs.theme;
     byId('undo').querySelector('.history-label').textContent = undo;
     byId('undo').setAttribute('aria-label', undo);
     byId('undo').title = undo;
@@ -329,12 +351,18 @@
 
   i18n.addLanguages(byId('language'));
   byId('language').value = prefs.language;
+  const themeSelect = byId('theme');
+  const moreThemes = document.createElement('optgroup');
+  const rewardThemes = document.createElement('optgroup');
   for (const value of Object.keys(themes)) {
     const option = document.createElement('option');
     option.value = value;
     option.translate = false;
-    byId('theme').append(option);
+    const group = featuredThemes.includes(value) ? themeSelect
+      : Object.hasOwn(rewardWins, value) ? rewardThemes : moreThemes;
+    group.append(option);
   }
+  themeSelect.append(moreThemes, rewardThemes);
   for (const name of ['language', 'theme', 'large', 'sameSuit', 'recycle', 'kingsOnly', 'showCounts', 'showUndo']) {
     const control = byId(name);
     if (control.type === 'checkbox') control.checked = prefs[name];
