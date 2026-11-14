@@ -75,10 +75,10 @@
     const achievement = byId('gallery-rewards');
     ordinary.replaceChildren();
     achievement.replaceChildren();
-    const galleryThemes = Object.keys(themes)
+    const extraThemes = Object.keys(themes)
       .filter(value => !featuredThemes.includes(value))
       .sort((left, right) => (rewardWins[left] ?? 0) - (rewardWins[right] ?? 0));
-    for (const value of galleryThemes) {
+    for (const value of [...featuredThemes, ...extraThemes]) {
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.type = 'button';
@@ -88,7 +88,7 @@
       thumbnail.className = 'theme-thumbnail';
       thumbnail.setAttribute('aria-hidden', 'true');
       const frame = document.createElement('iframe');
-      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.4.2' });
+      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.4.3' });
       frame.title = themeName(value);
       frame.setAttribute('scrolling', 'no');
       frame.tabIndex = -1;
