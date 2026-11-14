@@ -7,7 +7,7 @@
   const themes = {
     classic: 'Classic', garden: 'Garden', tropics: 'Tropics', beach: 'Beach', porcelain: 'Porcelain', ink: 'Ink & paper', sage: 'Sage', studio: 'Studio',
     forma: 'Forma', energy: 'Energy', tangerine: 'Tangerine', ukraine: 'Ukraine',
-    copper: 'Copper', 'night-sky': 'Navy', 'starry-sky': 'Night sky', 'orange-grove': 'Orange Grove'
+    copper: 'Copper', 'night-sky': 'Navy', 'starry-sky': 'Night sky', andromeda: 'Andromeda', 'orange-grove': 'Orange Grove'
   };
   const gardenLabels = {
     pl: 'Ogród', en: 'Garden', es: 'Jardín',
@@ -30,7 +30,7 @@
   const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels, beach: beachLabels };
   const featuredThemes = ['classic', 'garden', 'tropics', 'beach'];
   const prefs = { language: 'pl', theme: 'classic', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
-  const rewardWins = { 'orange-grove': 3, copper: 5, 'starry-sky': 10 };
+  const rewardWins = { 'orange-grove': 3, copper: 5, 'starry-sky': 10, andromeda: 10 };
   const gallery = byId('theme-gallery');
   const galleryCopy = {
     pl: ['Więcej motywów…', 'Za osiągnięcia', 'Zamknij', 'Pomarańczowy gaj', 'wygranych', 'Zablokowany', 'Aktywny'],
@@ -51,7 +51,16 @@
         it: 'Blu navy', uk: 'Темно-синій', ar: 'أزرق داكن', hi: 'गहरा नीला', 'zh-Hans': '藏青色' };
       return navy[prefs.language] ?? 'Navy';
     }
-    if (value === 'starry-sky') return tr('Night sky');
+    if (value === 'starry-sky' || value === 'andromeda') {
+      const variants = {
+        pl: ['Droga Mleczna', 'Andromeda'], en: ['Milky Way', 'Andromeda'],
+        de: ['Milchstraße', 'Andromeda'], es: ['Vía Láctea', 'Andrómeda'],
+        fr: ['Voie lactée', 'Andromède'], it: ['Via Lattea', 'Andromeda'],
+        uk: ['Чумацький Шлях', 'Андромеда'], ar: ['درب التبانة', 'أندروميدا'],
+        hi: ['आकाशगंगा', 'एंड्रोमेडा'], 'zh-Hans': ['银河', '仙女座']
+      };
+      return tr('Night sky') + ' – ' + (variants[prefs.language] ?? variants.en)[Number(value === 'andromeda')];
+    }
     if (value === 'orange-grove') return galleryLabels()[3];
     const labels = customThemeLabels[value];
     return labels ? labels[prefs.language] ?? labels.en : tr(themes[value]);
@@ -84,7 +93,7 @@
       thumbnail.className = 'theme-thumbnail';
       thumbnail.setAttribute('aria-hidden', 'true');
       const frame = document.createElement('iframe');
-      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.3.0' });
+      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.4.0' });
       frame.title = themeName(value);
       frame.setAttribute('scrolling', 'no');
       frame.tabIndex = -1;
@@ -297,7 +306,7 @@
     const garden = prefs.theme === 'garden' && !prefs.contrast;
     const grove = prefs.theme === 'orange-grove' && !prefs.contrast;
     const root = document.documentElement;
-    root.dataset.theme = prefs.contrast ? 'contrast' : garden ? 'sage' : grove ? 'tangerine' : prefs.theme === 'starry-sky' ? 'night-sky' : prefs.theme;
+    root.dataset.theme = prefs.contrast ? 'contrast' : garden ? 'sage' : grove ? 'tangerine' : ['starry-sky', 'andromeda'].includes(prefs.theme) ? 'night-sky' : prefs.theme;
     root.dataset.scenicReward = prefs.contrast ? '' : prefs.theme;
     root.classList.toggle('tangerine-grove-theme', grove);
     root.classList.toggle('garden-theme', garden);
