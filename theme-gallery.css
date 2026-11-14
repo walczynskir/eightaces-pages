@@ -90,18 +90,13 @@ html[data-scenic-reward="copper"] {
   --reward-light: radial-gradient(ellipse at 16% 16%, #ffb56818, transparent 55%);
 }
 html[data-scenic-reward="starry-sky"] {
-  --reward-image: url("milky-way-portrait.webp");
-  --reward-background: #131d33;
-  --reward-light: radial-gradient(ellipse at 18% 18%, #8caeff26, transparent 58%);
-}
-html[data-scenic-reward="andromeda"] {
   --reward-image: url("andromeda-portrait.webp");
   --reward-background: #131d33;
   --reward-light: radial-gradient(ellipse at 18% 18%, #8caeff26, transparent 58%);
   --reward-position: center 27%;
 }
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) body,
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) .table-only .solitaire {
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body,
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .table-only .solitaire {
   background-color: var(--reward-background);
   background-image: var(--reward-light), var(--reward-image);
   background-position: var(--reward-position, center);
@@ -110,29 +105,29 @@ html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-
   background-repeat: no-repeat;
   background-blend-mode: screen, normal;
 }
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) body > :is(header, footer),
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) .game-toolbar button {
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body > :is(header, footer),
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .game-toolbar button {
   background-color: var(--paper);
   color: var(--ink);
 }
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) :is(.solitaire > .game, .solitaire-board) {
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) :is(.solitaire > .game, .solitaire-board) {
   background: transparent;
   border-color: transparent;
   box-shadow: none;
 }
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) :is(.supply, .playing-card.empty) {
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) :is(.supply, .playing-card.empty) {
   color: #fff5e6;
 }
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) .playing-card.empty {
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .playing-card.empty {
   border-color: #fff5e6;
 }
 
 
 @media (max-width: 600px) and (orientation: portrait) {
-  html:is([data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) body:not(.table-only) {
+  html[data-scenic-reward="starry-sky"] body:not(.table-only) {
     background-image: none;
   }
-  html:is([data-scenic-reward="starry-sky"], [data-scenic-reward="andromeda"]) body:not(.table-only) .solitaire {
+  html[data-scenic-reward="starry-sky"] body:not(.table-only) .solitaire {
     background: var(--reward-image) center / 100% auto no-repeat var(--reward-background);
   }
 }
