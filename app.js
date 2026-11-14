@@ -88,7 +88,7 @@
       thumbnail.className = 'theme-thumbnail';
       thumbnail.setAttribute('aria-hidden', 'true');
       const frame = document.createElement('iframe');
-      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.4.3' });
+      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.4.4' });
       frame.title = themeName(value);
       frame.setAttribute('scrolling', 'no');
       frame.tabIndex = -1;
@@ -102,9 +102,9 @@
       button.append(name);
       if (rewardWins[value] || prefs.theme === value) {
         const details = document.createElement('small');
-        const threshold = rewardThreshold(value);
+        const threshold = rewardWins[value];
         details.textContent = threshold
-          ? Math.min(wins, threshold) + '/' + threshold + ' ' + winsLabel
+          ? (button.disabled ? wins + '/' : '') + threshold + ' ' + winsLabel
           : activeLabel;
         if (button.disabled) details.textContent += ' · ' + lockedLabel;
         button.append(details);
