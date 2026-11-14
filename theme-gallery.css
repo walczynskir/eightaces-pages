@@ -84,6 +84,14 @@ html[dir="rtl"] .theme-thumbnail iframe { inset: 0 auto auto 0; }
 }
 #theme-gallery .theme-grid button[aria-current] { border-color: var(--accent); }
 
+html[data-scenic-reward="copper"]:has(body.table-only),
+html[data-scenic-reward="copper"] body.table-only {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+html[data-scenic-reward="copper"] .table-only .solitaire {
+  overscroll-behavior: none;
+}
 html[data-scenic-reward="copper"] {
   --reward-image: url("copper-table.webp");
   --reward-background: #3a241d;
@@ -95,15 +103,17 @@ html[data-scenic-reward="starry-sky"] {
   --reward-light: radial-gradient(ellipse at 18% 18%, #8caeff26, transparent 58%);
   --reward-position: center 27%;
 }
-html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body,
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body:not(.table-only),
 html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .table-only .solitaire {
   background-color: var(--reward-background);
   background-image: var(--reward-light), var(--reward-image);
   background-position: var(--reward-position, center);
   background-size: cover;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   background-blend-mode: screen, normal;
+}
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body:not(.table-only) {
+  background-attachment: fixed;
 }
 html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body > :is(header, footer),
 html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .game-toolbar button {
