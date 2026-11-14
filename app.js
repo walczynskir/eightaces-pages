@@ -88,7 +88,7 @@
       thumbnail.className = 'theme-thumbnail';
       thumbnail.setAttribute('aria-hidden', 'true');
       const frame = document.createElement('iframe');
-      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.4.4' });
+      frame.src = '?' + new URLSearchParams({ miniatura: value, jezyk: prefs.language, rev: '1.5.2' });
       frame.title = themeName(value);
       frame.setAttribute('scrolling', 'no');
       frame.tabIndex = -1;
@@ -294,6 +294,25 @@
     return element;
   }
 
+  const scenicBarColors = {
+    classic: '#174b35',
+    garden: '#263a22',
+    tropics: '#184e77',
+    beach: '#07586a',
+    'orange-grove': '#ffab00',
+    copper: '#3a241d',
+    'starry-sky': '#131d33'
+  };
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  let renderedBarTheme;
+  function updateThemeColor(root) {
+    const theme = prefs.contrast ? 'contrast' : prefs.theme;
+    if (!themeColor || theme === renderedBarTheme) return;
+    const color = scenicBarColors[theme] ?? getComputedStyle(root).getPropertyValue('--bg').trim();
+    if (color) themeColor.content = color;
+    renderedBarTheme = theme;
+  }
+
   function render() {
     const activeCard = document.activeElement?.dataset.card;
     const activeAction = document.activeElement?.dataset.action;
@@ -306,6 +325,7 @@
     root.dataset.scenicReward = prefs.contrast ? '' : prefs.theme;
     root.classList.toggle('tangerine-grove-theme', grove);
     root.classList.toggle('garden-theme', garden);
+    updateThemeColor(root);
     document.body.classList.toggle('large', prefs.large);
     byId('contrast').textContent = prefs.language === 'pl' ? '◐ Kontrast' : tr('◐ Contrast');
     byId('contrast').setAttribute('aria-pressed', prefs.contrast);
