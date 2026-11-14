@@ -30,6 +30,7 @@
 
   function canMove(state, from, to) {
     if (from.group === "stock") return false;
+    if (from.group === "waste" && state.drawn.length) return false;
     const source = pile(state, from);
     const target = pile(state, to);
     const card = top(source);
@@ -254,8 +255,7 @@
     const preferred = isAce ? aceFoundation(state, from, rtl) : undefined;
     const to = preferred ?? targets.find(target => target.index % 2 === first && canMove(state, from, target))
       ?? targets.find(target => canMove(state, from, target));
-    if (!to) return false;
-    move(state, from, to);
+    if (!to || !move(state, from, to)) return false;
     if (from.group === 'rows') {
       while (move(state, from, to)) { /* Continue only on the same foundation. */ }
     }

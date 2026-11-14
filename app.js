@@ -415,7 +415,7 @@
     stockPile.classList.toggle('revealed-on-stock', drawnTop !== undefined && state.stock.length > 0);
     stockPile.append(stockCard);
     const wasteCard = cardNode(engine.top(state.waste), pileLabel(waste, state.waste.length), empty, wasteRef);
-    wasteCard.disabled = !state.waste.length && selected?.group !== 'drawn';
+    wasteCard.disabled = state.drawn.length ? selected?.group !== 'drawn' : !state.waste.length;
     byId('supply').replaceChildren(
       supplySlot(stockPile, state.stock.length),
       supplySlot(wasteCard, state.waste.length)
