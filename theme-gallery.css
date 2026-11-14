@@ -1,0 +1,122 @@
+body:has(#theme-gallery[open]) { overflow: hidden; }
+#theme-gallery {
+  box-sizing: border-box;
+  width: min(760px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.gallery-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.gallery-heading h2 { margin: 0; }
+.gallery-heading button { min-height: 44px; }
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 14px;
+  padding: 0;
+  list-style: none;
+}
+.theme-grid button {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+  text-align: start;
+  background: var(--paper);
+  color: var(--ink);
+}
+.theme-grid button:disabled { opacity: 1; color: var(--muted); }
+.theme-grid button[aria-current] { border: 2px solid var(--accent); }
+.theme-thumbnail {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 6px;
+  container-type: inline-size;
+  background: var(--wash);
+}
+.theme-thumbnail iframe {
+  position: absolute;
+  inset: 0;
+  width: 720px;
+  height: 450px;
+  border: 0;
+  pointer-events: none;
+  transform-origin: top left;
+  transform: scale(tan(atan2(100cqw, 720px)));
+}
+html[dir="rtl"] .theme-thumbnail iframe { inset: 0 auto auto 0; }
+.theme-thumbnail-page,
+.theme-thumbnail-page body {
+  overflow: hidden !important;
+  scrollbar-width: none;
+}
+.theme-thumbnail-page::-webkit-scrollbar,
+.theme-thumbnail-page body::-webkit-scrollbar { display: none; }
+.theme-thumbnail-page body > footer { display: none; }
+@media (max-width: 600px) {
+  .theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #theme-gallery {
+    inset: 0;
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    border: 0;
+  }
+}
+#theme-gallery .theme-grid button {
+  border-radius: 10px;
+  align-content: start;
+  border-color: transparent;
+}
+#theme-gallery .theme-grid button[aria-current] { border-color: var(--accent); }
+
+html[data-scenic-reward="copper"] {
+  --reward-image: url("copper-table.webp");
+  --reward-background: #3a241d;
+  --reward-light: radial-gradient(ellipse at 16% 16%, #ffb56818, transparent 55%);
+}
+html[data-scenic-reward="starry-sky"] {
+  --reward-image: url("starry-sky.webp");
+  --reward-background: #131d33;
+  --reward-light: radial-gradient(ellipse at 18% 18%, #8caeff26, transparent 58%);
+}
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body,
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .table-only .solitaire {
+  background-color: var(--reward-background);
+  background-image: var(--reward-light), var(--reward-image);
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-blend-mode: screen, normal;
+}
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) body > :is(header, footer),
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .game-toolbar button {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) :is(.solitaire > .game, .solitaire-board) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) :is(.supply, .playing-card.empty) {
+  color: #fff5e6;
+}
+html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .playing-card.empty {
+  border-color: #fff5e6;
+}
