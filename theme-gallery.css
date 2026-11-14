@@ -124,10 +124,21 @@ html:is([data-scenic-reward="copper"], [data-scenic-reward="starry-sky"]) .playi
 
 
 @media (max-width: 600px) and (orientation: portrait) {
-  html[data-scenic-reward="starry-sky"] body:not(.table-only) {
+  html[data-scenic-reward="copper"] {
+    --reward-image: url("copper-portrait.webp");
+  }
+  html:is([data-scenic-reward="starry-sky"], [data-scenic-reward="copper"]) body:not(.table-only) {
     background-image: none;
   }
-  html[data-scenic-reward="starry-sky"] body:not(.table-only) .solitaire {
+  html:is([data-scenic-reward="starry-sky"], [data-scenic-reward="copper"]) body:not(.table-only) .solitaire {
     background: var(--reward-image) center / 100% auto no-repeat var(--reward-background);
+  }
+  html[data-scenic-reward="copper"] .solitaire {
+    background-position: center top;
+    background-size: 100% auto;
+  }
+  html[data-scenic-reward="copper"] body:not(.table-only) .solitaire {
+    background-position: center top;
+    padding-block-start: clamp(24px, 9vw, 52px);
   }
 }
