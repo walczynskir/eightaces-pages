@@ -246,9 +246,8 @@
   }
 
   function collectToFoundation(state, from, rtl = false) {
-    const card = top(pile(state, from));
-    const isAce = rank(card) === 1;
-    if (from.group !== 'rows' && from.group !== 'waste' && !(from.group === 'drawn' && isAce)) return false;
+    if (from.group !== 'rows' && from.group !== 'waste' && from.group !== 'drawn') return false;
+    const isAce = rank(top(pile(state, from))) === 1;
     // The two visible columns contain alternating foundation indices.
     const first = rtl ? 1 : 0;
     const targets = state.goals.map((_, index) => ({ group: 'goals', index }));
