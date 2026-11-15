@@ -35,6 +35,7 @@
 .card-row .playing-card { margin-inline-start: calc(-1 * var(--overlap, 0px)); }
 .card-row .playing-card:first-child { margin-inline-start: 0; }
 
+.solitaire-board button.playing-card:disabled { opacity: 1; }
 button.playing-card.empty { background: transparent; border-style: dashed; }
 button.playing-card.red:not(.tile), .playing-card.red { color: #a21832; }
 [data-theme="contrast"] .playing-card.red:not(.tile) { color: #830019; }
