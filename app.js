@@ -167,10 +167,12 @@
   const tr = text => i18n.text(text, prefs.language);
   const refKey = ref => ref.group + (ref.index ?? '') + (ref.count > 1 ? '-' + ref.count : '');
 
+  const serializeSave = () => JSON.stringify({ prefs, state, history, future, wins, rewarded, legacyCopper });
+
   function save() {
     if (thumbnailTheme) return;
     try {
-      localStorage.setItem(key, JSON.stringify({ prefs, state, history, future, wins, rewarded, legacyCopper }));
+      localStorage.setItem(key, serializeSave());
       saved = true;
     } catch { saved = false; }
   }
@@ -538,7 +540,104 @@
       button.setAttribute('aria-expanded', String(!description.hidden));
     };
   }
-  byId('settings-button').onclick = () => byId('settings').showModal();
+  const backupLabels = {
+    pl: ['Eksportuj zapis', 'Importuj zapis', 'Zastąp zapis', 'Plik jest gotowy. Zastąpi bieżącą partię, ustawienia i postęp.', 'Nie udało się odczytać poprawnego zapisu Ośmiu Asów.', 'Nie udało się zapisać danych na urządzeniu.'],
+    en: ['Export save', 'Import save', 'Replace save', 'The file is ready. It will replace your current game, settings and progress.', 'Could not read a valid Eight Aces save.', 'Could not save the data on this device.'],
+    es: ['Exportar partida', 'Importar partida', 'Reemplazar partida', 'El archivo está listo. Reemplazará la partida, los ajustes y el progreso actuales.', 'El archivo no contiene un guardado válido de Ocho Ases.', 'No se pudieron guardar los datos en el dispositivo.'],
+    de: ['Spielstand exportieren', 'Spielstand importieren', 'Spielstand ersetzen', 'Die Datei ist bereit. Sie ersetzt Partie, Einstellungen und Fortschritt.', 'Die Datei enthält keinen gültigen Spielstand für Acht Asse.', 'Die Daten konnten nicht auf dem Gerät gespeichert werden.'],
+    'zh-Hans': ['导出存档', '导入存档', '替换存档', '文件已就绪，将替换当前牌局、设置和进度。', '无法读取有效的八张王牌存档。', '无法在此设备上保存数据。'],
+    hi: ['सेव निर्यात करें', 'सेव आयात करें', 'सेव बदलें', 'फ़ाइल तैयार है। यह मौजूदा खेल, सेटिंग और प्रगति बदल देगी।', 'मान्य एट एसेस सेव पढ़ा नहीं जा सका।', 'इस डिवाइस पर डेटा सेव नहीं हो सका।'],
+    fr: ['Exporter la sauvegarde', 'Importer la sauvegarde', 'Remplacer la sauvegarde', 'Le fichier est prêt. Il remplacera la partie, les réglages et la progression.', 'Impossible de lire une sauvegarde valide de Huit As.', 'Impossible d’enregistrer les données sur cet appareil.'],
+    ar: ['تصدير الحفظ', 'استيراد الحفظ', 'استبدال الحفظ', 'الملف جاهز وسيستبدل اللعبة والإعدادات والتقدم الحالي.', 'تعذّرت قراءة ملف حفظ صالح للعبة الآسات الثمانية.', 'تعذّر حفظ البيانات على هذا الجهاز.'],
+    it: ['Esporta salvataggio', 'Importa salvataggio', 'Sostituisci salvataggio', 'Il file è pronto. Sostituirà partita, impostazioni e progressi attuali.', 'Impossibile leggere un salvataggio valido di Otto Assi.', 'Impossibile salvare i dati sul dispositivo.'],
+    uk: ['Експортувати збереження', 'Імпортувати збереження', 'Замінити збереження', 'Файл готовий. Він замінить поточну партію, налаштування й прогрес.', 'Не вдалося прочитати дійсне збереження «Вісім тузів».', 'Не вдалося зберегти дані на цьому пристрої.']
+  };
+  const backupCopy = () => backupLabels[prefs.language] ?? backupLabels.en;
+  const settings = byId('settings');
+  const saveFile = byId('save-file');
+  const restore = byId('restore-save');
+  const status = byId('backup-status');
+  let pendingSave;
+
+  function validDeal(deal) {
+    if (deal?.rows?.length !== 8 || deal?.goals?.length !== 8
+      || !Array.isArray(deal.rows) || !Array.isArray(deal.goals)) return false;
+    const piles = [...deal.rows, ...deal.goals, deal.stock, deal.drawn, deal.waste];
+    if (!piles.every(Array.isArray) || deal.drawn.length > 1) return false;
+    const cards = piles.flat();
+    return cards.length === 104 && new Set(cards).size === 104
+      && cards.every(card => Number.isInteger(card) && card >= 0 && card < 104)
+      && deal.goals.every(pile => pile.every((card, index) =>
+        engine.rank(card) === index + 1 && engine.suit(card) === engine.suit(pile[0])));
+  }
+
+  function readBackup(value) {
+    if (!validDeal(value?.state) || !Number.isSafeInteger(value.wins) || value.wins < 0) throw Error('Invalid save');
+    const { history = [], future = [] } = value;
+    if (![history, future].every(list => Array.isArray(list) && list.every(validDeal))) throw Error('Invalid history');
+    const preferences = {};
+    for (const [name, current] of Object.entries(prefs)) {
+      const candidate = value.prefs?.[name];
+      if (typeof candidate === typeof current) preferences[name] = candidate;
+    }
+    if (!i18n.languages.includes(preferences.language)) preferences.language = 'pl';
+    return JSON.stringify({
+      prefs: preferences, state: value.state, history, future, wins: value.wins,
+      rewarded: value.rewarded === true, legacyCopper: value.legacyCopper ?? value.wins >= 3
+    });
+  }
+
+  byId('export-save').onclick = () => {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([serializeSave()], { type: 'application/json' }));
+    link.download = 'osiem-asow-zapis.json';
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 30_000);
+  };
+  byId('import-save').onclick = () => saveFile.click();
+  saveFile.onchange = async () => {
+    const [file] = saveFile.files;
+    saveFile.value = '';
+    if (!file) return;
+    pendingSave = undefined;
+    restore.hidden = true;
+    byId('import-save').disabled = true;
+    try {
+      const backup = readBackup(JSON.parse(await file.text()));
+      if (!settings.open) return;
+      pendingSave = backup;
+      restore.hidden = false;
+      status.textContent = backupCopy()[3];
+    } catch {
+      status.textContent = backupCopy()[4];
+    } finally {
+      byId('import-save').disabled = false;
+    }
+  };
+  restore.onclick = () => {
+    if (!pendingSave) return;
+    try {
+      localStorage.setItem(key, pendingSave);
+    } catch {
+      status.textContent = backupCopy()[5];
+      return;
+    }
+    location.reload();
+  };
+  settings.addEventListener('close', () => {
+    pendingSave = undefined;
+    restore.hidden = true;
+    status.textContent = '';
+  });
+  byId('settings-button').onclick = () => {
+    const [exportLabel, importLabel, restoreLabel] = backupCopy();
+    byId('export-save').textContent = exportLabel;
+    byId('import-save').textContent = importLabel;
+    restore.textContent = restoreLabel;
+    settings.showModal();
+  };
   const fullscreenButton = byId('fullscreen');
   const tableOnly = open => {
     document.body.classList.toggle('table-only', open);
