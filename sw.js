@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.5.3';
+const cacheName = cachePrefix + '1.5.4';
 const scope = self.registration.scope;
 const assetNames = [
   'index.html', 'credits.html', 'version.json', 'manifest.webmanifest',

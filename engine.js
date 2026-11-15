@@ -30,7 +30,7 @@
 
   function canMove(state, from, to) {
     if (from.group === "stock") return false;
-    if (from.group === "waste" && state.drawn.length) return false;
+    if (state.drawn.length && from.group !== "drawn") return false;
     const source = pile(state, from);
     const target = pile(state, to);
     const card = top(source);
@@ -174,6 +174,7 @@
   }
 
   function selectionPlan(state, from, to) {
+    if (state.drawn.length && from.group !== "drawn") return [];
     const count = from.count ?? 1;
     if (count === 1) return canMove(state, from, to) ? [{ from, to }] : [];
     if (from.group !== 'rows' || to.group !== 'rows' || from.index === to.index) return [];
@@ -289,8 +290,7 @@
   }
 
   function draw(state) {
-    if (!state.stock.length && (!state.recycle || !state.waste.length)) return false;
-    if (state.drawn.length) state.waste.push(state.drawn.pop());
+    if (state.drawn.length || (!state.stock.length && (!state.recycle || !state.waste.length))) return false;
     if (!state.stock.length) state.stock = state.waste.splice(0).reverse();
     state.drawn.push(state.stock.pop());
     return true;

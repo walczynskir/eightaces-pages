@@ -128,6 +128,7 @@
   let history = [];
   let future = [];
   let selected;
+  const drawnRef = { group: 'drawn' };
   let saved = true;
   try {
     const stored = thumbnailTheme ? null : JSON.parse(localStorage.getItem(key));
@@ -244,6 +245,7 @@
       return;
     }
     if (collectTap) lastCollectTap = { key: refKey(ref), card, time: now };
+    if (state.drawn.length) return;
     selected = engine.pile(state, ref).length && refKey(ref) !== (selected && refKey(selected))
       ? ref : undefined;
     render();
@@ -283,7 +285,9 @@
       element.setAttribute('aria-label', label + ' · ' + (face || empty));
       element.setAttribute('aria-pressed', active);
       element.classList.toggle('selected', active);
-      element.classList.toggle('legal', Boolean(!ref.count && selected && engine.canMoveSelection(state, selected, ref)));
+      const legal = Boolean(!ref.count && selected && engine.canMoveSelection(state, selected, ref));
+      element.classList.toggle('legal', legal);
+      if (state.drawn.length && ref.group !== 'drawn') element.disabled = !legal;
     }
     return element;
   }
@@ -314,6 +318,7 @@
   }
 
   function render() {
+    if (state.drawn.length) selected = drawnRef;
     const activeCard = document.activeElement?.dataset.card;
     const activeAction = document.activeElement?.dataset.action;
     const [undo, draw, , stock, drawn, waste, row, goal, empty, victory, instructions,
@@ -395,7 +400,6 @@
       return slot;
     }
     const canDraw = state.stock.length || (state.recycle && state.waste.length);
-    const drawnRef = { group: 'drawn' };
     const wasteRef = { group: 'waste' };
     const drawnTop = engine.top(state.drawn);
     const stockCard = drawnTop === undefined
@@ -415,7 +419,7 @@
     stockPile.classList.toggle('revealed-on-stock', drawnTop !== undefined && state.stock.length > 0);
     stockPile.append(stockCard);
     const wasteCard = cardNode(engine.top(state.waste), pileLabel(waste, state.waste.length), empty, wasteRef);
-    wasteCard.disabled = state.drawn.length ? selected?.group !== 'drawn' : !state.waste.length;
+    wasteCard.disabled = !state.drawn.length && !state.waste.length;
     byId('supply').replaceChildren(
       supplySlot(stockPile, state.stock.length),
       supplySlot(wasteCard, state.waste.length)
@@ -426,7 +430,7 @@
     state.rows.forEach((pile, index) => {
       const line = section('card-row');
       line.style.setProperty('--covered-count', Math.max(1, pile.length - 1));
-      const movable = engine.sequenceLength(state, index);
+      const movable = state.drawn.length ? 1 : engine.sequenceLength(state, index);
       for (let position = 0; position < pile.length - 1; position++) {
         const count = pile.length - position;
         const ref = count <= movable ? { group: 'rows', index, count } : undefined;
