@@ -36,7 +36,7 @@
     <p id="status" role="status"></p>
   </section>
 </main>
-<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v1.6.0</span><span id="save-note"></span>
+<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v1.6.1</span><span id="save-note"></span>
 <nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div><a class="all-games" href="https://games-chest.com/">Wszystkie gry</a></nav>
 </footer>
 <dialog id="theme-gallery" aria-labelledby="gallery-title" translate="no">
@@ -102,9 +102,19 @@
       <button type="button" id="import-save"></button>
       <input type="file" id="save-file" accept=".json,application/json" hidden>
       <p id="backup-status" role="status"></p>
-      <button type="button" id="restore-save" hidden></button>
     </div>
     <button class="primary">Done</button>
+  </form>
+</dialog>
+<dialog id="confirm-import" aria-labelledby="import-title" aria-describedby="import-description" translate="no">
+  <form method="dialog">
+    <h2 id="import-title"></h2>
+    <p id="import-description"></p>
+    <p id="import-error" role="status" hidden></p>
+    <div class="game-tools">
+      <button id="cancel-import" autofocus></button>
+      <button type="button" class="primary" id="restore-save"></button>
+    </div>
   </form>
 </dialog>
 <dialog id="help" aria-labelledby="help-title">
@@ -121,7 +131,7 @@
 <script src="strings.js?v=king-live-1"></script>
 <script src="shared-victory.js?v=5"></script>
 <script src="game-help.js?v=row-collect-1"></script>
-<script src="app.js?v=1.6.0"></script>
+<script src="app.js?v=1.6.1"></script>
 <script>
   if (window === window.top && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline setup failed", error));

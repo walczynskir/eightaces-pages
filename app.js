@@ -541,21 +541,23 @@
     };
   }
   const backupLabels = {
-    pl: ['Eksportuj zapis', 'Importuj zapis', 'Zastąp zapis', 'Plik jest gotowy. Zastąpi bieżącą partię, ustawienia i postęp.', 'Nie udało się odczytać poprawnego zapisu Ośmiu Asów.', 'Nie udało się zapisać danych na urządzeniu.'],
-    en: ['Export save', 'Import save', 'Replace save', 'The file is ready. It will replace your current game, settings and progress.', 'Could not read a valid Eight Aces save.', 'Could not save the data on this device.'],
-    es: ['Exportar partida', 'Importar partida', 'Reemplazar partida', 'El archivo está listo. Reemplazará la partida, los ajustes y el progreso actuales.', 'El archivo no contiene un guardado válido de Ocho Ases.', 'No se pudieron guardar los datos en el dispositivo.'],
-    de: ['Spielstand exportieren', 'Spielstand importieren', 'Spielstand ersetzen', 'Die Datei ist bereit. Sie ersetzt Partie, Einstellungen und Fortschritt.', 'Die Datei enthält keinen gültigen Spielstand für Acht Asse.', 'Die Daten konnten nicht auf dem Gerät gespeichert werden.'],
-    'zh-Hans': ['导出存档', '导入存档', '替换存档', '文件已就绪，将替换当前牌局、设置和进度。', '无法读取有效的八张王牌存档。', '无法在此设备上保存数据。'],
-    hi: ['सेव निर्यात करें', 'सेव आयात करें', 'सेव बदलें', 'फ़ाइल तैयार है। यह मौजूदा खेल, सेटिंग और प्रगति बदल देगी।', 'मान्य एट एसेस सेव पढ़ा नहीं जा सका।', 'इस डिवाइस पर डेटा सेव नहीं हो सका।'],
-    fr: ['Exporter la sauvegarde', 'Importer la sauvegarde', 'Remplacer la sauvegarde', 'Le fichier est prêt. Il remplacera la partie, les réglages et la progression.', 'Impossible de lire une sauvegarde valide de Huit As.', 'Impossible d’enregistrer les données sur cet appareil.'],
-    ar: ['تصدير الحفظ', 'استيراد الحفظ', 'استبدال الحفظ', 'الملف جاهز وسيستبدل اللعبة والإعدادات والتقدم الحالي.', 'تعذّرت قراءة ملف حفظ صالح للعبة الآسات الثمانية.', 'تعذّر حفظ البيانات على هذا الجهاز.'],
-    it: ['Esporta salvataggio', 'Importa salvataggio', 'Sostituisci salvataggio', 'Il file è pronto. Sostituirà partita, impostazioni e progressi attuali.', 'Impossibile leggere un salvataggio valido di Otto Assi.', 'Impossibile salvare i dati sul dispositivo.'],
-    uk: ['Експортувати збереження', 'Імпортувати збереження', 'Замінити збереження', 'Файл готовий. Він замінить поточну партію, налаштування й прогрес.', 'Не вдалося прочитати дійсне збереження «Вісім тузів».', 'Не вдалося зберегти дані на цьому пристрої.']
+    pl: ['Eksportuj zapis', 'Importuj zapis', 'Zastąp zapis', 'Import zastąpi bieżącą partię, ustawienia i postęp.', 'Nie udało się odczytać poprawnego zapisu Ośmiu Asów.', 'Nie udało się zapisać danych na urządzeniu.', 'Anuluj'],
+    en: ['Export save', 'Import save', 'Replace save', 'The file is ready. It will replace your current game, settings and progress.', 'Could not read a valid Eight Aces save.', 'Could not save the data on this device.', 'Cancel'],
+    es: ['Exportar partida', 'Importar partida', 'Reemplazar partida', 'El archivo está listo. Reemplazará la partida, los ajustes y el progreso actuales.', 'El archivo no contiene un guardado válido de Ocho Ases.', 'No se pudieron guardar los datos en el dispositivo.', 'Cancelar'],
+    de: ['Spielstand exportieren', 'Spielstand importieren', 'Spielstand ersetzen', 'Die Datei ist bereit. Sie ersetzt Partie, Einstellungen und Fortschritt.', 'Die Datei enthält keinen gültigen Spielstand für Acht Asse.', 'Die Daten konnten nicht auf dem Gerät gespeichert werden.', 'Abbrechen'],
+    'zh-Hans': ['导出存档', '导入存档', '替换存档', '文件已就绪，将替换当前牌局、设置和进度。', '无法读取有效的八张王牌存档。', '无法在此设备上保存数据。', '取消'],
+    hi: ['सेव निर्यात करें', 'सेव आयात करें', 'सेव बदलें', 'फ़ाइल तैयार है। यह मौजूदा खेल, सेटिंग और प्रगति बदल देगी।', 'मान्य एट एसेस सेव पढ़ा नहीं जा सका।', 'इस डिवाइस पर डेटा सेव नहीं हो सका।', 'रद्द करें'],
+    fr: ['Exporter la sauvegarde', 'Importer la sauvegarde', 'Remplacer la sauvegarde', 'Le fichier est prêt. Il remplacera la partie, les réglages et la progression.', 'Impossible de lire une sauvegarde valide de Huit As.', 'Impossible d’enregistrer les données sur cet appareil.', 'Annuler'],
+    ar: ['تصدير الحفظ', 'استيراد الحفظ', 'استبدال الحفظ', 'الملف جاهز وسيستبدل اللعبة والإعدادات والتقدم الحالي.', 'تعذّرت قراءة ملف حفظ صالح للعبة الآسات الثمانية.', 'تعذّر حفظ البيانات على هذا الجهاز.', 'إلغاء'],
+    it: ['Esporta salvataggio', 'Importa salvataggio', 'Sostituisci salvataggio', 'Il file è pronto. Sostituirà partita, impostazioni e progressi attuali.', 'Impossibile leggere un salvataggio valido di Otto Assi.', 'Impossibile salvare i dati sul dispositivo.', 'Annulla'],
+    uk: ['Експортувати збереження', 'Імпортувати збереження', 'Замінити збереження', 'Файл готовий. Він замінить поточну партію, налаштування й прогрес.', 'Не вдалося прочитати дійсне збереження «Вісім тузів».', 'Не вдалося зберегти дані на цьому пристрої.', 'Скасувати']
   };
   const backupCopy = () => backupLabels[prefs.language] ?? backupLabels.en;
   const settings = byId('settings');
   const saveFile = byId('save-file');
   const restore = byId('restore-save');
+  const confirmImport = byId('confirm-import');
+  const importError = byId('import-error');
   const status = byId('backup-status');
   let pendingSave;
 
@@ -602,14 +604,19 @@
     saveFile.value = '';
     if (!file) return;
     pendingSave = undefined;
-    restore.hidden = true;
+    status.textContent = '';
     byId('import-save').disabled = true;
     try {
       const backup = readBackup(JSON.parse(await file.text()));
       if (!settings.open) return;
       pendingSave = backup;
-      restore.hidden = false;
-      status.textContent = backupCopy()[3];
+      const [, importLabel, restoreLabel, description, , , cancelLabel] = backupCopy();
+      byId('import-title').textContent = importLabel;
+      byId('import-description').textContent = description;
+      byId('cancel-import').textContent = cancelLabel;
+      restore.textContent = restoreLabel;
+      importError.hidden = true;
+      confirmImport.showModal();
     } catch {
       status.textContent = backupCopy()[4];
     } finally {
@@ -621,21 +628,25 @@
     try {
       localStorage.setItem(key, pendingSave);
     } catch {
-      status.textContent = backupCopy()[5];
+      importError.textContent = backupCopy()[5];
+      importError.hidden = false;
       return;
     }
     location.reload();
   };
+  confirmImport.addEventListener('close', () => {
+    if (confirmImport.open) return;
+    pendingSave = undefined;
+    byId('import-save').focus();
+  });
   settings.addEventListener('close', () => {
     pendingSave = undefined;
-    restore.hidden = true;
     status.textContent = '';
   });
   byId('settings-button').onclick = () => {
-    const [exportLabel, importLabel, restoreLabel] = backupCopy();
+    const [exportLabel, importLabel] = backupCopy();
     byId('export-save').textContent = exportLabel;
     byId('import-save').textContent = importLabel;
-    restore.textContent = restoreLabel;
     settings.showModal();
   };
   const fullscreenButton = byId('fullscreen');
