@@ -209,14 +209,17 @@
 
   const canMoveSelection = (state, from, to) => selectionPlan(state, from, to).length > 0;
 
-  function moveSelection(state, from, to) {
-    const steps = selectionPlan(state, from, to);
+  function applySelectionPlan(state, steps) {
     if (steps.length < 2) return steps.length === 1 && move(state, steps[0].from, steps[0].to);
     const trial = structuredClone(state);
     if (!steps.every(step => move(trial, step.from, step.to))) return false;
     state.rows = trial.rows;
     state.goals = trial.goals;
     return true;
+  }
+
+  function moveSelection(state, from, to) {
+    return applySelectionPlan(state, selectionPlan(state, from, to));
   }
 
   function aceFoundation(state, from, rtl) {
@@ -297,7 +300,7 @@
   }
 
   const won = state => state.goals.every(goal => goal.length === 13);
-  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won };
+  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, selectionPlan, applySelectionPlan, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won };
   if (typeof module !== 'undefined') module.exports = engine;
   else root.PasjansEngine = engine;
 })(globalThis);

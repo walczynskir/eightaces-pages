@@ -205,6 +205,49 @@
 
   let lastCollectTap;
 
+  let routeSearch;
+
+  function updateRouteSearch() {
+    if (routeSearch?.state === state && routeSearch.from === selected) return;
+    routeSearch?.worker?.terminate();
+    routeSearch = undefined;
+    if ((selected?.count ?? 1) <= 1) return;
+
+    const search = { state, from: selected, plans: [] };
+    routeSearch = search;
+    const complete = plans => {
+      if (routeSearch !== search) return;
+      search.worker?.terminate();
+      search.worker = undefined;
+      search.plans = plans;
+      render();
+    };
+    const fallback = () => {
+      search.worker?.terminate();
+      search.worker = undefined;
+      setTimeout(() => {
+        if (routeSearch !== search) return;
+        complete(search.state.rows.map((_, index) =>
+          engine.selectionPlan(search.state, search.from, { group: 'rows', index })));
+      }, 0);
+    };
+    try {
+      search.worker = new Worker('move-worker.js?v=1.6.2');
+      search.worker.onmessage = event => complete(event.data);
+      search.worker.onerror = fallback;
+      search.worker.onmessageerror = fallback;
+      search.worker.postMessage({ state, from: selected });
+    } catch {
+      fallback();
+    }
+  }
+
+  function planTo(ref) {
+    if (!selected || ref.count) return [];
+    if (selected.count > 1) return ref.group === 'rows' ? routeSearch?.plans[ref.index] ?? [] : [];
+    return engine.selectionPlan(state, selected, ref);
+  }
+
   async function action(apply, nextSelection) {
     lastCollectTap = undefined;
     const previous = structuredClone(state);
@@ -242,8 +285,9 @@
       action(() => engine.collectToFoundation(state, ref, rtl));
       return;
     }
-    if (!ref.count && selected && engine.canMoveSelection(state, selected, ref)) {
-      action(() => engine.moveSelection(state, selected, ref));
+    const plan = planTo(ref);
+    if (plan.length) {
+      action(() => engine.applySelectionPlan(state, plan));
       return;
     }
     if (collectTap) lastCollectTap = { key: refKey(ref), card, time: now };
@@ -287,7 +331,7 @@
       element.setAttribute('aria-label', label + ' · ' + (face || empty));
       element.setAttribute('aria-pressed', active);
       element.classList.toggle('selected', active);
-      const legal = Boolean(!ref.count && selected && engine.canMoveSelection(state, selected, ref));
+      const legal = planTo(ref).length > 0;
       element.classList.toggle('legal', legal);
       if (state.drawn.length && ref.group !== 'drawn') element.disabled = !legal;
     }
@@ -321,6 +365,7 @@
 
   function render() {
     if (state.drawn.length) selected = drawnRef;
+    updateRouteSearch();
     const activeCard = document.activeElement?.dataset.card;
     const activeAction = document.activeElement?.dataset.action;
     const [undo, draw, , stock, drawn, waste, row, goal, empty, victory, instructions,

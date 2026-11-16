@@ -1,12 +1,12 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.6.1';
+const cacheName = cachePrefix + '1.6.2';
 const scope = self.registration.scope;
 const assetNames = [
   'index.html', 'credits.html', 'version.json', 'manifest.webmanifest',
   'logo.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'apple-touch-icon.png',
   'style.css', 'shared-palettes.css', 'themes.css', 'shared-game.css', 'pasjans.css',
   'shared-victory.css', 'games-chest-menu.css', 'theme-gallery.css',
-  'app.js', 'engine.js', 'locales.js', 'i18n.js', 'strings.js', 'game-help.js',
+  'app.js', 'move-worker.js', 'engine.js', 'locales.js', 'i18n.js', 'strings.js', 'game-help.js',
   'shared-victory.js', 'games-chest-menu.js', 'credits.js',
   'garden.webp', 'tropics.webp', 'beach.webp', 'orange-grove.webp',
   'copper-table.webp', 'copper-portrait.webp', 'andromeda-portrait.webp'
