@@ -428,6 +428,11 @@ body.large button[data-card="waste"] .card-suit { font-size: min(clamp(20px, 3.5
   box-shadow: 2px 2px var(--paper), 3px 3px #164676, 4px 4px var(--paper), 5px 5px #164676;
 }
 
+.solitaire .stock-pile.single-stock-card button.stock-card.has-stock:not(.tile),
+.solitaire .stock-pile.single-stock-card.revealed-on-stock::before {
+  box-shadow: none;
+}
+
 @media (max-width: 600px) and (orientation: portrait) {
   :is([data-theme="tropics"], [data-theme="beach"]) body:not(.table-only) {
     background: var(--bg);

@@ -446,23 +446,24 @@
       }
       return slot;
     }
-    const canDraw = state.stock.length || (state.recycle && state.waste.length);
+    const drawCount = state.stock.length || (state.recycle ? state.waste.length : 0);
     const wasteRef = { group: 'waste' };
     const drawnTop = engine.top(state.drawn);
     const stockCard = drawnTop === undefined
       ? button('', () => {
           action(() => engine.draw(state), drawnRef);
           document.querySelector('[data-card="drawn"]')?.focus();
-        }, !canDraw)
+        }, !drawCount)
       : cardNode(drawnTop, pileLabel(drawn, state.stock.length), empty, drawnRef);
     if (drawnTop === undefined) {
       stockCard.dataset.action = 'draw';
       stockCard.className = 'playing-card stock-card';
       stockCard.setAttribute('aria-label', draw + ' · ' + pileLabel(stock, state.stock.length));
       stockCard.title = draw;
-      stockCard.classList.toggle('has-stock', Boolean(canDraw));
+      stockCard.classList.toggle('has-stock', drawCount > 0);
     }
     const stockPile = section('stock-pile');
+    stockPile.classList.toggle('single-stock-card', (drawnTop === undefined ? drawCount : state.stock.length) === 1);
     stockPile.classList.toggle('revealed-on-stock', drawnTop !== undefined && state.stock.length > 0);
     stockPile.append(stockCard);
     const wasteCard = cardNode(engine.top(state.waste), pileLabel(waste, state.waste.length), empty, wasteRef);
