@@ -14,21 +14,13 @@
     return 'legacy-' + left.toString(16) + '-' + right.toString(16);
   }
 
-  function started(save) {
-    const state = save.state;
-    return Boolean(save.history?.length || save.future?.length || state.drawn.length
-      || state.waste.length || state.stock.length !== 64 || state.goals.some(pile => pile.length)
-      || state.rows.some(pile => pile.length !== 5));
-  }
-
   const winCount = results => results.baseWins
     + Object.values(results.records).filter(record => record.outcome === 'win' && record.counted).length;
 
   function read(save) {
     const results = save.results ? structuredClone(save.results)
       : { baseWins: save.wins ?? 0, records: {} };
-    const session = save.session ? { ...save.session }
-      : { id: legacyId(save), started: started(save) };
+    const session = { id: save.session?.id ?? legacyId(save), started: true };
     if (save.rewarded && !Object.hasOwn(results.records, session.id)) {
       results.records = { ...results.records, [session.id]: { outcome: 'win', reason: 'completed', counted: false } };
     }
@@ -74,7 +66,7 @@
         && ['completed', 'replaced'].includes(record.reason) && typeof record.counted === 'boolean'));
   }
 
-  const api = { read, started, finish, merge, importSave, valid, winCount };
+  const api = { read, finish, merge, importSave, valid, winCount };
   if (typeof module !== 'undefined') module.exports = api;
   root.PasjansResults = api;
 })(globalThis);

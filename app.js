@@ -160,7 +160,7 @@
     });
   }
   state ??= engine.deal(prefs);
-  const newSession = () => ({ id: crypto.randomUUID(), started: false });
+  const newSession = () => ({ id: crypto.randomUUID(), started: true });
   let { results, session } = loadedSave
     ? scoring.read(loadedSave)
     : { results: { baseWins: wins, records: {} }, session: newSession() };
@@ -271,7 +271,6 @@
       render();
       return;
     }
-    session.started = true;
     history.push(previous);
     future = [];
     selected = nextSelection;
@@ -572,7 +571,7 @@
   };
   const newGameDialog = byId('confirm-new-game');
   byId('new-game').onclick = () => {
-    if (session.started && !Object.hasOwn(results.records, session.id)) {
+    if (!Object.hasOwn(results.records, session.id)) {
       pendingNewGame = session.id;
       byId('confirm-new-title').textContent = tr('Start a new game?');
       byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
@@ -595,7 +594,7 @@
     transitioning = true;
     try {
       const nextResults = structuredClone(results);
-      if (session.started) scoring.finish(nextResults, session, 'loss', 'replaced');
+      scoring.finish(nextResults, session, 'loss', 'replaced');
       const nextState = engine.deal(prefs);
       const nextSession = newSession();
       const nextSave = { ...saveValue(), results: nextResults, session: nextSession,
