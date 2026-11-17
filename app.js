@@ -1,5 +1,6 @@
 (() => {
   const engine = PasjansEngine;
+  const scoring = PasjansResults;
   const i18n = DominoI18n;
   const byId = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
@@ -125,6 +126,9 @@
   let legacyCopper = false;
   let rewarded = false;
   let state;
+  let loadedSave;
+  let pendingNewGame;
+  let transitioning = false;
   let history = [];
   let future = [];
   let selected;
@@ -138,8 +142,9 @@
     if (prefs.theme === 'andromeda') prefs.theme = 'starry-sky';
     if (prefs.theme === 'tangerine-grove') prefs.theme = 'orange-grove';
     rewarded = stored?.rewarded === true;
-    if (stored?.state?.rows?.length === 8 && stored?.state?.goals?.length === 8) {
+    if (stored?.state?.rows?.length === 8 && stored?.state?.goals?.length === 8 && scoring.valid(stored)) {
       state = stored.state;
+      loadedSave = stored;
       history = stored.history ?? [];
       future = stored.future ?? [];
     }
@@ -155,6 +160,16 @@
     });
   }
   state ??= engine.deal(prefs);
+  const newSession = () => ({ id: crypto.randomUUID(), started: false });
+  let { results, session } = loadedSave
+    ? scoring.read(loadedSave)
+    : { results: { baseWins: wins, records: {} }, session: newSession() };
+  wins = scoring.winCount(results);
+  if (engine.won(state)) {
+    scoring.finish(results, session, 'win', 'completed');
+    wins = scoring.winCount(results);
+    rewarded = true;
+  }
   state.kingsOnly = prefs.kingsOnly;
   const rewardThreshold = theme => theme === 'copper' && legacyCopper ? 3 : (rewardWins[theme] ?? 0);
   const themeLocked = theme => wins < rewardThreshold(theme);
@@ -167,7 +182,8 @@
   const tr = text => i18n.text(text, prefs.language);
   const refKey = ref => ref.group + (ref.index ?? '') + (ref.count > 1 ? '-' + ref.count : '');
 
-  const serializeSave = () => JSON.stringify({ prefs, state, history, future, wins, rewarded, legacyCopper });
+  const saveValue = () => ({ prefs, state, history, future, wins, rewarded, legacyCopper, results, session });
+  const serializeSave = () => JSON.stringify(saveValue());
 
   function save() {
     if (thumbnailTheme) return;
@@ -255,16 +271,19 @@
       render();
       return;
     }
+    session.started = true;
     history.push(previous);
     future = [];
     selected = nextSelection;
     const plan = engine.finishPlan(state);
     if (plan.length) {
+      save();
       render();
       await animateFinish(plan);
     }
-    if (!rewarded && engine.won(state)) {
-      wins++;
+    if (engine.won(state)) {
+      scoring.finish(results, session, 'win', 'completed');
+      wins = scoring.winCount(results);
       rewarded = true;
     }
     save();
@@ -539,11 +558,24 @@
     save();
     render();
   };
+  const replacementCopy = {
+    pl: 'Rozpoczęcie nowego pasjansa zaliczy bieżącą partię jako przegraną.',
+    en: 'Starting a new solitaire will count the current game as a loss.',
+    es: 'Empezar un nuevo solitario contará la partida actual como una derrota.',
+    de: 'Eine neue Patience zählt die aktuelle Partie als Niederlage.',
+    'zh-Hans': '开始新牌局会将当前牌局记为失败。',
+    hi: 'नया सॉलिटेयर शुरू करने पर मौजूदा खेल हार के रूप में दर्ज होगा।',
+    fr: 'Commencer un nouveau solitaire comptera la partie en cours comme une défaite.',
+    ar: 'بدء سوليتير جديد سيُسجّل اللعبة الحالية كخسارة.',
+    it: 'Iniziare un nuovo solitario conterà la partita attuale come una sconfitta.',
+    uk: 'Початок нового пасьянсу зарахує поточну партію як поразку.'
+  };
   const newGameDialog = byId('confirm-new-game');
   byId('new-game').onclick = () => {
-    if (!engine.won(state) && (history.length || future.length)) {
+    if (session.started && !Object.hasOwn(results.records, session.id)) {
+      pendingNewGame = session.id;
       byId('confirm-new-title').textContent = tr('Start a new game?');
-      byId('confirm-new-description').textContent = tr('This replaces your current game. Your statistics will be kept.');
+      byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
       byId('cancel-new').textContent = tr('Return to game');
       byId('accept-new').textContent = byId('new-game').textContent;
       newGameDialog.returnValue = 'cancel';
@@ -553,17 +585,37 @@
     startNewGame();
   };
   newGameDialog.onclose = () => {
-    if (newGameDialog.returnValue === 'start') startNewGame();
+    const confirmed = newGameDialog.returnValue === 'start' && pendingNewGame === session.id;
+    pendingNewGame = undefined;
+    if (confirmed) startNewGame();
   };
 
   function startNewGame() {
-    lastCollectTap = undefined;
-    state = engine.deal(prefs);
-    rewarded = false;
-    history = [];
-    future = [];
-    selected = undefined;
-    save();
+    if (transitioning) return;
+    transitioning = true;
+    try {
+      const nextResults = structuredClone(results);
+      if (session.started) scoring.finish(nextResults, session, 'loss', 'replaced');
+      const nextState = engine.deal(prefs);
+      const nextSession = newSession();
+      const nextSave = { ...saveValue(), results: nextResults, session: nextSession,
+        state: nextState, history: [], future: [], rewarded: false };
+      // Persist the result and replacement together before changing the visible game.
+      localStorage.setItem(key, JSON.stringify(nextSave));
+      results = nextResults;
+      session = nextSession;
+      state = nextState;
+      lastCollectTap = undefined;
+      rewarded = false;
+      history = [];
+      future = [];
+      selected = undefined;
+      saved = true;
+    } catch {
+      saved = false;
+    } finally {
+      transitioning = false;
+    }
     render();
   }
   function stepHistory(from, to) {
@@ -620,6 +672,7 @@
   }
 
   function readBackup(value) {
+    if (!scoring.valid(value)) throw Error('Invalid results');
     if (!validDeal(value?.state) || !Number.isSafeInteger(value.wins) || value.wins < 0) throw Error('Invalid save');
     const { history = [], future = [] } = value;
     if (![history, future].every(list => Array.isArray(list) && list.every(validDeal))) throw Error('Invalid history');
@@ -629,10 +682,11 @@
       if (typeof candidate === typeof current) preferences[name] = candidate;
     }
     if (!i18n.languages.includes(preferences.language)) preferences.language = 'pl';
-    return JSON.stringify({
+    return {
+      results: value.results, session: value.session,
       prefs: preferences, state: value.state, history, future, wins: value.wins,
       rewarded: value.rewarded === true, legacyCopper: value.legacyCopper ?? value.wins >= 3
-    });
+    };
   }
 
   byId('export-save').onclick = () => {
@@ -672,7 +726,8 @@
   restore.onclick = () => {
     if (!pendingSave) return;
     try {
-      localStorage.setItem(key, pendingSave);
+      localStorage.setItem(key, JSON.stringify(scoring.importSave(pendingSave, saveValue())));
+      pendingSave = undefined;
     } catch {
       importError.textContent = backupCopy()[5];
       importError.hidden = false;
