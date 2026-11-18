@@ -395,7 +395,7 @@
     const activeCard = document.activeElement?.dataset.card;
     const activeAction = document.activeElement?.dataset.action;
     const [undo, draw, , stock, drawn, waste, row, goal, empty, victory, instructions,
-      nextRules, sameSuit, recycle] = solitaireStrings[prefs.language] ?? solitaireStrings.pl;
+      , sameSuit, recycle] = solitaireStrings[prefs.language] ?? solitaireStrings.pl;
     const garden = prefs.theme === 'garden' && !prefs.contrast;
     const grove = prefs.theme === 'orange-grove' && !prefs.contrast;
     const root = document.documentElement;
@@ -432,7 +432,6 @@
     byId('undo').title = undo;
     byId('undo').hidden = !prefs.showUndo;
     byId('undo').disabled = history.length === 0;
-    byId('next-rules').textContent = nextRules;
     byId('same-label').textContent = sameSuit;
     byId('recycle-label').textContent = recycle;
     const [kingLabel, kingNote] = solitaireKingOption[prefs.language] ?? solitaireKingOption.pl;
@@ -529,6 +528,7 @@
     tableau.replaceChildren(left, goals, right);
     if (activeCard) (document.querySelector('[data-card="' + activeCard + '"]:not(:disabled)') ?? stockCard).focus();
     if (activeAction) (document.querySelector('[data-action="' + activeAction + '"]:not(:disabled)') ?? stockCard).focus();
+    renderSettings();
     i18n.apply(document.body, prefs.language);
     document.title = gameName();
     const supportText = tr("Domino is free. If you wish, support people affected by the war in Ukraine or dogs and cats in Gdynia, Poland.");
@@ -536,6 +536,31 @@
     document.querySelector(".brand-name").textContent = document.title;
     fitHeader();
     fitToolbar();
+  }
+
+  function renderSettings() {
+    const labels = settingsDialogStrings[prefs.language] ?? settingsDialogStrings.en;
+    byId('settings-title').textContent = tr('Settings');
+    byId('settings-rules-heading').textContent = labels.rules;
+    byId('settings-display-heading').textContent = labels.display;
+    byId('settings-backup-heading').textContent = labels.backup;
+    byId('next-rules').textContent = labels.autosave;
+    const close = tr('Close');
+    byId('settings-dismiss').setAttribute('aria-label', close);
+    byId('settings-dismiss').title = close;
+    const error = byId('settings-save-error');
+    const newError = !saved && error.hidden;
+    error.hidden = saved;
+    if (newError) byId('settings').querySelector('.settings-body').scrollTop = 0;
+    byId('settings-save-error-text').textContent = labels.error;
+    byId('settings-save-retry').textContent = labels.retry;
+    for (const timing of byId('settings').querySelectorAll('[data-setting-applies]')) {
+      timing.textContent = labels[timing.dataset.settingApplies];
+    }
+    for (const button of byId('settings').querySelectorAll('.setting-info')) {
+      const label = button.closest('.setting-item').querySelector('.setting-name').textContent;
+      button.setAttribute('aria-label', labels.about + label);
+    }
   }
 
   function gameName() {
@@ -763,6 +788,8 @@
     byId('import-save').focus();
   });
   settings.addEventListener('close', () => {
+    if (settings.open) return;
+    byId('settings-button').focus({ preventScroll: true });
     pendingSave = undefined;
     status.textContent = '';
   });
@@ -771,6 +798,10 @@
     byId('export-save').textContent = exportLabel;
     byId('import-save').textContent = importLabel;
     settings.showModal();
+  };
+  byId('settings-save-retry').onclick = () => {
+    save();
+    render();
   };
   const fullscreenButton = byId('fullscreen');
   const tableOnly = open => {

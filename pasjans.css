@@ -114,10 +114,6 @@ button.stock-card:not(:disabled):focus-visible {
 body.large .playing-card .card-rank { font-size: clamp(15px, 3vw, 28px); }
 body.large .playing-card .card-suit { font-size: clamp(16px, 3.2vw, 30px); }
 
-#settings .setting-item { margin-block: 12px; }
-#settings .setting-row { display: flex; align-items: center; gap: 8px; }
-#settings .setting-info { min-width: 32px; min-height: 32px; padding: 0; }
-#settings .setting-description { margin-block: 6px 0; }
 
 .stock-pile {
   position: relative;

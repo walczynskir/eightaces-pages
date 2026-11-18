@@ -10,12 +10,13 @@
 <meta name="theme-color" content="#174b35">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="shared-palettes.css?v=shared-palettes-2">
-<link rel="stylesheet" href="themes.css?v=1.6.4">
+<link rel="stylesheet" href="themes.css?v=1.8.1">
 <link rel="stylesheet" href="shared-game.css?v=1.6.4">
-<link rel="stylesheet" href="pasjans.css?v=1.8.0">
+<link rel="stylesheet" href="pasjans.css?v=1.8.1">
 <link rel="stylesheet" href="shared-victory.css?v=6">
 <link rel="stylesheet" href="games-chest-menu.css?v=recent-1"><script defer src="games-chest-menu.js?v=recent-1" data-game="eight-aces"></script><script>if (!new URLSearchParams(location.search).has("miniatura") || window === window.top) { const script = document.createElement("script"); script.defer = true; script.src = "https://cloud.umami.is/script.js"; script.setAttribute("data-website-id", "a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2"); script.setAttribute("data-domains", "eightaces.games-chest.com"); script.setAttribute("data-tag", "eight-aces"); document.head.append(script); }</script>
 <link rel="stylesheet" href="theme-gallery.css?v=1.4.5">
+<link rel="stylesheet" href="shared-settings.css?v=1.8.1">
 </head>
 <body>
 <header><a class="brand" href="./"><img class="brand-logo" src="logo.svg" alt=""><span class="brand-name" translate="no">Osiem Asów</span></a><div class="header-controls"><div class="accessibility-controls"><button id="contrast" translate="no" aria-pressed="false"></button><label class="text-size-control"><input type="checkbox" id="large"><span id="large-label"></span></label></div><div class="preferences"><label><span id="language-label"></span><select id="language"><option value="pl">Polski</option><option value="en">English</option></select></label><label><span id="theme-label"></span><select id="theme"></select></label></div></div></header>
@@ -36,7 +37,7 @@
     <p id="status" role="status"></p>
   </section>
 </main>
-<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v1.8.0</span><span id="save-note"></span>
+<footer><section class="support-causes" aria-labelledby="support-title"><h2 id="support-title">Dobra gra może zrobić coś dobrego.</h2><p translate="no">Jeśli chcesz, wesprzyj pomoc osobom dotkniętym wojną w Ukrainie lub psom i kotom w Gdyni.</p><div class="support-links"><a href="https://www.pah.org.pl/gdzie-dzialamy/ukraina/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🇺🇦</b> <span>Pomoc Ukrainie · PAH</span> <b aria-hidden="true" translate="no">↗</b></a><a href="https://ciapkowo.pl/" target="_blank" rel="noopener noreferrer"><b aria-hidden="true" translate="no">🐾</b> <span>Pomoc psom i kotom · Ciapkowo w Gdyni</span> <b aria-hidden="true" translate="no">↗</b></a></div><p class="support-note">Linki prowadzą do oficjalnych stron organizacji. Nie zbieramy wpłat ani nie pobieramy prowizji.</p></section><a id="credits-link" href="credits.html">Autorzy i licencje</a><span id="footer-version" translate="no">v1.8.1</span><span id="save-note"></span>
 <nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div><a class="all-games" href="https://games-chest.com/">Wszystkie gry</a></nav>
 </footer>
 <dialog id="theme-gallery" aria-labelledby="gallery-title" translate="no">
@@ -58,52 +59,83 @@
     </div>
   </form>
 </dialog>
-<dialog id="settings" aria-labelledby="settings-title">
-  <form method="dialog">
-    <div class="dialog-heading"><h2 id="settings-title">Settings</h2><button aria-label="Close">×</button></div>
-    <p id="next-rules" translate="no"></p>
-    <div class="setting-item">
-      <div class="setting-row">
-        <label><input type="checkbox" id="sameSuit"> <span id="same-label"></span></label>
-        <button class="setting-info" type="button" aria-expanded="false" aria-controls="sameSuit-note" aria-labelledby="same-label">ⓘ</button>
+<dialog id="settings" class="shared-settings" aria-labelledby="settings-title" aria-describedby="next-rules" translate="no">
+  <form method="dialog" class="settings-shell">
+    <header class="settings-header">
+      <div class="settings-heading"><h2 id="settings-title"></h2><button id="settings-dismiss" type="submit" value="close" autofocus>×</button></div>
+      <p id="next-rules" class="settings-summary"></p>
+    </header>
+    <div class="settings-body">
+      <div id="settings-save-error" class="settings-save-error" role="alert" hidden>
+        <p id="settings-save-error-text"></p>
+        <button id="settings-save-retry" type="button"></button>
       </div>
-      <p class="setting-description small muted" id="sameSuit-note" hidden></p>
+      <fieldset class="settings-section">
+        <legend id="settings-rules-heading"></legend>
+        <div class="setting-item">
+          <div class="setting-row">
+            <label>
+              <input type="checkbox" id="sameSuit">
+              <span class="setting-caption"><span class="setting-name" id="same-label"></span><small class="setting-timing" data-setting-applies="next"></small></span>
+            </label>
+            <button class="setting-info" type="button" aria-expanded="false" aria-controls="sameSuit-note">ⓘ</button>
+          </div>
+          <p class="setting-description" id="sameSuit-note" hidden></p>
+        </div>
+        <div class="setting-item">
+          <div class="setting-row">
+            <label>
+              <input type="checkbox" id="recycle">
+              <span class="setting-caption"><span class="setting-name" id="recycle-label"></span><small class="setting-timing" data-setting-applies="next"></small></span>
+            </label>
+            <button class="setting-info" type="button" aria-expanded="false" aria-controls="recycle-note">ⓘ</button>
+          </div>
+          <p class="setting-description" id="recycle-note" hidden></p>
+        </div>
+        <div class="setting-item">
+          <div class="setting-row">
+            <label>
+              <input type="checkbox" id="kingsOnly">
+              <span class="setting-caption"><span class="setting-name" id="kingsOnly-label"></span><small class="setting-timing" data-setting-applies="now"></small></span>
+            </label>
+            <button class="setting-info" type="button" aria-expanded="false" aria-controls="kingsOnly-note">ⓘ</button>
+          </div>
+          <p class="setting-description" id="kingsOnly-note" hidden></p>
+        </div>
+      </fieldset>
+      <fieldset class="settings-section">
+        <legend id="settings-display-heading"></legend>
+        <div class="setting-item">
+          <div class="setting-row">
+            <label>
+              <input type="checkbox" id="showCounts">
+              <span class="setting-caption"><span class="setting-name" id="showCounts-label"></span><small class="setting-timing" data-setting-applies="now"></small></span>
+            </label>
+            <button class="setting-info" type="button" aria-expanded="false" aria-controls="showCounts-note">ⓘ</button>
+          </div>
+          <p class="setting-description" id="showCounts-note" hidden></p>
+        </div>
+        <div class="setting-item">
+          <div class="setting-row">
+            <label>
+              <input type="checkbox" id="showUndo">
+              <span class="setting-caption"><span class="setting-name" id="showUndo-label"></span><small class="setting-timing" data-setting-applies="now"></small></span>
+            </label>
+            <button class="setting-info" type="button" aria-expanded="false" aria-controls="showUndo-note">ⓘ</button>
+          </div>
+          <p class="setting-description" id="showUndo-note" hidden></p>
+        </div>
+      </fieldset>
+      <section class="settings-section" aria-labelledby="settings-backup-heading">
+        <h3 id="settings-backup-heading"></h3>
+        <div class="settings-backup-actions">
+          <button type="button" id="export-save"></button>
+          <button type="button" id="import-save"></button>
+        </div>
+        <input type="file" id="save-file" accept=".json,application/json" hidden>
+        <p id="backup-status" role="status"></p>
+      </section>
     </div>
-    <div class="setting-item">
-      <div class="setting-row">
-        <label><input type="checkbox" id="recycle"> <span id="recycle-label"></span></label>
-        <button class="setting-info" type="button" aria-expanded="false" aria-controls="recycle-note" aria-labelledby="recycle-label">ⓘ</button>
-      </div>
-      <p class="setting-description small muted" id="recycle-note" hidden></p>
-    </div>
-    <div class="setting-item">
-      <div class="setting-row">
-        <label><input type="checkbox" id="kingsOnly"> <span id="kingsOnly-label" translate="no"></span></label>
-        <button class="setting-info" type="button" aria-expanded="false" aria-controls="kingsOnly-note" aria-labelledby="kingsOnly-label">ⓘ</button>
-      </div>
-      <p class="setting-description small muted" id="kingsOnly-note" translate="no" hidden></p>
-    </div>
-    <div class="setting-item">
-      <div class="setting-row">
-        <label><input type="checkbox" id="showCounts"> <span id="showCounts-label" translate="no"></span></label>
-        <button class="setting-info" type="button" aria-expanded="false" aria-controls="showCounts-note" aria-labelledby="showCounts-label">ⓘ</button>
-      </div>
-      <p class="setting-description small muted" id="showCounts-note" translate="no" hidden></p>
-    </div>
-    <div class="setting-item">
-      <div class="setting-row">
-        <label><input type="checkbox" id="showUndo"> <span id="showUndo-label" translate="no"></span></label>
-        <button class="setting-info" type="button" aria-expanded="false" aria-controls="showUndo-note" aria-labelledby="showUndo-label">ⓘ</button>
-      </div>
-      <p class="setting-description small muted" id="showUndo-note" translate="no" hidden></p>
-    </div>
-    <div class="setting-item" translate="no">
-      <button type="button" id="export-save"></button>
-      <button type="button" id="import-save"></button>
-      <input type="file" id="save-file" accept=".json,application/json" hidden>
-      <p id="backup-status" role="status"></p>
-    </div>
-    <button class="primary">Done</button>
   </form>
 </dialog>
 <dialog id="confirm-import" aria-labelledby="import-title" aria-describedby="import-description" translate="no">
@@ -128,11 +160,12 @@
 <script src="locales.js"></script>
 <script src="i18n.js"></script>
 <script src="engine.js?v=1.6.2"></script>
-<script src="strings.js?v=1.8.0"></script>
+<script src="strings.js?v=1.8.1"></script>
 <script src="shared-victory.js?v=5"></script>
 <script src="game-help.js?v=row-collect-1"></script>
 <script src="results.js?v=1.7.1"></script>
-<script src="app.js?v=1.8.0"></script>
+<script src="settings-strings.js?v=1.8.1"></script>
+<script src="app.js?v=1.8.1"></script>
 <script>
   if (window === window.top && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline setup failed", error));
