@@ -16,6 +16,10 @@
     fr: 'Jardin', ar: 'الحديقة', it: 'Giardino',
     uk: 'Сад'
   };
+  const contrastLabels = {
+    pl: 'Kontrast', en: 'Contrast', es: 'Contraste', de: 'Kontrast', 'zh-Hans': '对比度',
+    hi: 'कंट्रास्ट', fr: 'Contraste', ar: 'التباين', it: 'Contrasto', uk: 'Контраст'
+  };
   const classicLabels = {
     pl: 'Klasyczny', en: 'Classic', es: 'Clásico', de: 'Klassisch', 'zh-Hans': '经典',
     hi: 'क्लासिक', fr: 'Classique', ar: 'كلاسيكي', it: 'Classico', uk: 'Класичний'
@@ -160,7 +164,11 @@
     });
   }
   state ??= engine.deal(prefs);
-  const newSession = () => ({ id: crypto.randomUUID(), started: true });
+  function newSession() {
+    const id = crypto.randomUUID?.() ?? Array.from(crypto.getRandomValues(new Uint8Array(16)),
+      byte => byte.toString(16).padStart(2, '0')).join('');
+    return { id, started: true };
+  }
   let { results, session } = loadedSave
     ? scoring.read(loadedSave)
     : { results: { baseWins: wins, records: {} }, session: newSession() };
@@ -397,14 +405,20 @@
     root.classList.toggle('garden-theme', garden);
     updateThemeColor(root);
     document.body.classList.toggle('large', prefs.large);
-    byId('contrast').textContent = prefs.language === 'pl' ? '◐ Kontrast' : tr('◐ Contrast');
+    byId('contrast').textContent = '◐ ' + (contrastLabels[prefs.language] ?? contrastLabels.en);
+    byId('contrast').setAttribute('aria-label', tr('High contrast'));
     byId('contrast').setAttribute('aria-pressed', prefs.contrast);
     byId('large-label').textContent = 'A+';
     byId('large').setAttribute('aria-label', tr('Larger text'));
     const help = prefs.language === 'pl' ? 'Jak grać?' : tr('How to play');
-    byId('help-button').textContent = help;
+    byId('help-button').querySelector('.help-button-label').textContent = help;
+    byId('help-button').setAttribute('aria-label', help);
+    byId('help-button').title = help;
     byId('help-title').textContent = help;
-    byId('new-game').textContent = newGameLabels[i18n.languages.indexOf(prefs.language)] ?? newGameLabels[0];
+    const newGameLabel = newGameLabels[i18n.languages.indexOf(prefs.language)] ?? newGameLabels[0];
+    byId('new-game').querySelector('.new-game-label').textContent = newGameLabel;
+    byId('new-game').setAttribute('aria-label', newGameLabel);
+    byId('new-game').title = newGameLabel;
     byId('language-label').textContent = tr('Language');
     byId('theme-label').textContent = tr('Appearance');
     const visibleThemes = featuredThemes.includes(prefs.theme) ? featuredThemes : [...featuredThemes, prefs.theme];
@@ -520,6 +534,8 @@
     const supportText = tr("Domino is free. If you wish, support people affected by the war in Ukraine or dogs and cats in Gdynia, Poland.");
     document.querySelector(".support-causes > p").textContent = supportText.replace(/^[^.!?。！？।]*[.!?。！？।]\s*/u, "");
     document.querySelector(".brand-name").textContent = document.title;
+    fitHeader();
+    fitToolbar();
   }
 
   function gameName() {
@@ -576,17 +592,24 @@
       byId('confirm-new-title').textContent = tr('Start a new game?');
       byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
       byId('cancel-new').textContent = tr('Return to game');
-      byId('accept-new').textContent = byId('new-game').textContent;
+      byId('accept-new').textContent = byId('new-game').querySelector('.new-game-label').textContent;
       newGameDialog.returnValue = 'cancel';
       newGameDialog.showModal();
       return;
     }
     startNewGame();
   };
-  newGameDialog.onclose = () => {
-    const confirmed = newGameDialog.returnValue === 'start' && pendingNewGame === session.id;
+  newGameDialog.querySelector('form').onsubmit = event => {
+    event.preventDefault();
+    const confirmed = event.submitter?.value === 'start' && pendingNewGame === session.id;
     pendingNewGame = undefined;
+    newGameDialog.close(confirmed ? 'start' : 'cancel');
     if (confirmed) startNewGame();
+  };
+  newGameDialog.oncancel = () => { pendingNewGame = undefined; };
+  newGameDialog.onclose = () => {
+    // A queued close may belong to an earlier opening of this dialog.
+    if (!newGameDialog.open) pendingNewGame = undefined;
   };
 
   function startNewGame() {
@@ -770,6 +793,32 @@
   document.addEventListener('fullscreenchange', () => {
     if (!document.fullscreenElement) tableOnly(false);
   });
+  const toolbar = document.querySelector('.game-toolbar');
+  const header = document.querySelector('header');
+  function fitToolbar() {
+    toolbar.classList.remove('compact-utilities', 'compact-history', 'compact-new');
+    const styles = getComputedStyle(toolbar);
+    const available = toolbar.clientWidth - parseFloat(styles.paddingInlineStart) - parseFloat(styles.paddingInlineEnd);
+    const required = () => Math.ceil(byId('new-game').getBoundingClientRect().width
+      + toolbar.querySelector('.game-tools').getBoundingClientRect().width + parseFloat(styles.columnGap));
+    if (required() > available) toolbar.classList.add('compact-utilities');
+    if (required() > available) toolbar.classList.add('compact-history');
+    if (required() > available) toolbar.classList.add('compact-new');
+  }
+  function fitHeader() {
+    header.classList.remove('stacked-controls');
+    const styles = getComputedStyle(header);
+    const available = header.clientWidth - parseFloat(styles.paddingInlineStart) - parseFloat(styles.paddingInlineEnd);
+    const required = header.querySelector('.brand').scrollWidth
+      + header.querySelector('.accessibility-controls').offsetWidth + parseFloat(styles.columnGap);
+    if (required > available) header.classList.add('stacked-controls');
+  }
+  const controlsObserver = new ResizeObserver(() => {
+    fitHeader();
+    fitToolbar();
+  });
+  controlsObserver.observe(toolbar);
+  controlsObserver.observe(header);
   save();
   render();
 })();

@@ -203,7 +203,7 @@ body.large .solitaire-board .playing-card .card-suit {
 @media (orientation: landscape) and (max-height: 520px) {
   .table-only .solitaire {
     /* Reserve room for the controls, status and pile counters before sizing five card heights. */
-    --card-space: calc(100dvh - 126px - max(4px, env(safe-area-inset-top)) - max(4px, env(safe-area-inset-bottom)));
+    --card-space: calc(100dvh - 142px - max(4px, env(safe-area-inset-top)) - max(4px, env(safe-area-inset-bottom)));
     --card-width: clamp(23px, calc(var(--card-space) / 7), 56px);
   }
   .table-only .solitaire-board { padding: 4px; }
@@ -374,20 +374,6 @@ body.large button[data-card="waste"] .card-suit { font-size: min(clamp(20px, 3.5
   }
 }
 
-.history-icon { display: none; }
-@media (max-width: 600px) and (orientation: portrait) {
-  body:not(.table-only) .history-label { display: none; }
-  body:not(.table-only) .history-icon { display: inline-block; font-size: 1.25rem; line-height: 1; }
-  html[dir="rtl"] body:not(.table-only) .history-icon { transform: scaleX(-1); }
-  body:not(.table-only) .game-toolbar { gap: 5px; }
-  body:not(.table-only) .game-tools { gap: 4px; }
-  body:not(.table-only) .game-toolbar :is(#undo, #redo) {
-    min-inline-size: 38px;
-    min-block-size: 44px;
-    padding-inline: 6px;
-  }
-}
-
 :root[data-theme="classic"] {
   --bg: #e7eee5;
   --paper: #f7f5eb;
@@ -474,3 +460,88 @@ body.large button[data-card="waste"] .card-suit { font-size: min(clamp(20px, 3.5
       url("orange-grove.webp") center 110px / 100% auto no-repeat #19240d;
   }
 }
+
+/* One row, with history actions next to the other secondary controls. */
+.solitaire > .game-toolbar {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+.solitaire .game-toolbar .game-tools {
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+.solitaire .game-toolbar button {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  flex-shrink: 0;
+}
+.solitaire .game-toolbar button:not(.shared-settings-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  line-height: 1.25;
+}
+.solitaire .game-toolbar .toolbar-icon,
+.solitaire .game-toolbar #fullscreen .fullscreen-icon { display: none; }
+.solitaire .game-toolbar #fullscreen .fullscreen-label { display: inline; }
+.solitaire .game-toolbar.compact-utilities :is(#fullscreen, #help-button),
+.solitaire .game-toolbar.compact-history :is(#undo, #redo),
+.solitaire .game-toolbar.compact-new > #new-game {
+  inline-size: 44px;
+  padding: 0;
+}
+.solitaire .game-toolbar.compact-utilities #fullscreen .fullscreen-label,
+.solitaire .game-toolbar.compact-utilities .help-button-label,
+.solitaire .game-toolbar.compact-history .history-label,
+.solitaire .game-toolbar.compact-new .new-game-label { display: none; }
+.solitaire .game-toolbar.compact-utilities #fullscreen .fullscreen-icon,
+.solitaire .game-toolbar.compact-utilities .help-icon,
+.solitaire .game-toolbar.compact-history .history-icon,
+.solitaire .game-toolbar.compact-new .new-game-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 22px;
+  block-size: 22px;
+  font-size: 22px;
+  line-height: 1;
+}
+.solitaire .game-toolbar.compact-utilities .help-icon {
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 16px;
+}
+html[dir="rtl"] .game-toolbar .history-icon { transform: scaleX(-1); }
+.solitaire .game-toolbar button:disabled {
+  opacity: 1;
+  color: var(--muted);
+  background-color: var(--wash);
+  border-style: dashed;
+}
+.table-only .solitaire > .game-toolbar {
+  box-sizing: border-box;
+  width: 100%;
+  justify-content: space-between;
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 8px 16px;
+}
+@media (max-width: 360px) {
+  .table-only .solitaire > .game-toolbar { padding-inline: 8px; }
+}
+@media (min-width: 850px) and (min-height: 560px) and (pointer: fine) {
+  .table-only .solitaire > .game-toolbar { max-width: 1032px; }
+}
+
+header.stacked-controls .brand { grid-column: 1 / -1; grid-row: 1; }
+header.stacked-controls .accessibility-controls { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; }
+header.stacked-controls .preferences { grid-row: 3; }
+
+header #contrast { min-block-size: 44px; }
+header .text-size-control { min-block-size: 44px; }

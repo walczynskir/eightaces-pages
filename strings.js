@@ -25,16 +25,16 @@ const solitaireOptionNotes = {
 };
 
 const solitaireDisplayOptions = {
-  pl: ['Pokaż liczbę kart', 'Pokazuje, ile kart jest w zakrytej talii i na stosie odrzuconych. Działa od razu.', 'Cofanie i przywracanie ruchów', 'Pokazuje przyciski Cofnij i Przywróć. Po wykonaniu nowego ruchu cofnięte ruchy przepadają.', 'Przywróć'],
-  en: ['Show card counts', 'Shows the number of cards in the stock and waste. Takes effect immediately.', 'Undo and redo moves', 'Shows Undo and Redo. Making a new move clears the redo history.', 'Redo'],
-  es: ['Mostrar el número de cartas', 'Muestra cuántas cartas quedan en el mazo y el descarte. Se aplica de inmediato.', 'Deshacer y rehacer jugadas', 'Muestra los botones Deshacer y Rehacer. Una nueva jugada borra las jugadas que se podían rehacer.', 'Rehacer'],
-  de: ['Kartenzahl anzeigen', 'Zeigt die Kartenzahl im Talon und in der Ablage. Gilt sofort.', 'Züge rückgängig machen und wiederholen', 'Zeigt die entsprechenden Tasten. Ein neuer Zug löscht die Möglichkeit zur Wiederholung.', 'Wiederholen'],
-  'zh-Hans': ['显示牌数', '显示牌库和弃牌堆的牌数。立即生效。', '撤销和重做', '显示撤销和重做按钮。执行新操作会清除重做记录。', '重做'],
-  hi: ['पत्तों की संख्या दिखाएँ', 'गड्डी और छोड़े हुए ढेर में पत्तों की संख्या दिखाता है। तुरंत लागू होता है।', 'चालें पूर्ववत और फिर से करें', 'पूर्ववत और फिर से करें बटन दिखाता है। नई चाल से फिर करने का इतिहास मिट जाता है।', 'फिर से करें'],
-  fr: ['Afficher le nombre de cartes', 'Affiche le nombre de cartes dans la pioche et la défausse. Effet immédiat.', 'Annuler et rétablir les coups', 'Affiche les boutons Annuler et Rétablir. Un nouveau coup efface les coups à rétablir.', 'Rétablir'],
-  ar: ['إظهار عدد البطاقات', 'يعرض عدد البطاقات في الرزمة وكومة المستبعدة. يسري فورًا.', 'التراجع عن الحركات وإعادتها', 'يُظهر زري التراجع والإعادة. تؤدي الحركة الجديدة إلى مسح سجل الإعادة.', 'إعادة'],
-  it: ['Mostra il numero di carte', 'Mostra quante carte ci sono nel mazzo e negli scarti. Ha effetto immediato.', 'Annulla e ripristina le mosse', 'Mostra i pulsanti Annulla e Ripristina. Una nuova mossa cancella quelle da ripristinare.', 'Ripristina'],
-  uk: ['Показувати кількість карт', 'Показує кількість карт у колоді й у стопці скинутих. Діє одразу.', 'Скасування та повторення ходів', 'Показує кнопки скасування й повторення. Новий хід очищає історію повторення.', 'Повторити']
+  "pl": ["Pokaż liczbę kart", "Pokazuje, ile kart jest w zakrytej talii i na stosie odrzuconych. Działa od razu.", "Cofnij i Przywróć", "Od razu pokazuje lub ukrywa przyciski Cofnij i Przywróć w bieżącej partii. Bez odpowiedniej historii przyciski są nieaktywne. Nowy ruch usuwa możliwość przywrócenia.", "Przywróć"],
+  "en": ["Show card counts", "Shows the number of cards in the stock and waste. Takes effect immediately.", "Undo and Redo", "Immediately shows or hides Undo and Redo for the current game. Buttons are disabled when the corresponding history is empty. Making a new move clears redo history.", "Redo"],
+  "es": ["Mostrar el número de cartas", "Muestra cuántas cartas quedan en el mazo y el descarte. Se aplica de inmediato.", "Deshacer y Rehacer", "Muestra u oculta de inmediato Deshacer y Rehacer en la partida actual. Los botones se desactivan si no hay historial correspondiente. Una nueva jugada borra el historial para rehacer.", "Rehacer"],
+  "de": ["Kartenzahl anzeigen", "Zeigt die Kartenzahl im Talon und in der Ablage. Gilt sofort.", "Rückgängig und Wiederholen", "Zeigt oder verbirgt die Tasten für die aktuelle Partie sofort. Ohne passenden Verlauf sind sie deaktiviert. Ein neuer Zug löscht den Wiederholungsverlauf.", "Wiederholen"],
+  "zh-Hans": ["显示牌数", "显示牌库和弃牌堆的牌数。立即生效。", "撤销与重做", "立即显示或隐藏当前牌局的撤销和重做按钮。没有相应历史记录时，按钮不可用。执行新操作会清除重做记录。", "重做"],
+  "hi": ["पत्तों की संख्या दिखाएँ", "गड्डी और छोड़े हुए ढेर में पत्तों की संख्या दिखाता है। तुरंत लागू होता है।", "पूर्ववत और फिर से करें", "मौजूदा खेल में पूर्ववत और फिर से करें बटन तुरंत दिखाता या छिपाता है। संबंधित इतिहास न होने पर बटन निष्क्रिय रहते हैं। नई चाल से फिर से करने का इतिहास मिट जाता है।", "फिर से करें"],
+  "fr": ["Afficher le nombre de cartes", "Affiche le nombre de cartes dans la pioche et la défausse. Effet immédiat.", "Annuler et Rétablir", "Affiche ou masque immédiatement Annuler et Rétablir pour la partie en cours. Les boutons sont désactivés sans historique correspondant. Un nouveau coup efface l’historique de rétablissement.", "Rétablir"],
+  "ar": ["إظهار عدد البطاقات", "يعرض عدد البطاقات في الرزمة وكومة المستبعدة. يسري فورًا.", "التراجع والإعادة", "يُظهر زري التراجع والإعادة أو يخفيهما فورًا في اللعبة الحالية. يتعطّل الزر إذا لم يوجد سجل مناسب. تؤدي الحركة الجديدة إلى مسح سجل الإعادة.", "إعادة"],
+  "it": ["Mostra il numero di carte", "Mostra quante carte ci sono nel mazzo e negli scarti. Ha effetto immediato.", "Annulla e Ripristina", "Mostra o nasconde subito Annulla e Ripristina per la partita attuale. I pulsanti sono disattivati senza la cronologia corrispondente. Una nuova mossa cancella la cronologia di ripristino.", "Ripristina"],
+  "uk": ["Показувати кількість карт", "Показує кількість карт у колоді й у стопці скинутих. Діє одразу.", "Скасувати й повторити", "Одразу показує або приховує кнопки скасування й повторення в поточній партії. Без відповідної історії кнопки неактивні. Новий хід очищає історію повторення.", "Повторити"]
 };
 
 const solitaireTableLabels = {
