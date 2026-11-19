@@ -55,7 +55,6 @@ dialog.shared-settings[open] { display: flex; }
 .shared-settings .setting-description { margin: 0 0 12px; padding: 10px 12px; border-radius: 6px; background: var(--wash); color: var(--ink); font-size: .9em; line-height: 1.5; }
 .shared-settings .settings-backup-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-block-start: 12px; }
 .shared-settings .settings-backup-actions button { min-block-size: 44px; }
-.shared-settings #backup-status:empty { display: none; }
 .shared-settings .settings-save-error { margin-block: 0 16px; padding: 10px 12px; border-inline-start: 4px solid var(--ink); border-radius: 6px; background: var(--wash); color: var(--ink); }
 .shared-settings .settings-save-error p { margin: 0 0 8px; font-weight: 600; font-size: .9em; }
 .shared-settings .settings-save-error button { min-block-size: 44px; }
