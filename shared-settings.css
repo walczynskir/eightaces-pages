@@ -65,3 +65,13 @@ dialog.shared-settings[open] { display: flex; }
 @media (forced-colors: active) {
   .shared-settings .settings-save-error { border: 2px solid CanvasText; }
 }
+
+.shared-settings .settings-file-scope { margin: 8px 0 12px; font-size: .9em; line-height: 1.5; color: var(--muted); }
+.shared-settings #preferences-status:empty { display: none; }
+.shared-settings #preferences-status { padding: 10px 12px; border-inline-start: 3px solid var(--accent); background: var(--wash); line-height: 1.5; }
+.shared-settings #retry-preferences { min-block-size: 44px; }
+/* Portable recovery confirmation reuses the existing dialog appearance. */
+#confirm-progress .settings-backup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#confirm-progress button { min-inline-size: 44px; min-block-size: 44px; }
+#progress-import-stats { font-weight: 600; }
+#progress-import-note { font-size: .9em; line-height: 1.5; }

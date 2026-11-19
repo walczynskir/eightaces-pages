@@ -128,6 +128,7 @@
   const thumbnailTheme = Object.hasOwn(themes, requestedThumbnail) ? requestedThumbnail : null;
   let wins = 0;
   let legacyCopper = false;
+  let unlockedThemes = [];
   let rewarded = false;
   let state;
   let loadedSave;
@@ -145,6 +146,7 @@
     legacyCopper = stored?.legacyCopper ?? (wins >= 3);
     if (prefs.theme === 'andromeda') prefs.theme = 'starry-sky';
     if (prefs.theme === 'tangerine-grove') prefs.theme = 'orange-grove';
+    unlockedThemes = Array.isArray(stored?.unlockedThemes) ? stored.unlockedThemes.filter(id => Object.hasOwn(rewardWins, id)) : [];
     rewarded = stored?.rewarded === true;
     if (stored?.state?.rows?.length === 8 && stored?.state?.goals?.length === 8 && scoring.valid(stored)) {
       state = stored.state;
@@ -178,9 +180,10 @@
     wins = scoring.winCount(results);
     rewarded = true;
   }
-  state.kingsOnly = prefs.kingsOnly;
+  state.kingsOnly ??= prefs.kingsOnly;
   const rewardThreshold = theme => theme === 'copper' && legacyCopper ? 3 : (rewardWins[theme] ?? 0);
-  const themeLocked = theme => wins < rewardThreshold(theme);
+  const themeLocked = theme => !unlockedThemes.includes(theme) && wins < rewardThreshold(theme);
+  const earnedThemes = () => Object.keys(rewardWins).filter(id => !themeLocked(id));
   if (!thumbnailTheme && (themeLocked(prefs.theme) || !Object.hasOwn(themes, prefs.theme))) prefs.theme = 'classic';
   const newGameLabels = ['Nowy pasjans', 'New solitaire', 'Nuevo solitario', 'Neue Patience',
     '新接龙', 'नया सॉलिटेयर', 'Nouveau solitaire', 'سوليتير جديد', 'Nuovo solitario', 'Новий пасьянс'];
@@ -190,7 +193,7 @@
   const tr = text => i18n.text(text, prefs.language);
   const refKey = ref => ref.group + (ref.index ?? '') + (ref.count > 1 ? '-' + ref.count : '');
 
-  const saveValue = () => ({ prefs, state, history, future, wins, rewarded, legacyCopper, results, session });
+  const saveValue = () => ({ prefs, state, history, future, wins, rewarded, legacyCopper, unlockedThemes: earnedThemes(), results, session });
   const serializeSave = () => JSON.stringify(saveValue());
 
   function save() {
@@ -540,6 +543,7 @@
 
   function renderSettings() {
     const labels = settingsDialogStrings[prefs.language] ?? settingsDialogStrings.en;
+    renderPreferencesTransfer();
     byId('settings-title').textContent = tr('Settings');
     byId('settings-rules-heading').textContent = labels.rules;
     byId('settings-display-heading').textContent = labels.display;
@@ -669,8 +673,9 @@
     if (!prefs.showUndo || !from.length) return;
     lastCollectTap = undefined;
     to.push(state);
+    const activeKingsOnly = state.kingsOnly;
     state = from.pop();
-    state.kingsOnly = prefs.kingsOnly;
+    state.kingsOnly = activeKingsOnly;
     selected = undefined;
     save();
     render();
@@ -698,6 +703,88 @@
     uk: ['Експортувати збереження', 'Імпортувати збереження', 'Замінити збереження', 'Файл готовий. Він замінить поточну партію, налаштування й прогрес.', 'Не вдалося прочитати дійсне збереження «Вісім тузів».', 'Не вдалося зберегти дані на цьому пристрої.', 'Скасувати']
   };
   const backupCopy = () => backupLabels[prefs.language] ?? backupLabels.en;
+  const preferenceFiles = GamesChestBackup;
+  const progressBackup = PasjansProgressBackup;
+  const preferenceSchema = { game: 'eight-aces', languages: i18n.languages,
+    options: Object.fromEntries(['sameSuit', 'recycle', 'kingsOnly', 'showCounts', 'showUndo']
+      .map(name => [name, value => typeof value === 'boolean'])) };
+  preferenceSchema.validProgress = progressBackup.validProgress;
+  preferenceSchema.readLegacy = value => progressBackup.readLegacy(value, prefs, i18n.languages);
+  const currentProgress = () => ({ results, legacyCopper, unlockedThemes: earnedThemes() });
+  let preferenceMessage;
+  let pendingPreferences;
+  let preferenceRead = 0;
+  function renderPreferencesTransfer() {
+    const copy = preferencesTransferStrings[prefs.language] ?? preferencesTransferStrings.en;
+    const progressCopy = progressTransferStrings[prefs.language] ?? progressTransferStrings.en;
+    byId('preferences-file-heading').textContent = progressCopy[0];
+    byId('export-preferences').textContent = progressCopy[1];
+    byId('import-preferences').textContent = progressCopy[2];
+    byId('preferences-file-scope').textContent = progressCopy[3];
+    byId('full-save-scope').textContent = copy[4];
+    const codes = { success: 5, locked: 6, unavailable: 7, invalid: 8, game: 9,
+      version: 10, read: 11, write: 12, export: 13 };
+    byId('preferences-status').textContent = (preferenceMessage ?? []).map(code => code === 'success' ? progressCopy[4] : copy[codes[code]]).join(' ');
+    byId('retry-preferences').hidden = !pendingPreferences;
+    byId('retry-preferences').textContent = (settingsDialogStrings[prefs.language] ?? settingsDialogStrings.en).retry;
+    const backup = backupCopy();
+    byId('export-save').textContent = backup[0];
+    byId('import-save').textContent = backup[1];
+  }
+  function planProgress(candidate) {
+    const merged = progressBackup.merge(currentProgress(), candidate);
+    const total = scoring.winCount(merged.results);
+    const imported = GamesChestPreferences.resolveTheme(candidate.preferences, prefs.theme,
+      id => Object.hasOwn(themes, id), id => merged.unlockedThemes.includes(id)
+        || total >= (id === 'copper' && merged.legacyCopper ? 3 : rewardWins[id] ?? 0));
+    return { merged, imported };
+  }
+  function showProgressConfirmation(candidate) {
+    pendingPreferences = candidate;
+    const copy = progressTransferStrings[prefs.language] ?? progressTransferStrings.en;
+    const plan = planProgress(candidate), before = progressBackup.summary(currentProgress()), after = progressBackup.summary(plan.merged);
+    byId('progress-import-title').textContent = copy[5];
+    byId('progress-import-description').textContent = copy[6];
+    byId('progress-import-stats').textContent = copy[12] + ': ' +
+      [copy[9] + ' ' + before.wins + ' / ' + after.wins, copy[10] + ' ' + before.losses + ' / ' + after.losses,
+        copy[11] + ' ' + before.unlocked + ' / ' + after.unlocked].join(' · ');
+    byId('progress-import-note').textContent = [candidate.legacy ? copy[13] : '',
+      candidate.progress.results.baseWins || results.baseWins ? copy[14] : ''].filter(Boolean).join(' ');
+    byId('cancel-progress').textContent = copy[7];
+    byId('restore-progress').textContent = copy[8];
+    byId('progress-import-error').hidden = true;
+    byId('confirm-progress').showModal();
+  }
+  function importPreferences(candidate) {
+    const { merged, imported } = planProgress(candidate);
+    const nextPrefs = { ...prefs, ...imported.preferences };
+    // Restore durable data only: the active board, its rules, history and session remain local.
+    const nextSave = { ...saveValue(), prefs: nextPrefs, results: merged.results,
+      legacyCopper: merged.legacyCopper, unlockedThemes: merged.unlockedThemes,
+      wins: scoring.winCount(merged.results) };
+    try { localStorage.setItem(key, JSON.stringify(nextSave)); }
+    catch {
+      byId('progress-import-error').textContent = (preferencesTransferStrings[prefs.language] ?? preferencesTransferStrings.en)[12];
+      byId('progress-import-error').hidden = false;
+      return;
+    }
+    results = merged.results;
+    wins = nextSave.wins;
+    legacyCopper = merged.legacyCopper;
+    unlockedThemes = merged.unlockedThemes;
+    pendingPreferences = undefined;
+    preferenceMessage = ['success', ...(imported.skipped ? [imported.skipped] : [])];
+    Object.assign(prefs, nextPrefs);
+    selected = undefined;
+    lastCollectTap = undefined;
+    saved = true;
+    for (const name of ['language', 'large', 'sameSuit', 'recycle', 'kingsOnly', 'showCounts', 'showUndo']) {
+      const control = byId(name);
+      if (control.type === 'checkbox') control.checked = prefs[name]; else control.value = prefs[name];
+    }
+    byId('confirm-progress').close('restored');
+    render();
+  }
   const settings = byId('settings');
   const saveFile = byId('save-file');
   const restore = byId('restore-save');
@@ -720,6 +807,8 @@
 
   function readBackup(value) {
     if (!scoring.valid(value)) throw Error('Invalid results');
+    if (value.unlockedThemes !== undefined && (!Array.isArray(value.unlockedThemes)
+      || !value.unlockedThemes.every(id => progressBackup.rewardIds.includes(id)))) throw Error('Invalid unlocks');
     if (!validDeal(value?.state) || !Number.isSafeInteger(value.wins) || value.wins < 0) throw Error('Invalid save');
     const { history = [], future = [] } = value;
     if (![history, future].every(list => Array.isArray(list) && list.every(validDeal))) throw Error('Invalid history');
@@ -730,11 +819,59 @@
     }
     if (!i18n.languages.includes(preferences.language)) preferences.language = 'pl';
     return {
-      results: value.results, session: value.session,
+      results: value.results, session: value.session, unlockedThemes: value.unlockedThemes ?? [],
       prefs: preferences, state: value.state, history, future, wins: value.wins,
       rewarded: value.rewarded === true, legacyCopper: value.legacyCopper ?? value.wins >= 3
     };
   }
+
+  byId('export-preferences').onclick = () => {
+    try {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([preferenceFiles.stringify(prefs, currentProgress(), preferenceSchema)], { type: 'application/json' }));
+      link.download = 'eight-aces-backup.json';
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 30_000);
+    } catch {
+      preferenceMessage = ['export'];
+      renderPreferencesTransfer();
+    }
+  };
+  byId('import-preferences').onclick = () => byId('preferences-file').click();
+  byId('preferences-file').onchange = async () => {
+    const input = byId('preferences-file');
+    const [file] = input.files;
+    input.value = '';
+    if (!file) return;
+    const reading = ++preferenceRead;
+    pendingPreferences = undefined;
+    preferenceMessage = undefined;
+    byId('import-preferences').disabled = true;
+    renderPreferencesTransfer();
+    try {
+      if (file.size > preferenceFiles.maxBytes) throw Object.assign(Error('invalid'), { code: 'invalid' });
+      let text;
+      try { text = await file.text(); } catch { throw Object.assign(Error('read'), { code: 'read' }); }
+      if (reading !== preferenceRead || !settings.open) return;
+      showProgressConfirmation(preferenceFiles.parse(text, preferenceSchema));
+    } catch (error) {
+      if (reading !== preferenceRead || !settings.open) return;
+      preferenceMessage = [['invalid', 'game', 'version', 'read'].includes(error.code) ? error.code : 'invalid'];
+      renderPreferencesTransfer();
+    } finally {
+      if (reading === preferenceRead) byId('import-preferences').disabled = false;
+    }
+  };
+  byId('retry-preferences').onclick = () => { if (pendingPreferences) showProgressConfirmation(pendingPreferences); };
+  byId('restore-progress').onclick = () => { if (pendingPreferences) importPreferences(pendingPreferences); };
+  byId('confirm-progress').addEventListener('close', () => {
+    if (byId('confirm-progress').open) return;
+    pendingPreferences = undefined;
+    byId('import-preferences').focus();
+    renderPreferencesTransfer();
+  });
 
   byId('export-save').onclick = () => {
     const link = document.createElement('a');
@@ -773,7 +910,9 @@
   restore.onclick = () => {
     if (!pendingSave) return;
     try {
-      localStorage.setItem(key, JSON.stringify(scoring.importSave(pendingSave, saveValue())));
+      const imported = scoring.importSave(pendingSave, saveValue());
+      imported.unlockedThemes = [...new Set([...earnedThemes(), ...(pendingSave.unlockedThemes ?? [])])];
+      localStorage.setItem(key, JSON.stringify(imported));
       pendingSave = undefined;
     } catch {
       importError.textContent = backupCopy()[5];
@@ -790,6 +929,11 @@
   settings.addEventListener('close', () => {
     if (settings.open) return;
     byId('settings-button').focus({ preventScroll: true });
+    preferenceRead++;
+    pendingPreferences = undefined;
+    preferenceMessage = undefined;
+    byId('import-preferences').disabled = false;
+    renderPreferencesTransfer();
     pendingSave = undefined;
     status.textContent = '';
   });
