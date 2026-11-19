@@ -1,7 +1,14 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.9.2';
+const cacheName = cachePrefix + '1.10.0';
 const scope = self.registration.scope;
 const assetNames = [
+  'games-chest/games.json',
+  'games-chest/sudoku-logo.svg',
+  'games-chest/domino-logo.svg',
+  'games-chest/eightaces-icon.png',
+  'games-chest/garibaldka-icon.png',
+  'games-chest/gomoku-icon.png',
+
   'index.html', 'credits.html', 'version.json', 'manifest.webmanifest',
   'logo.svg', 'favicon.ico', 'favicon-32.png', 'favicon-48.png', 'settings-gear.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'apple-touch-icon.png',
   'style.css', 'shared-settings.css', 'shared-palettes.css', 'themes.css', 'shared-game.css', 'pasjans.css',

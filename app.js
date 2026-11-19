@@ -855,8 +855,9 @@
   });
   const toolbar = document.querySelector('.game-toolbar');
   const header = document.querySelector('header');
+  document.querySelector('#game-picker-button').addEventListener('game-picker-label-change', fitToolbar);
   function fitToolbar() {
-    toolbar.classList.remove('compact-utilities', 'compact-history', 'compact-new');
+    toolbar.classList.remove('compact-utilities', 'compact-history', 'compact-new', 'toolbar-picker-icon', 'toolbar-overflow');
     const styles = getComputedStyle(toolbar);
     const available = toolbar.clientWidth - parseFloat(styles.paddingInlineStart) - parseFloat(styles.paddingInlineEnd);
     const required = () => Math.ceil(byId('new-game').getBoundingClientRect().width
@@ -864,6 +865,8 @@
     if (required() > available) toolbar.classList.add('compact-utilities');
     if (required() > available) toolbar.classList.add('compact-history');
     if (required() > available) toolbar.classList.add('compact-new');
+    if (required() > available) toolbar.classList.add('toolbar-picker-icon');
+    if (required() > available) toolbar.classList.add('toolbar-overflow');
   }
   function fitHeader() {
     header.classList.remove('stacked-controls');
