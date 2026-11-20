@@ -1,0 +1,46 @@
+/* Progress dialog layout follows the metric rows in Domino and Garibaldka. */
+dialog.progress-summary {
+  box-sizing: border-box;
+  inline-size: min(var(--progress-summary-width, 460px), calc(100% - 24px));
+  max-block-size: min(85vh, calc(100dvh - 24px));
+  padding: clamp(16px, 5vw, 25px);
+  overflow: auto;
+  font-variant-numeric: tabular-nums;
+}
+.progress-summary .progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block-end: .7em;
+}
+.progress-summary .progress-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.4em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.progress-summary .progress-heading form { margin: 0; }
+.progress-summary .progress-summary-close {
+  display: grid;
+  place-items: center;
+  position: static;
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding: 0;
+  color: var(--ink);
+  font-size: 1.35em;
+  line-height: 1;
+}
+.progress-summary #progress-metrics { margin-block: 0; }
+.progress-summary #progress-metrics .stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .5em;
+  padding-block: .45em;
+  border-block-start: 1px solid var(--line);
+  font-size: inherit;
+}
+.progress-summary #progress-metrics dd { margin: 0; font-weight: 700; }

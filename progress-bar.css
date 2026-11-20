@@ -19,16 +19,7 @@
 .progress-chevron { font-size: 1.4em; line-height: 1; }
 [dir="rtl"] .progress-chevron { transform: scaleX(-1); }
 :is(.table-only, .game-fullscreen) #my-progress { display: none; }
-#progress-dialog { max-block-size: min(85vh, calc(100dvh - 24px)); }
-.progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.progress-heading h2 { margin: 0; }
-#progress-close { min-block-size: 44px; min-inline-size: 44px; padding: 0; font-size: 1.35em; }
-#progress-metrics { margin-block-start: .7em; }
-#progress-metrics .stat { gap: .5em; font-size: inherit; }
-#progress-badges h3 { margin-block: .7em 0; }
 
-#progress-metrics .stat { display: flex; justify-content: space-between; padding: .4em 0; border-block-end: 1px solid var(--line); }
-#progress-metrics dd { margin: 0; font-weight: 700; }
 .game-toolbar { margin-block-start: 0; }
 
 .theme-thumbnail-page #my-progress { display: none; }
