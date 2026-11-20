@@ -588,7 +588,7 @@
   }
 
   function gameName() {
-    return prefs.language === 'pl' ? 'Osiem Asów' : 'Eight Aces';
+    return tr('Eight Aces');
   }
 
   i18n.addLanguages(byId('language'));

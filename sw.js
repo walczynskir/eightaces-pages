@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.2';
+const cacheName = cachePrefix + '1.11.3';
 const scope = self.registration.scope;
 const assetNames = [
   "statistics-reset.js",
