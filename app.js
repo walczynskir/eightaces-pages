@@ -392,6 +392,19 @@
     renderedBarTheme = theme;
   }
 
+  function renderProgress() {
+    if (thumbnailTheme) return;
+    const next = Object.keys(rewardWins).find(themeLocked);
+    const reward = next && { name: themeName(next), count: wins, goal: rewardThreshold(next), wins: true };
+    GamesChestProgressBar(prefs.language, wins, reward, () => {
+      const copy = progressTransferStrings[prefs.language] ?? progressTransferStrings.en;
+      const records = Object.values(results.records);
+      const losses = records.filter(record => record.outcome === 'loss').length;
+      const completed = results.baseWins + records.filter(record => record.reason === 'completed').length;
+      return [[null, completed], [copy[9], wins], [copy[10], losses]];
+    });
+  }
+
   function render() {
     if (state.drawn.length) selected = drawnRef;
     updateRouteSearch();
@@ -532,6 +545,7 @@
     if (activeCard) (document.querySelector('[data-card="' + activeCard + '"]:not(:disabled)') ?? stockCard).focus();
     if (activeAction) (document.querySelector('[data-action="' + activeAction + '"]:not(:disabled)') ?? stockCard).focus();
     renderSettings();
+    renderProgress();
     i18n.apply(document.body, prefs.language);
     document.title = gameName();
     const supportText = tr("Domino is free. If you wish, support people affected by the war in Ukraine or dogs and cats in Gdynia, Poland.");
