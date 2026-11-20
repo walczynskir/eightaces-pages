@@ -1,7 +1,8 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.1';
+const cacheName = cachePrefix + '1.11.2';
 const scope = self.registration.scope;
 const assetNames = [
+  "statistics-reset.js",
   "progress-summary.css",
   'progress-bar.css', 'progress-bar.js',
   'games-chest/games.json',

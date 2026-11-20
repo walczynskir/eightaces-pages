@@ -392,16 +392,23 @@
     renderedBarTheme = theme;
   }
 
+  function currentStatistics() {
+    const losses = Object.values(results.records).filter(record => record.outcome === 'loss').length;
+    return { wins, losses };
+  }
+
+  const statisticsReset = createStatisticsReset('eight-aces-statistics-baseline-v1', '#progress-dialog',
+    currentStatistics, renderProgress);
+
   function renderProgress() {
     if (thumbnailTheme) return;
     const next = Object.keys(rewardWins).find(themeLocked);
     const reward = next && { name: themeName(next), count: wins, goal: rewardThreshold(next), wins: true };
-    GamesChestProgressBar(prefs.language, wins, reward, () => {
+    const shownWins = statisticsReset.count('wins', wins);
+    GamesChestProgressBar(prefs.language, shownWins, reward, () => {
       const copy = progressTransferStrings[prefs.language] ?? progressTransferStrings.en;
-      const records = Object.values(results.records);
-      const losses = records.filter(record => record.outcome === 'loss').length;
-      const completed = results.baseWins + records.filter(record => record.reason === 'completed').length;
-      return [[null, completed], [copy[9], wins], [copy[10], losses]];
+      const losses = statisticsReset.count('losses', currentStatistics().losses);
+      return [[statisticsReset.recordedLabel, shownWins + losses], [copy[9], shownWins], [copy[10], losses]];
     });
   }
 
