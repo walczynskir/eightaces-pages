@@ -300,7 +300,21 @@
   }
 
   const won = state => state.goals.every(goal => goal.length === 13);
-  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, selectionPlan, applySelectionPlan, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won };
+  function hasAvailableMove(state) {
+    if (state.drawn.length || state.stock.length || (state.recycle && state.waste.length)) return true;
+    const rows = state.rows.map((_, index) => ({ group: 'rows', index }));
+    const destinations = [...rows, ...state.goals.map((_, index) => ({ group: 'goals', index }))];
+    const sources = [...rows, { group: 'waste' }];
+    if (sources.some(from => destinations.some(to => canMove(state, from, to)))) return true;
+    return rows.some(from => {
+      const length = sequenceLength(state, from.index);
+      for (let count = 2; count <= length; count++) {
+        if (rows.some(to => canMoveSelection(state, { ...from, count }, to))) return true;
+      }
+      return false;
+    });
+  }
+  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, selectionPlan, applySelectionPlan, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won, hasAvailableMove };
   if (typeof module !== 'undefined') module.exports = engine;
   else root.PasjansEngine = engine;
 })(globalThis);

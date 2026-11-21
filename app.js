@@ -480,7 +480,8 @@
     const finished = engine.won(state);
     byId("tableau").closest(".game").classList.toggle("game-won", finished);
     GameVictory(finished, victory);
-    byId('status').textContent = finished ? victory + ' · 104/104' : instructions + ' · ' + count + '/104';
+    const gameStatus = finished ? victory : engine.hasAvailableMove(state) ? instructions : tr('No available moves.');
+    byId('status').textContent = gameStatus + ' · ' + count + '/104';
     const [full, exit] = solitaireTableLabels[prefs.language] ?? solitaireTableLabels.pl;
     const fullscreen = byId('fullscreen');
     const fullscreenLabel = document.body.classList.contains('table-only') ? exit : full;

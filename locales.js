@@ -25,6 +25,7 @@
     "zh-Hans": "简体中文"
   },
   "catalog": {
+    "No available moves.": ["Brak dostępnych ruchów.", "No available moves.", "No hay jugadas disponibles.", "Keine Züge möglich.", "没有可用的操作。", "कोई चाल उपलब्ध नहीं है।", "Aucun coup possible.", "لا توجد حركات متاحة.", "Nessuna mossa disponibile.", "Немає доступних ходів."],
     "Eight Aces": ["Osiem Asów", "Eight Aces", "Ocho ases", "Acht Asse", "八张王牌", "आठ इक्के", "Huit as", "ثمانية آسات", "Otto assi", "Вісім тузів"],
     "Grandmaster": ["Arcymistrz", "Grandmaster", "Gran maestro", "Großmeister", "特级大师", "ग्रैंडमास्टर", "Grand maître", "أستاذ كبير", "Grande maestro", "Гросмейстер"],
     "Grandmaster searches deeper when the pool runs out.": ["Arcymistrz analizuje więcej ruchów, gdy w puli zabraknie kości do dobrania.", "Grandmaster searches deeper when the pool runs out.", "El gran maestro analiza más jugadas cuando se agotan las fichas que se pueden robar.", "Der Großmeister rechnet tiefer, wenn keine Steine mehr gezogen werden können.", "没有可摸的骨牌时，特级大师会分析更多步。", "जब उठाने के लिए गोटियाँ नहीं बचतीं, तो ग्रैंडमास्टर अधिक चालों का विश्लेषण करता है।", "Le grand maître analyse davantage de coups lorsque la pioche est épuisée.", "يحلّل الأستاذ الكبير حركات أكثر عندما لا تبقى قطع قابلة للسحب.", "Il grande maestro analizza più mosse quando non restano tessere da pescare.", "Гросмейстер аналізує більше ходів, коли більше немає кісточок для добору."],
