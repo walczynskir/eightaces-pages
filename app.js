@@ -195,6 +195,7 @@
 
   const saveValue = () => ({ prefs, state, history, future, wins, rewarded, legacyCopper, unlockedThemes: earnedThemes(), results, session });
   const serializeSave = () => JSON.stringify(saveValue());
+  const lost = () => results.records[session.id]?.outcome === 'loss';
 
   function save() {
     if (thumbnailTheme) return;
@@ -276,6 +277,7 @@
   }
 
   async function action(apply, nextSelection) {
+    if (lost()) return;
     lastCollectTap = undefined;
     const previous = structuredClone(state);
     if (!apply()) {
@@ -301,7 +303,7 @@
   }
 
   function choose(ref, event) {
-    if (engine.won(state)) return;
+    if (lost() || engine.won(state)) return;
     const previousTap = lastCollectTap;
     lastCollectTap = undefined;
     const card = engine.top(engine.pile(state, ref));
@@ -454,7 +456,7 @@
     byId('undo').setAttribute('aria-label', undo);
     byId('undo').title = undo;
     byId('undo').hidden = !prefs.showUndo;
-    byId('undo').disabled = history.length === 0;
+    byId('undo').disabled = lost() || history.length === 0;
     byId('same-label').textContent = sameSuit;
     byId('recycle-label').textContent = recycle;
     const [kingLabel, kingNote] = solitaireKingOption[prefs.language] ?? solitaireKingOption.pl;
@@ -474,14 +476,17 @@
     byId('redo').setAttribute('aria-label', redo);
     byId('redo').title = redo;
     byId('redo').hidden = !prefs.showUndo;
-    byId('redo').disabled = future.length === 0;
+    byId('redo').disabled = lost() || future.length === 0;
     const pileLabel = (label, count) => prefs.showCounts ? label + ' · ' + count : label;
     const count = state.goals.reduce((total, pile) => total + pile.length, 0);
     const finished = engine.won(state);
     byId("tableau").closest(".game").classList.toggle("game-won", finished);
     GameVictory(finished, victory);
-    const gameStatus = finished ? victory : engine.hasAvailableMove(state) ? instructions : tr('No available moves.');
+    const blocked = !finished && !lost() && !engine.hasAvailableMove(state);
+    const gameStatus = lost() ? tr('Game lost.') : finished ? victory : blocked ? tr('No available moves.') : instructions;
     byId('status').textContent = gameStatus + ' · ' + count + '/104';
+    byId('end-blocked-game').hidden = !blocked;
+    byId('end-blocked-game').textContent = tr('End game');
     const [full, exit] = solitaireTableLabels[prefs.language] ?? solitaireTableLabels.pl;
     const fullscreen = byId('fullscreen');
     const fullscreenLabel = document.body.classList.contains('table-only') ? exit : full;
@@ -691,7 +696,7 @@
     render();
   }
   function stepHistory(from, to) {
-    if (!prefs.showUndo || !from.length) return;
+    if (lost() || !prefs.showUndo || !from.length) return;
     lastCollectTap = undefined;
     to.push(state);
     const activeKingsOnly = state.kingsOnly;
@@ -703,6 +708,21 @@
   }
   byId('undo').onclick = () => stepHistory(history, future);
   byId('redo').onclick = () => stepHistory(future, history);
+  byId('end-blocked-game').onclick = () => {
+    if (transitioning || lost() || engine.won(state) || engine.hasAvailableMove(state)) return;
+    const nextResults = structuredClone(results);
+    if (!scoring.finish(nextResults, session, 'loss', 'completed')) return;
+    try {
+      localStorage.setItem(key, JSON.stringify({ ...saveValue(), results: nextResults }));
+      results = nextResults;
+      selected = undefined;
+      saved = true;
+    } catch {
+      saved = false;
+    }
+    render();
+    if (saved) byId('status').focus();
+  };
   byId('help-button').onclick = () => byId('help').showModal();
   for (const button of byId('settings').querySelectorAll('.setting-info')) {
     const description = byId(button.getAttribute('aria-controls'));

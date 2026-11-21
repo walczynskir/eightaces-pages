@@ -25,6 +25,8 @@
     "zh-Hans": "简体中文"
   },
   "catalog": {
+    "End game": ["Zakończ partię", "End game", "Terminar partida", "Spiel beenden", "结束本局", "खेल समाप्त करें", "Terminer la partie", "إنهاء اللعبة", "Termina la partita", "Завершити партію"],
+    "Game lost.": ["Partia przegrana.", "Game lost.", "Partida perdida.", "Spiel verloren.", "本局失败。", "खेल हार गए।", "Partie perdue.", "خسرت اللعبة.", "Partita persa.", "Партію програно."],
     "No available moves.": ["Brak dostępnych ruchów.", "No available moves.", "No hay jugadas disponibles.", "Keine Züge möglich.", "没有可用的操作。", "कोई चाल उपलब्ध नहीं है।", "Aucun coup possible.", "لا توجد حركات متاحة.", "Nessuna mossa disponibile.", "Немає доступних ходів."],
     "Eight Aces": ["Osiem Asów", "Eight Aces", "Ocho ases", "Acht Asse", "八张王牌", "आठ इक्के", "Huit as", "ثمانية آسات", "Otto assi", "Вісім тузів"],
     "Grandmaster": ["Arcymistrz", "Grandmaster", "Gran maestro", "Großmeister", "特级大师", "ग्रैंडमास्टर", "Grand maître", "أستاذ كبير", "Grande maestro", "Гросмейстер"],
