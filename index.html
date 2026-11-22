@@ -18,13 +18,13 @@
 <link rel="stylesheet" href="card-backs.css?v=deck-themes-2">
 <link rel="stylesheet" href="pasjans.css?v=deck-themes-1">
 <link rel="stylesheet" href="shared-victory.css?v=6">
-<link rel="stylesheet" href="games-chest-menu.css?v=icon-gallery-1"><script defer src="games-chest-menu.js?v=footer-1" data-game="eight-aces"></script><script>if (!new URLSearchParams(location.search).has("miniatura") || window === window.top) { const script = document.createElement("script"); script.defer = true; script.src = "https://cloud.umami.is/script.js"; script.setAttribute("data-website-id", "a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2"); script.setAttribute("data-domains", "eightaces.games-chest.com"); script.setAttribute("data-tag", "eight-aces"); document.head.append(script); }</script>
+<link rel="stylesheet" href="games-chest-menu.css?v=icon-gallery-1"><script defer src="games-chest-menu.js?v=picker-recent-only-1" data-game="eight-aces"></script><script>if (!new URLSearchParams(location.search).has("miniatura") || window === window.top) { const script = document.createElement("script"); script.defer = true; script.src = "https://cloud.umami.is/script.js"; script.setAttribute("data-website-id", "a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2"); script.setAttribute("data-domains", "eightaces.games-chest.com"); script.setAttribute("data-tag", "eight-aces"); document.head.append(script); }</script>
 <link rel="stylesheet" href="theme-gallery.css?v=1.4.5">
 <link rel="stylesheet" href="shared-settings.css?v=1.9.2">
 <link rel="stylesheet" href="progress-bar.css?v=1.11.1">
 <link rel="stylesheet" href="progress-summary.css?v=1.11.1">
-<link rel="stylesheet" href="shared-footer.css?v=footer-save-errors-1">
-<script defer src="shared-footer.js?v=footer-save-errors-1"></script>
+<link rel="stylesheet" href="shared-footer.css?v=footer-picker-recent-1">
+<script defer src="shared-footer.js?v=footer-picker-recent-1"></script>
 </head>
 <body>
 <header><a class="brand" href="./"><img class="brand-logo" src="icon-192.png?v=1.5.2" alt=""><span class="brand-name" translate="no">Osiem Asów</span></a><div class="header-controls"><div class="accessibility-controls"><button id="contrast" translate="no" aria-pressed="false"></button><label class="text-size-control"><input type="checkbox" id="large"><span id="large-label"></span></label></div><div class="preferences"><label><span id="language-label"></span><select id="language"><option value="pl">Polski</option><option value="en">English</option></select></label><label><span id="theme-label"></span><select id="theme"></select></label></div></div></header>
@@ -65,10 +65,9 @@
   </section>
   <div class="footer-details">
     <a id="credits-link" href="credits.html" data-footer-copy="credits" translate="no">Autorzy i licencje</a>
-    <span id="footer-version" translate="no">v1.11.11</span>
+    <span id="footer-version" translate="no">v1.11.12</span>
     <span id="save-note" role="status" translate="no"></span>
   </div>
-  <nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div></nav>
 </footer>
 <dialog id="progress-dialog" class="progress-summary" aria-labelledby="progress-title" translate="no">
   <div class="progress-heading">
@@ -222,7 +221,7 @@
 <script src="progress-backup.js?v=1.9.2"></script>
 <script src="preferences-strings.js?v=1.9.2"></script>
 <script src="progress-bar.js?v=1.11.0"></script>
-<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=footer-save-errors-1"></script>
+<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=footer-picker-recent-1"></script>
 <script>
   if (window === window.top && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline setup failed", error));

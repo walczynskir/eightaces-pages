@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.11';
+const cacheName = cachePrefix + '1.11.12';
 const scope = self.registration.scope;
 const assetNames = [
   "shared-footer.css",
