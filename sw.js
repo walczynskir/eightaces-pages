@@ -2,6 +2,8 @@ const cachePrefix = 'eight-aces-offline-';
 const cacheName = cachePrefix + '1.11.3-icon-gallery-deck-2';
 const scope = self.registration.scope;
 const assetNames = [
+  "shared-footer.css",
+  "shared-footer.js",
   "card-backs.css",
   "games-chest/domino-icon.png",
 

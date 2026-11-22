@@ -561,8 +561,6 @@
     renderProgress();
     i18n.apply(document.body, prefs.language);
     document.title = gameName();
-    const supportText = tr("Domino is free. If you wish, support people affected by the war in Ukraine or dogs and cats in Gdynia, Poland.");
-    document.querySelector(".support-causes > p").textContent = supportText.replace(/^[^.!?。！？।]*[.!?。！？।]\s*/u, "");
     document.querySelector(".brand-name").textContent = document.title;
     fitHeader();
     fitToolbar();
