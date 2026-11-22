@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.3-icon-gallery-deck-2';
+const cacheName = cachePrefix + '1.11.11';
 const scope = self.registration.scope;
 const assetNames = [
   "shared-footer.css",
@@ -32,6 +32,7 @@ self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(cacheName);
     await cache.addAll([...assets].map(url => new Request(url, { cache: 'reload' })));
+    await self.skipWaiting();
   })());
 });
 
