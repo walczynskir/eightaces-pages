@@ -466,6 +466,7 @@
     const [sameNote, recycleNote] = solitaireOptionNotes[prefs.language] ?? solitaireOptionNotes.pl;
     byId('sameSuit-note').textContent = sameNote;
     byId('recycle-note').textContent = recycleNote;
+    byId('save-note').dataset.saved = String(saved);
     byId('save-note').textContent = tr(saved ? 'Automatically saved on this device' : 'Could not save the game. Browser storage may be blocked.');
     const [countsLabel, countsNote, undoLabel, undoNote, redo] = solitaireDisplayOptions[prefs.language] ?? solitaireDisplayOptions.pl;
     byId('showCounts-label').textContent = countsLabel;
