@@ -1,7 +1,10 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.3';
+const cacheName = cachePrefix + '1.11.3-icon-gallery-deck-2';
 const scope = self.registration.scope;
 const assetNames = [
+  "card-backs.css",
+  "games-chest/domino-icon.png",
+
   "statistics-reset.js",
   "progress-summary.css",
   'progress-bar.css', 'progress-bar.js',

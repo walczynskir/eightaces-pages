@@ -1,0 +1,135 @@
+/* Shared palette and pattern for face-down cards. The game still controls shape and stacking. */
+:root {
+  --card-back-color: #23496c;
+  --card-back-ink: #a7cce16b;
+  --card-back-edge: #aac8d9;
+  --card-back-other: #78263b;
+  --card-back-lattice:
+    repeating-linear-gradient(45deg, transparent 0 4px, var(--card-back-ink) 4px 5px),
+    repeating-linear-gradient(-45deg, transparent 0 4px, var(--card-back-ink) 4px 5px);
+  --card-back-waves: repeating-radial-gradient(ellipse at 50% 110%, transparent 0 5px, var(--card-back-ink) 6px 7px, transparent 8px 11px);
+  --card-back-leaves:
+    repeating-radial-gradient(ellipse at 0 100%, var(--card-back-ink) 0 1px, transparent 2px 6px),
+    repeating-radial-gradient(ellipse at 100% 0, var(--card-back-ink) 0 1px, transparent 2px 7px);
+  --card-back-stars:
+    radial-gradient(circle, var(--card-back-ink) 1px, transparent 1.6px) 0 0 / 11px 11px repeat,
+    radial-gradient(circle, var(--card-back-ink) .6px, transparent 1.2px) 5px 4px / 11px 11px repeat;
+  --card-back-pattern: var(--card-back-lattice);
+}
+
+:root[data-theme="sage"] {
+  --card-back-color: #52654f;
+  --card-back-ink: #e1ead777;
+  --card-back-edge: #d2debf;
+  --card-back-pattern: radial-gradient(ellipse 5px 2px at 25% 50%, var(--card-back-ink) 70%, transparent 100%) 0 0 / 16px 9px,
+    radial-gradient(ellipse 5px 2px at 75% 50%, var(--card-back-ink) 70%, transparent 100%) 0 4px / 16px 9px;
+}
+:root:is([data-theme="classic"], [data-scenery="sage"]) {
+  --card-back-color: #245640;
+  --card-back-ink: #d5cf8f86;
+  --card-back-edge: #e2d3a6;
+}
+:root:is(.garden-theme, [data-scenery="garden"], [data-theme="garden"]) {
+  --card-back-color: #21603e;
+  --card-back-ink: #c1df8490;
+  --card-back-edge: #cfdea7;
+  --card-back-other: #75405b;
+  --card-back-pattern: var(--card-back-leaves);
+}
+:root[data-theme="tropics"] {
+  --card-back-color: #214d86;
+  --card-back-ink: #95e4ed91;
+  --card-back-edge: #b9e4e4;
+  --card-back-other: #753c6b;
+  --card-back-pattern: repeating-conic-gradient(from 35deg at 50% 84%, transparent 0deg 22deg, var(--card-back-ink) 24deg 28deg, transparent 30deg 54deg) 0 0 / 17px 16px;
+}
+:root[data-theme="beach"] {
+  --card-back-color: #127272;
+  --card-back-ink: #f8deab9a;
+  --card-back-edge: #f2e5c7;
+  --card-back-other: #864b2d;
+  --card-back-pattern: var(--card-back-waves);
+}
+:root[data-theme="porcelain"] {
+  --card-back-color: #efefe4;
+  --card-back-ink: #3a639d84;
+  --card-back-edge: #8fa9c4;
+  --card-back-pattern: radial-gradient(circle at 50% 50%, transparent 3px, var(--card-back-ink) 3.5px 4.5px, transparent 5px) 0 0 / 12px 12px,
+    radial-gradient(circle at 0 0, var(--card-back-ink) 1.5px, transparent 2px) 0 0 / 12px 12px;
+}
+:root[data-theme="ink"] {
+  --card-back-color: #2d2a2d;
+  --card-back-ink: #e0d8c28a;
+  --card-back-edge: #d4cbb8;
+  --card-back-pattern: repeating-linear-gradient(105deg, transparent 0 3px, var(--card-back-ink) 3px 4px, transparent 4px 7px),
+    repeating-linear-gradient(12deg, transparent 0 8px, #ede3c935 8px 9px);
+}
+:root[data-theme="studio"] {
+  --card-back-color: #563359;
+  --card-back-ink: #e5acd097;
+  --card-back-edge: #e4c8de;
+  --card-back-pattern: linear-gradient(135deg, var(--card-back-ink) 25%, transparent 25% 75%, var(--card-back-ink) 75%) 0 0 / 12px 12px,
+    linear-gradient(-135deg, transparent 75%, var(--card-back-ink) 75%) 6px 6px / 12px 12px;
+}
+:root[data-theme="forma"] {
+  --card-back-color: #374449;
+  --card-back-ink: #6fe6cc81;
+  --card-back-edge: #9cd9d0;
+  --card-back-pattern: linear-gradient(90deg, transparent 60%, var(--card-back-ink) 60% 75%, transparent 75%) 0 0 / 11px 11px,
+    linear-gradient(0deg, transparent 25%, var(--card-back-ink) 25% 42%, transparent 42%) 4px 0 / 11px 11px;
+}
+:root[data-theme="energy"] {
+  --card-back-color: #403a72;
+  --card-back-ink: #f4c563a3;
+  --card-back-edge: #f5daa0;
+  --card-back-pattern: repeating-linear-gradient(-55deg, transparent 0 6px, var(--card-back-ink) 6px 8px, transparent 8px 10px),
+    repeating-linear-gradient(55deg, transparent 0 11px, #f4c56330 11px 14px);
+}
+:root[data-theme="tangerine"] {
+  --card-back-color: #953f24;
+  --card-back-ink: #ffd49494;
+  --card-back-edge: #f3d3aa;
+  --card-back-other: #315345;
+  --card-back-pattern: repeating-conic-gradient(from 45deg, var(--card-back-ink) 0deg 25deg, transparent 25deg 90deg) 0 0 / 12px 12px;
+}
+:root:is(.tangerine-grove-theme, [data-scenery="orange-grove"]) {
+  --card-back-color: #925027;
+  --card-back-ink: #f6d17b9c;
+  --card-back-edge: #ecd8a1;
+  --card-back-other: #345343;
+  --card-back-pattern: radial-gradient(circle at 45% 57%, var(--card-back-ink) 0 3px, transparent 3.5px) 0 0 / 13px 13px,
+    radial-gradient(ellipse 2px 1px at 59% 23%, #e5ebacaa 75%, transparent 100%) 0 0 / 13px 13px;
+}
+:root[data-theme="ukraine"] {
+  --card-back-color: #194d92;
+  --card-back-ink: #ffd66c9e;
+  --card-back-edge: #ffde7f;
+  --card-back-other: #815326;
+  --card-back-pattern: repeating-linear-gradient(45deg, transparent 0 4px, var(--card-back-ink) 4px 5px, transparent 5px 8px) 0 0 / 16px 8px,
+    repeating-linear-gradient(-45deg, transparent 0 4px, var(--card-back-ink) 4px 5px, transparent 5px 8px) 0 8px / 16px 8px;
+}
+:root[data-theme="copper"] {
+  --card-back-color: #246763;
+  --card-back-ink: #f0b9939e;
+  --card-back-edge: #e4bb9f;
+  --card-back-other: #825039;
+  --card-back-pattern: radial-gradient(circle at 3px 3px, var(--card-back-ink) 0 1.3px, transparent 1.9px) 0 0 / 13px 13px,
+    linear-gradient(90deg, transparent 11px, #f0b99355 11px 12px, transparent 12px) 0 0 / 13px 13px,
+    linear-gradient(0deg, transparent 11px, #f0b99355 11px 12px, transparent 12px) 0 0 / 13px 13px;
+}
+:root[data-theme="night-sky"] {
+  --card-back-color: #192b54;
+  --card-back-ink: #b9c8f4a3;
+  --card-back-edge: #afbce0;
+  --card-back-pattern: repeating-linear-gradient(0deg, transparent 0 5px, var(--card-back-ink) 5px 6px, transparent 6px 10px),
+    repeating-linear-gradient(90deg, transparent 0 5px, #8ea9d959 5px 6px, transparent 6px 12px);
+}
+:root:is([data-scenic-reward="starry-sky"], [data-scenery="night-sky"]) {
+  --card-back-pattern: var(--card-back-stars);
+}
+:root[data-theme="contrast"] {
+  --card-back-color: #141414;
+  --card-back-edge: #fff;
+  --card-back-other: #555;
+  --card-back-pattern: repeating-linear-gradient(45deg, transparent 0 3px, #fff 3px 4px, transparent 4px 6px);
+}

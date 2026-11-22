@@ -98,9 +98,9 @@ button.stock-card:not(.tile) {
 button.stock-card.has-stock:not(.tile),
 .stock-pile.revealed-on-stock::before {
   border: 2px solid var(--paper);
-  outline: 1px solid var(--accent);
-  background: repeating-linear-gradient(45deg, var(--accent) 0 3px, var(--wash) 3px 5px);
-  box-shadow: 2px 2px var(--paper), 3px 3px var(--accent), 4px 4px var(--paper), 5px 5px var(--accent);
+  outline: 1px solid var(--card-back-edge);
+  background: var(--card-back-pattern) var(--card-back-color);
+  box-shadow: 2px 2px var(--paper), 3px 3px var(--card-back-edge), 4px 4px var(--paper), 5px 5px var(--card-back-edge);
 }
 button.stock-card:not(:disabled):focus-visible {
   outline: 3px solid var(--ink);
@@ -400,16 +400,6 @@ body.large button[data-card="waste"] .card-suit { font-size: min(clamp(20px, 3.5
   outline-color: #fff4bd;
   outline-offset: 2px;
 }
-:is([data-theme="classic"], [data-theme="tropics"], [data-theme="beach"]) button.stock-card.has-stock:not(.tile),
-:is([data-theme="classic"], [data-theme="tropics"], [data-theme="beach"]) .stock-pile.revealed-on-stock::before {
-  background:
-    repeating-linear-gradient(45deg, transparent 0 3px, #8cc4ec44 3px 4px),
-    repeating-linear-gradient(-45deg, transparent 0 3px, #8cc4ec44 3px 4px),
-    #12579a;
-  outline-color: #164676;
-  box-shadow: 2px 2px var(--paper), 3px 3px #164676, 4px 4px var(--paper), 5px 5px #164676;
-}
-
 .solitaire .stock-pile.single-stock-card button.stock-card.has-stock:not(.tile),
 .solitaire .stock-pile.single-stock-card.revealed-on-stock::before {
   box-shadow: none;
