@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.13';
+const cacheName = cachePrefix + '1.11.14';
 const scope = self.registration.scope;
 const assetNames = [
   "shared-footer.css",
@@ -16,6 +16,7 @@ const assetNames = [
   'games-chest/eightaces-icon.png',
   'games-chest/garibaldka-icon.png',
   'games-chest/gomoku-icon.png',
+  'games-chest/kierki-icon.png',
 
   'index.html', 'credits.html', 'version.json', 'manifest.webmanifest',
   'logo.svg', 'favicon.ico', 'favicon-32.png', 'favicon-48.png', 'settings-gear.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'apple-touch-icon.png',
