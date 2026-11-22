@@ -23,8 +23,8 @@
 <link rel="stylesheet" href="shared-settings.css?v=1.9.2">
 <link rel="stylesheet" href="progress-bar.css?v=1.11.1">
 <link rel="stylesheet" href="progress-summary.css?v=1.11.1">
-<link rel="stylesheet" href="shared-footer.css?v=footer-row-2">
-<script defer src="shared-footer.js?v=footer-row-2"></script>
+<link rel="stylesheet" href="shared-footer.css?v=footer-save-errors-1">
+<script defer src="shared-footer.js?v=footer-save-errors-1"></script>
 </head>
 <body>
 <header><a class="brand" href="./"><img class="brand-logo" src="icon-192.png?v=1.5.2" alt=""><span class="brand-name" translate="no">Osiem Asów</span></a><div class="header-controls"><div class="accessibility-controls"><button id="contrast" translate="no" aria-pressed="false"></button><label class="text-size-control"><input type="checkbox" id="large"><span id="large-label"></span></label></div><div class="preferences"><label><span id="language-label"></span><select id="language"><option value="pl">Polski</option><option value="en">English</option></select></label><label><span id="theme-label"></span><select id="theme"></select></label></div></div></header>
@@ -65,9 +65,8 @@
   </section>
   <div class="footer-details">
     <a id="credits-link" href="credits.html" data-footer-copy="credits" translate="no">Autorzy i licencje</a>
-    <span id="footer-version" translate="no">v1.11.9</span>
-    <span id="save-note" translate="no"></span>
-    <span class="save-note-short" data-footer-copy="saved" translate="no" aria-hidden="true">Zapis automatyczny</span>
+    <span id="footer-version" translate="no">v1.11.10</span>
+    <span id="save-note" role="status" translate="no"></span>
   </div>
   <nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div></nav>
 </footer>
@@ -206,6 +205,7 @@
     <div class="dialog-heading"><h2 id="help-title" translate="no">How to play</h2><button aria-label="Close">×</button></div>
     <div id="rules" translate="no"></div>
     <p><a href="https://www.solsuite.com/games/forty_and_eight.htm" target="_blank" rel="noopener noreferrer" translate="no">Forty and Eight · SolSuite ↗</a></p>
+    <p data-save-help translate="no"></p>
     <button class="primary">Done</button>
   </form>
 </dialog>
@@ -222,7 +222,7 @@
 <script src="progress-backup.js?v=1.9.2"></script>
 <script src="preferences-strings.js?v=1.9.2"></script>
 <script src="progress-bar.js?v=1.11.0"></script>
-<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=footer-row-2"></script>
+<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=footer-save-errors-1"></script>
 <script>
   if (window === window.top && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline setup failed", error));
