@@ -81,12 +81,14 @@
     const expected = initial.slice();
     expected[from.index] = initial[from.index].slice(0, -count);
     expected[to.index] = initial[to.index].concat(initial[from.index].slice(-count));
-    const keyOf = piles => piles.map(cards => cards.join(',')).join('|');
+    // The two copies of each face are interchangeable in every pile.
+    const face = card => card % 52;
+    const keyOf = piles => piles.map(cards => cards.map(face).join(',')).join('|');
     const expectedKey = keyOf(expected);
     const distance = piles => piles.reduce((total, cards, index) => {
       const goal = expected[index];
       let prefix = 0;
-      while (prefix < cards.length && cards[prefix] === goal[prefix]) prefix++;
+      while (prefix < cards.length && face(cards[prefix]) === face(goal[prefix])) prefix++;
       return total + (!groupMoves || index === from.index || index === to.index ? cards.length - prefix : Number(cards.length !== prefix));
     }, 0);
 

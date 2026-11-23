@@ -260,7 +260,7 @@
       }, 0);
     };
     try {
-      search.worker = new Worker('move-worker.js?v=1.6.2');
+      search.worker = new Worker('move-worker.js?v=duplicate-faces-1');
       search.worker.onmessage = event => complete(event.data);
       search.worker.onerror = fallback;
       search.worker.onmessageerror = fallback;
