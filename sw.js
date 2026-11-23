@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.20';
+const cacheName = cachePrefix + '1.11.21';
 const scope = self.registration.scope;
 const assetNames = [
   "game-update.js",
