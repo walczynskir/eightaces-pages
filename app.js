@@ -243,31 +243,72 @@
 
     const search = { state, from: selected, plans: [] };
     routeSearch = search;
-    const complete = plans => {
-      if (routeSearch !== search) return;
+    const stop = () => {
       search.worker?.terminate();
       search.worker = undefined;
-      search.plans = plans;
+    };
+    const found = (index, plan) => {
+      if (routeSearch !== search || !plan.length) return;
+      search.plans[index] = plan;
       render();
     };
-    const fallback = () => {
-      search.worker?.terminate();
-      search.worker = undefined;
-      setTimeout(() => {
-        if (routeSearch !== search) return;
-        complete(search.state.rows.map((_, index) =>
-          engine.selectionPlan(search.state, search.from, { group: 'rows', index })));
-      }, 0);
+    const fallback = event => {
+      event?.preventDefault();
+      stop();
+      let index = 0;
+      const next = () => {
+        if (routeSearch !== search || index >= search.state.rows.length) return;
+        const plan = engine.selectionPlan(search.state, search.from, { group: 'rows', index });
+        found(index++, plan);
+        setTimeout(next, 0);
+      };
+      setTimeout(next, 0);
     };
     try {
-      search.worker = new Worker('move-worker.js?v=duplicate-faces-1');
-      search.worker.onmessage = event => complete(event.data);
+      search.worker = new Worker('move-worker.js?v=slow-search-1');
+      search.worker.onmessage = ({ data }) => data.done ? stop() : found(data.index, data.plan);
       search.worker.onerror = fallback;
       search.worker.onmessageerror = fallback;
       search.worker.postMessage({ state, from: selected });
     } catch {
       fallback();
     }
+  }
+
+  let blockedSearch;
+
+  function isBlocked(finished) {
+    if (thumbnailTheme || finished || lost() || engine.hasImmediateMove(state)) {
+      blockedSearch?.worker?.terminate();
+      blockedSearch = undefined;
+      return false;
+    }
+    const key = JSON.stringify(state);
+    if (blockedSearch?.key === key) return blockedSearch.blocked === true;
+    blockedSearch?.worker?.terminate();
+    const search = { key, blocked: false };
+    blockedSearch = search;
+    try {
+      const worker = new Worker('move-worker.js?v=slow-search-1');
+      search.worker = worker;
+      const stop = () => {
+        worker.terminate();
+        search.worker = undefined;
+      };
+      worker.onmessage = event => {
+        stop();
+        if (blockedSearch !== search) return;
+        search.blocked = event.data === true;
+        if (search.blocked) render();
+      };
+      worker.onerror = event => { event.preventDefault(); stop(); };
+      worker.onmessageerror = stop;
+      worker.postMessage({ state });
+    } catch {
+      search.worker?.terminate();
+      search.worker = undefined;
+    }
+    return false;
   }
 
   function planTo(ref) {
@@ -482,7 +523,7 @@
     const finished = engine.won(state);
     byId("tableau").closest(".game").classList.toggle("game-won", finished);
     GameVictory(finished, victory);
-    const blocked = !finished && !lost() && !engine.hasAvailableMove(state);
+    const blocked = isBlocked(finished);
     const gameStatus = lost() ? tr('Game lost.') : finished ? victory : blocked ? tr('No available moves.') : instructions;
     byId('status').textContent = gameStatus + ' · ' + count + '/104';
     byId('end-blocked-game').hidden = !blocked;
@@ -707,7 +748,7 @@
   byId('undo').onclick = () => stepHistory(history, future);
   byId('redo').onclick = () => stepHistory(future, history);
   byId('end-blocked-game').onclick = () => {
-    if (transitioning || lost() || engine.won(state) || engine.hasAvailableMove(state)) return;
+    if (transitioning || !isBlocked(engine.won(state))) return;
     const nextResults = structuredClone(results);
     if (!scoring.finish(nextResults, session, 'loss', 'completed')) return;
     try {

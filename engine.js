@@ -81,25 +81,28 @@
     const expected = initial.slice();
     expected[from.index] = initial[from.index].slice(0, -count);
     expected[to.index] = initial[to.index].concat(initial[from.index].slice(-count));
-    // The two copies of each face are interchangeable in every pile.
-    const face = card => card % 52;
-    const keyOf = piles => piles.map(cards => cards.map(face).join(',')).join('|');
-    const expectedKey = keyOf(expected);
-    const distance = piles => piles.reduce((total, cards, index) => {
-      const goal = expected[index];
+    // The two copies of each face are interchangeable. One character per
+    // face keeps successor keys small and lets us reuse unchanged pile keys.
+    const encoded = Array.from({ length: 104 }, (_, card) => String.fromCharCode(65 + card % 52));
+    const encode = cards => cards.map(card => encoded[card]).join('');
+    const expectedPiles = expected.map(encode);
+    const expectedKey = expectedPiles.join('|');
+    const initialKeys = initial.map(encode);
+    const distance = (cards, index) => {
+      const goal = expectedPiles[index];
       let prefix = 0;
-      while (prefix < cards.length && face(cards[prefix]) === face(goal[prefix])) prefix++;
-      return total + (!groupMoves || index === from.index || index === to.index ? cards.length - prefix : Number(cards.length !== prefix));
-    }, 0);
+      while (prefix < cards.length && cards[prefix] === goal[prefix]) prefix++;
+      return !groupMoves || index === from.index || index === to.index ? cards.length - prefix : Number(cards.length !== prefix);
+    };
 
     // Best-first search is bounded so highlighting remains responsive.
     const pending = new Map();
-    const visited = new Map([[keyOf(initial), 0]]);
+    const visited = new Map([[initialKeys.join('|'), 0]]);
     const enqueue = (node, score) => {
       if (!pending.has(score)) pending.set(score, []);
       pending.get(score).push(node);
     };
-    enqueue({ piles: initial, depth: 0 }, 0);
+    enqueue({ piles: initial, depth: 0, keys: initialKeys, distance: initialKeys.reduce((sum, cards, index) => sum + distance(cards, index), 0) }, 0);
     for (let expanded = 0; expanded < budget && pending.size; expanded++) {
       const score = Math.min(...pending.keys());
       const bucket = pending.get(score);
@@ -120,15 +123,20 @@
           const nextState = { ...state, rows: piles.slice(0, state.rows.length), goals: piles.slice(state.rows.length) };
           const step = { from: source, to: target };
           const depth = node.depth + 1;
+          const keys = node.keys.slice();
+          const unchangedDistance = node.distance - distance(keys[sourceIndex], sourceIndex) - distance(keys[targetIndex], targetIndex);
           let length = 0;
           while ((groupMoves || length === 0) && move(nextState, source, target)) {
             length++;
-            const key = keyOf(piles);
+            keys[targetIndex] += keys[sourceIndex].at(-1);
+            keys[sourceIndex] = keys[sourceIndex].slice(0, -1);
+            const key = keys.join('|');
             if ((visited.get(key) ?? Infinity) <= depth) continue;
             const nextPiles = piles.slice();
             nextPiles[sourceIndex] = cards.slice();
             nextPiles[targetIndex] = targetCards.slice();
-            const next = { piles: nextPiles, depth, parent: node, step, length };
+            const cost = unchangedDistance + distance(keys[sourceIndex], sourceIndex) + distance(keys[targetIndex], targetIndex);
+            const next = { piles: nextPiles, depth, parent: node, step, length, keys: keys.slice(), distance: cost };
             if (key === expectedKey) {
               const steps = [];
               for (let current = next; current.step; current = current.parent) {
@@ -137,7 +145,7 @@
               return steps.reverse();
             }
             visited.set(key, depth);
-            enqueue(next, depth + 3 * distance(piles));
+            enqueue(next, depth + 3 * cost);
           }
         }
       }
@@ -302,12 +310,19 @@
   }
 
   const won = state => state.goals.every(goal => goal.length === 13);
-  function hasAvailableMove(state) {
+  function hasImmediateMove(state) {
     if (state.drawn.length || state.stock.length || (state.recycle && state.waste.length)) return true;
     const rows = state.rows.map((_, index) => ({ group: 'rows', index }));
     const destinations = [...rows, ...state.goals.map((_, index) => ({ group: 'goals', index }))];
     const sources = [...rows, { group: 'waste' }];
-    if (sources.some(from => destinations.some(to => canMove(state, from, to)))) return true;
+    return sources.some(from => destinations.some(to => canMove(state, from, to)));
+  }
+
+  function hasAvailableMove(state) {
+    if (hasImmediateMove(state)) return true;
+    const rows = state.rows.map((_, index) => ({ group: 'rows', index }));
+    const canBorrow = state.goals.some((_, index) => rows.some(to => canMove(state, { group: 'goals', index }, to)));
+    if (!canBorrow) return false;
     return rows.some(from => {
       const length = sequenceLength(state, from.index);
       for (let count = 2; count <= length; count++) {
@@ -316,7 +331,7 @@
       return false;
     });
   }
-  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, selectionPlan, applySelectionPlan, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won, hasAvailableMove };
+  const engine = { deal, rank, suit, top, pile, canMove, move, sequenceLength, selectionPlan, applySelectionPlan, canMoveSelection, moveSelection, collectToFoundation, finishPlan, finish, draw, won, hasImmediateMove, hasAvailableMove };
   if (typeof module !== 'undefined') module.exports = engine;
   else root.PasjansEngine = engine;
 })(globalThis);
