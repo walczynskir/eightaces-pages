@@ -1,7 +1,8 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.11.19';
+const cacheName = cachePrefix + '1.11.20';
 const scope = self.registration.scope;
 const assetNames = [
+  "game-update.js",
   "shared-footer.css",
   "shared-footer.js",
   "card-backs.css",
@@ -46,9 +47,15 @@ self.addEventListener('activate', event => {
   })());
 });
 
+self.addEventListener('message', event => {
+  if (event.data === 'game-update-activate') event.waitUntil(self.skipWaiting());
+  if (event.data === 'game-update-version') event.ports[0]?.postMessage(cacheName.slice(cachePrefix.length));
+});
+
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
+  if (url.href === new URL('version.json?check-update=1', scope).href) return;
   url.search = '';
   url.hash = '';
   const key = url.href === scope ? new URL('index.html', scope).href : url.href;
