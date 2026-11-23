@@ -518,11 +518,11 @@
     byId('redo').querySelector('.history-label').textContent = redo;
     byId('redo').setAttribute('aria-label', redo);
     byId('redo').title = redo;
-    byId('redo').hidden = !prefs.showUndo;
+    const finished = engine.won(state);
+    byId('redo').hidden = !prefs.showUndo || finished;
     byId('redo').disabled = lost() || future.length === 0;
     const pileLabel = (label, count) => prefs.showCounts ? label + ' · ' + count : label;
     const count = state.goals.reduce((total, pile) => total + pile.length, 0);
-    const finished = engine.won(state);
     byId("tableau").closest(".game").classList.toggle("game-won", finished);
     GameVictory(finished, victory);
     const blocked = isBlocked(finished);
