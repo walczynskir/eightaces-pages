@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="themes.css?v=1.9.2">
 <link rel="stylesheet" href="shared-game.css?v=1.6.4">
 <link rel="stylesheet" href="card-backs.css?v=deck-themes-2">
-<link rel="stylesheet" href="pasjans.css?v=slow-search-1">
+<link rel="stylesheet" href="pasjans.css?v=fullscreen-notice-1">
 <link rel="stylesheet" href="shared-victory.css?v=6">
 <link rel="stylesheet" href="games-chest-menu.css?v=icon-gallery-1"><script defer src="games-chest-menu.js?v=barbu-1" data-game="eight-aces"></script><script>if (!new URLSearchParams(location.search).has("miniatura") || window === window.top) { const script = document.createElement("script"); script.defer = true; script.src = "https://cloud.umami.is/script.js"; script.setAttribute("data-website-id", "a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2"); script.setAttribute("data-domains", "eightaces.games-chest.com"); script.setAttribute("data-tag", "eight-aces"); document.head.append(script); }</script>
 <link rel="stylesheet" href="theme-gallery.css?v=1.4.5">
@@ -43,16 +43,14 @@
       <button id="redo" translate="no" dir="auto" hidden><span class="history-icon toolbar-icon" aria-hidden="true">↷</span><span class="history-label"></span></button>
       <button id="fullscreen" type="button" translate="no" dir="auto" aria-pressed="false" aria-label="Pełny ekran"><span class="fullscreen-icon toolbar-icon" aria-hidden="true">⛶</span><span class="fullscreen-label">Pełny ekran</span></button>
       <button id="help-button" translate="no" dir="auto" aria-haspopup="dialog"><span class="help-icon toolbar-icon" aria-hidden="true">?</span><span class="help-button-label">How to play</span></button>
+      <button id="end-blocked-game" type="button" class="primary" translate="no" hidden>Zakończ partię</button>
       <button id="settings-button" class="shared-settings-button" aria-label="Settings" aria-haspopup="dialog"></button>
     </div>
   </div>
   <section class="card game">
     <div id="tableau" class="solitaire-board" dir="ltr"></div>
     <div id="supply" class="supply"></div>
-    <div class="end-status">
-      <p id="status" role="status" tabindex="-1"></p>
-      <button id="end-blocked-game" type="button" class="primary" translate="no" hidden>Zakończ partię</button>
-    </div>
+    <p id="status" role="status" tabindex="-1"></p>
   </section>
 </main>
 <footer class="game-footer">
@@ -67,7 +65,7 @@
   </section>
   <div class="footer-details">
     <a id="credits-link" href="credits.html" data-footer-copy="credits" translate="no">Autorzy i licencje</a>
-    <span id="footer-version" translate="no">v1.11.16</span>
+    <span id="footer-version" translate="no">v1.11.17</span>
     <span id="save-note" role="status" translate="no"></span>
   </div>
 </footer>
@@ -176,6 +174,16 @@
           </div>
           <p class="setting-description" id="showUndo-note" hidden></p>
         </div>
+        <div class="setting-item">
+          <div class="setting-row">
+            <label class="setting-control">
+              <input type="checkbox" id="expand-table-only" aria-describedby="expand-table-only-note">
+              <span class="setting-caption"><span class="setting-name" id="expand-table-only-label"></span></span>
+            </label>
+            <button class="setting-info" type="button" aria-expanded="false" aria-controls="expand-table-only-note">ⓘ</button>
+          </div>
+          <p class="setting-description" id="expand-table-only-note" hidden></p>
+        </div>
       </fieldset>
       <section class="settings-section" aria-labelledby="preferences-file-heading">
         <h3 id="preferences-file-heading"></h3>
@@ -210,7 +218,7 @@
     <button class="primary">Done</button>
   </form>
 </dialog>
-<script src="locales.js?v=1.11.5"></script>
+<script src="locales.js?v=fullscreen-notice-1"></script>
 <script src="i18n.js"></script>
 <script src="engine.js?v=slow-search-1"></script>
 <script src="strings.js?v=1.9.2"></script>
@@ -223,7 +231,7 @@
 <script src="progress-backup.js?v=1.9.2"></script>
 <script src="preferences-strings.js?v=1.9.2"></script>
 <script src="progress-bar.js?v=1.11.0"></script>
-<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=slow-search-1"></script>
+<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=fullscreen-notice-1"></script>
 <script>
   if (window === window.top && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline setup failed", error));

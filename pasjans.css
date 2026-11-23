@@ -63,13 +63,6 @@ button.playing-card:focus-visible { outline: 3px solid var(--ink); outline-offse
   text-align: center;
 }
 #status { min-height: 1.55em; margin-block-end: 0; }
-.end-status:has(#end-blocked-game:not([hidden])) {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 6px 12px;
-}
 @media (max-width: 520px) {
   .playing-card, button.playing-card:not(.tile) { font-size: 12px; }
 }
@@ -190,6 +183,14 @@ body.large .solitaire-board .playing-card .card-suit {
 .table-only #status {
   text-align: center;
 }
+.table-only .game-toolbar:has(#end-blocked-game:not([hidden])) {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 6;
+  background: var(--bg);
+}
+#end-blocked-game { white-space: nowrap; }
+
 .table-only .solitaire > .game-toolbar {
   width: fit-content;
   max-width: 100%;

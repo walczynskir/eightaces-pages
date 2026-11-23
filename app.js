@@ -513,6 +513,8 @@
     byId('showCounts-note').textContent = countsNote;
     byId('showUndo-label').textContent = undoLabel;
     byId('showUndo-note').textContent = undoNote;
+    byId('expand-table-only-label').textContent = tr('Expand table without browser fullscreen');
+    byId('expand-table-only-note').textContent = tr('Browser fullscreen displays its own exit notice. Use the expanded table to avoid that notice. Browser bars may stay visible.');
     byId('redo').querySelector('.history-label').textContent = redo;
     byId('redo').setAttribute('aria-label', redo);
     byId('redo').title = redo;
@@ -914,6 +916,12 @@
     render();
   };
   const fullscreenButton = byId('fullscreen');
+  const expandOnly = byId('expand-table-only');
+  const fullscreenPreferenceKey = 'pasjans.expand-table-only';
+  try { expandOnly.checked = localStorage.getItem(fullscreenPreferenceKey) === 'true'; } catch {}
+  expandOnly.onchange = () => {
+    try { localStorage.setItem(fullscreenPreferenceKey, String(expandOnly.checked)); } catch {}
+  };
   const tableOnly = open => {
     document.body.classList.toggle('table-only', open);
     fullscreenButton.setAttribute('aria-pressed', String(open));
@@ -922,17 +930,19 @@
   fullscreenButton.onclick = async () => {
     if (document.body.classList.contains('table-only')) {
       if (document.fullscreenElement) await document.exitFullscreen();
-      tableOnly(false);
+      else tableOnly(false);
       return;
     }
     tableOnly(true);
+    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    if (expandOnly.checked || installed) return;
     try {
       await document.documentElement.requestFullscreen();
       await screen.orientation?.lock?.('landscape');
     } catch { /* The expanded table works without native fullscreen or orientation lock. */ }
   };
   document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) tableOnly(false);
+    if (!document.fullscreenElement && document.body.classList.contains('table-only')) tableOnly(false);
   });
   const toolbar = document.querySelector('.game-toolbar');
   const header = document.querySelector('header');
