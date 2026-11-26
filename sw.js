@@ -1,7 +1,8 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.12.1';
+const cacheName = cachePrefix + '1.12.2';
 const scope = self.registration.scope;
 const assetNames = [
+  "shared-theme-components.css",
   "game-update.js",
   "game-install.js",
   "shared-footer.css",
@@ -27,7 +28,7 @@ const assetNames = [
   'app.js', 'settings-strings.js', 'shared-preferences.js', 'shared-progress-backup.js', 'progress-backup.js', 'preferences-strings.js', 'results.js', 'move-worker.js', 'engine.js', 'locales.js', 'i18n.js', 'strings.js', 'game-help.js',
   'shared-victory.js', 'games-chest-menu.js', 'credits.js',
   'garden.webp', 'tropics.webp', 'beach.webp', 'orange-grove.webp',
-  'copper-table.webp', 'copper-portrait.webp', 'andromeda-portrait.webp'
+  'copper-table.webp', 'copper-portrait.webp', 'starry-sky.webp', 'andromeda-portrait.webp'
 ];
 const assets = new Set(assetNames.map(name => new URL(name, scope).href));
 
