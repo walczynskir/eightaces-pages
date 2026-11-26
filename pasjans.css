@@ -562,9 +562,22 @@ header .text-size-control { min-block-size: 44px; }
   transform: translateY(-2px) rotate(45deg);
 }
 .new-game-buttons button:focus-visible { z-index: 1; }
-#confirm-new-game .game-tools { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
-#confirm-new-game button[hidden] { display: none; }
-@media (max-width: 360px) {
+#confirm-new-game .dialog-heading { align-items: center; }
+#confirm-new-title { margin: 0; }
+#cancel-new { flex: none; min-inline-size: 44px; min-block-size: 44px; }
+#confirm-new-game .game-tools {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: stretch;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 6px;
+  margin-block-start: 12px;
+}
+#confirm-new-game .game-tools button { padding-inline: 6px; overflow-wrap: break-word; }
+@media (orientation: portrait) and (max-width: 600px) {
+  .solitaire > .game-toolbar { gap: 4px; }
+  body main.solitaire > .game-toolbar.toolbar-overflow { overflow: visible; }
   .solitaire .game-toolbar.toolbar-overflow .game-tools { min-width: 0; flex-shrink: 1; }
   .solitaire .game-toolbar.toolbar-overflow .game-tools button { min-inline-size: 0; flex: 1 1 44px; padding-inline: 0; }
+  .solitaire .game-toolbar.toolbar-overflow #end-blocked-game { white-space: normal; }
 }

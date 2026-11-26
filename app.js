@@ -724,7 +724,7 @@
     const interrupted = !Object.hasOwn(results.records, session.id);
     byId('confirm-new-description').hidden = !interrupted;
     byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
-    byId('cancel-new').textContent = tr('Return to game');
+    byId('cancel-new').setAttribute('aria-label', galleryLabels()[2]);
     byId('restart-deal').hidden = !showRestart;
     byId('restart-deal').textContent = restartLabels[prefs.language] ?? restartLabels.en;
     byId('accept-new').textContent = byId('new-game').querySelector('.new-game-label').textContent;
