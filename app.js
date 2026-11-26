@@ -44,16 +44,16 @@
   const rewardIds = progressBackup.rewardIds;
   const gallery = byId('theme-gallery');
   const galleryCopy = {
-    pl: ['Więcej motywów…', 'Za osiągnięcia', 'Zamknij', 'Pomarańczowy gaj', 'wygranych', 'Zablokowany', 'Aktywny'],
-    en: ['More themes…', 'Achievement themes', 'Close', 'Orange Grove', 'wins', 'Locked', 'Active'],
-    de: ['Weitere Designs…', 'Belohnungsdesigns', 'Schließen', 'Orangenhain', 'Siege', 'Gesperrt', 'Aktiv'],
-    es: ['Más temas…', 'Temas por logros', 'Cerrar', 'Naranjal', 'victorias', 'Bloqueado', 'Activo'],
-    fr: ['Plus de thèmes…', 'Thèmes de récompense', 'Fermer', 'Orangeraie', 'victoires', 'Verrouillé', 'Actif'],
-    it: ['Altri temi…', 'Temi premio', 'Chiudi', 'Aranceto', 'vittorie', 'Bloccato', 'Attivo'],
-    uk: ['Більше тем…', 'Теми за досягнення', 'Закрити', 'Апельсиновий гай', 'перемог', 'Заблоковано', 'Активна'],
-    ar: ['المزيد من السمات…', 'سمات الإنجازات', 'إغلاق', 'بستان البرتقال', 'انتصارات', 'مقفل', 'نشط'],
-    hi: ['और थीम…', 'उपलब्धि की थीम', 'बंद करें', 'संतरे का बाग', 'जीत', 'बंद', 'सक्रिय'],
-    'zh-Hans': ['更多主题…', '成就主题', '关闭', '橙园', '胜场', '未解锁', '当前']
+    pl: ['Więcej motywów…', 'Za osiągnięcia', 'Zamknij', 'Pomarańczowy gaj', 'wygranych', 'Zablokowany', 'Aktywny', 'Odblokowany'],
+    en: ['More themes…', 'Achievement themes', 'Close', 'Orange Grove', 'wins', 'Locked', 'Active', 'Unlocked'],
+    de: ['Weitere Designs…', 'Belohnungsdesigns', 'Schließen', 'Orangenhain', 'Siege', 'Gesperrt', 'Aktiv', 'Freigeschaltet'],
+    es: ['Más temas…', 'Temas por logros', 'Cerrar', 'Naranjal', 'victorias', 'Bloqueado', 'Activo', 'Desbloqueado'],
+    fr: ['Plus de thèmes…', 'Thèmes de récompense', 'Fermer', 'Orangeraie', 'victoires', 'Verrouillé', 'Actif', 'Déverrouillé'],
+    it: ['Altri temi…', 'Temi premio', 'Chiudi', 'Aranceto', 'vittorie', 'Bloccato', 'Attivo', 'Sbloccato'],
+    uk: ['Більше тем…', 'Теми за досягнення', 'Закрити', 'Апельсиновий гай', 'перемог', 'Заблоковано', 'Активна', 'Розблоковано'],
+    ar: ['المزيد من السمات…', 'سمات الإنجازات', 'إغلاق', 'بستان البرتقال', 'انتصارات', 'مقفل', 'نشط', 'غير مقفل'],
+    hi: ['और थीम…', 'उपलब्धि की थीम', 'बंद करें', 'संतरे का बाग', 'जीत', 'बंद', 'सक्रिय', 'अनलॉक'],
+    'zh-Hans': ['更多主题…', '成就主题', '关闭', '橙园', '胜场', '未解锁', '当前', '已解锁']
   };
   const rewardUnits = {
     pl: [['ukończona partia', 'ukończone partie', 'ukończonych partii'], ['wygrana partia', 'wygrane partie', 'wygranych partii']],
@@ -93,7 +93,7 @@
     render();
   }
   function openGallery() {
-    const [title, rewards, close, , , lockedLabel, activeLabel] = galleryLabels();
+    const [title, rewards, close, , , lockedLabel, activeLabel, unlockedLabel] = galleryLabels();
     byId('gallery-title').textContent = title;
     byId('gallery-rewards-title').textContent = rewards;
     byId('gallery-close').textContent = close;
@@ -130,7 +130,7 @@
         details.textContent = reward
           ? rewardGoal(reward) + (button.disabled ? ' · ' + new Intl.NumberFormat(prefs.language).format(reward.count) + '/' + new Intl.NumberFormat(prefs.language).format(reward.goal) : '')
           : activeLabel;
-        if (button.disabled) details.textContent += ' · ' + lockedLabel;
+        if (reward) details.textContent += ' · ' + (button.disabled ? lockedLabel : unlockedLabel);
         button.append(details);
       }
       button.onclick = () => {
