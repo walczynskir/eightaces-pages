@@ -55,11 +55,26 @@
     hi: ['और थीम…', 'उपलब्धि की थीम', 'बंद करें', 'संतरे का बाग', 'जीत', 'बंद', 'सक्रिय'],
     'zh-Hans': ['更多主题…', '成就主题', '关闭', '橙园', '胜场', '未解锁', '当前']
   };
-  const completedLabels = {
-    pl: 'ukończone partie', en: 'completed games', de: 'abgeschlossene Partien', es: 'partidas completadas',
-    fr: 'parties terminées', it: 'partite completate', uk: 'завершені партії', ar: 'ألعاب مكتملة',
-    hi: 'पूरे खेल', 'zh-Hans': '完成的牌局'
+  const rewardUnits = {
+    pl: [['ukończona partia', 'ukończone partie', 'ukończonych partii'], ['wygrana partia', 'wygrane partie', 'wygranych partii']],
+    en: [['completed game', 'completed games'], ['win', 'wins']],
+    de: [['abgeschlossene Partie', 'abgeschlossene Partien'], ['Sieg', 'Siege']],
+    es: [['partida completada', 'partidas completadas'], ['victoria', 'victorias']],
+    fr: [['partie terminée', 'parties terminées'], ['victoire', 'victoires']],
+    it: [['partita completata', 'partite completate'], ['vittoria', 'vittorie']],
+    uk: [['завершена партія', 'завершені партії', 'завершених партій'], ['перемога', 'перемоги', 'перемог']],
+    ar: [['لعبة مكتملة', 'ألعاب مكتملة'], ['فوز', 'انتصارات']],
+    hi: [['पूरा खेल', 'पूरे खेल'], ['जीत', 'जीत']]
   };
+  function rewardGoal(reward) {
+    const language = prefs.language;
+    const forms = (rewardUnits[language] ?? rewardUnits.en)[Number(reward.wins)];
+    const category = new Intl.PluralRules(language).select(reward.goal);
+    const index = forms.length === 3 ? { one: 0, few: 1 }[category] ?? 2 : category === 'one' ? 0 : 1;
+    const count = new Intl.NumberFormat(language).format(reward.goal);
+    if (language === 'zh-Hans') return (reward.wins ? '赢得 ' : '完成 ') + count + ' 局';
+    return count + ' ' + (forms[index] ?? forms[0]);
+  }
   const galleryLabels = () => galleryCopy[prefs.language] ?? galleryCopy.en;
   function themeName(value) {
     if (value === 'night-sky') {
@@ -78,7 +93,7 @@
     render();
   }
   function openGallery() {
-    const [title, rewards, close, , winsLabel, lockedLabel, activeLabel] = galleryLabels();
+    const [title, rewards, close, , , lockedLabel, activeLabel] = galleryLabels();
     byId('gallery-title').textContent = title;
     byId('gallery-rewards-title').textContent = rewards;
     byId('gallery-close').textContent = close;
@@ -113,7 +128,7 @@
       if (reward || prefs.theme === value) {
         const details = document.createElement('small');
         details.textContent = reward
-          ? (button.disabled ? reward.count + '/' : '') + reward.goal + ' ' + (reward.wins ? winsLabel : completedLabels[prefs.language])
+          ? rewardGoal(reward) + (button.disabled ? ' · ' + new Intl.NumberFormat(prefs.language).format(reward.count) + '/' + new Intl.NumberFormat(prefs.language).format(reward.goal) : '')
           : activeLabel;
         if (button.disabled) details.textContent += ' · ' + lockedLabel;
         button.append(details);
@@ -495,6 +510,8 @@
     byId('new-game').querySelector('.new-game-label').textContent = newGameLabel;
     byId('new-game').setAttribute('aria-label', newGameLabel);
     byId('new-game').title = newGameLabel;
+    byId('pick-variant').setAttribute('aria-label', newGameLabel + ' / ' + (restartLabels[prefs.language] ?? restartLabels.en));
+    byId('pick-variant').title = byId('pick-variant').getAttribute('aria-label');
     byId('language-label').textContent = tr('Language');
     byId('theme-label').textContent = tr('Appearance');
     const visibleThemes = [...new Set([...featuredThemes.filter(id => !themeLocked(id)), prefs.theme])];
@@ -697,18 +714,25 @@
     es: 'Reiniciar este reparto', fr: 'Rejouer cette donne', it: 'Ricomincia questa mano',
     uk: 'Почати цю роздачу заново', ar: 'أعد بدء هذه التوزيعة', hi: 'यह बाँट फिर से शुरू करें', 'zh-Hans': '重玩本局'
   };
-  byId('new-game').onclick = () => {
+  function openNewGame(showRestart) {
+    if (!showRestart && Object.hasOwn(results.records, session.id)) {
+      startNewGame();
+      return;
+    }
     pendingNewGame = session.id;
     byId('confirm-new-title').textContent = tr('Start a new game?');
     const interrupted = !Object.hasOwn(results.records, session.id);
     byId('confirm-new-description').hidden = !interrupted;
     byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
     byId('cancel-new').textContent = tr('Return to game');
+    byId('restart-deal').hidden = !showRestart;
     byId('restart-deal').textContent = restartLabels[prefs.language] ?? restartLabels.en;
     byId('accept-new').textContent = byId('new-game').querySelector('.new-game-label').textContent;
     newGameDialog.returnValue = 'cancel';
     newGameDialog.showModal();
-  };
+  }
+  byId('new-game').onclick = () => openNewGame(false);
+  byId('pick-variant').onclick = () => openNewGame(true);
   newGameDialog.querySelector('form').onsubmit = event => {
     event.preventDefault();
     const choice = pendingNewGame === session.id ? event.submitter?.value : 'cancel';
@@ -966,7 +990,7 @@
     toolbar.classList.remove('compact-utilities', 'compact-history', 'compact-new', 'toolbar-picker-icon', 'toolbar-overflow');
     const styles = getComputedStyle(toolbar);
     const available = toolbar.clientWidth - parseFloat(styles.paddingInlineStart) - parseFloat(styles.paddingInlineEnd);
-    const required = () => Math.ceil(byId('new-game').getBoundingClientRect().width
+    const required = () => Math.ceil(toolbar.querySelector('.new-game-buttons').getBoundingClientRect().width
       + toolbar.querySelector('.game-tools').getBoundingClientRect().width + parseFloat(styles.columnGap));
     if (required() > available) toolbar.classList.add('compact-utilities');
     if (required() > available) toolbar.classList.add('compact-history');

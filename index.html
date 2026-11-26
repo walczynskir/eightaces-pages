@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="themes.css?v=1.9.2">
 <link rel="stylesheet" href="shared-game.css?v=1.6.4">
 <link rel="stylesheet" href="card-backs.css?v=deck-themes-2">
-<link rel="stylesheet" href="pasjans.css?v=fullscreen-notice-1">
+<link rel="stylesheet" href="pasjans.css?v=split-new-1">
 <link rel="stylesheet" href="shared-victory.css?v=6">
 <link rel="stylesheet" href="games-chest-menu.css?v=packed-grid-1"><script defer src="games-chest-menu.js?v=packed-grid-1" data-game="eight-aces"></script><script>if (!new URLSearchParams(location.search).has("miniatura") || window === window.top) { const script = document.createElement("script"); script.defer = true; script.src = "https://cloud.umami.is/script.js"; script.setAttribute("data-website-id", "a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2"); script.setAttribute("data-domains", "eightaces.games-chest.com"); script.setAttribute("data-tag", "eight-aces"); document.head.append(script); }</script>
 <link rel="stylesheet" href="theme-gallery.css?v=1.4.5">
@@ -38,7 +38,10 @@
   <span class="progress-chevron" aria-hidden="true">›</span>
 </button>
   <div class="game-toolbar" dir="ltr">
-    <button class="primary" id="new-game" translate="no" dir="auto"><span class="new-game-icon toolbar-icon" aria-hidden="true">＋</span><span class="new-game-label">Nowy pasjans</span></button>
+    <div class="new-game-buttons">
+      <button class="primary" id="new-game" translate="no" dir="auto"><span class="new-game-icon toolbar-icon" aria-hidden="true">＋</span><span class="new-game-label">Nowy pasjans</span></button>
+      <button id="pick-variant" type="button" aria-haspopup="dialog" aria-controls="confirm-new-game"><span aria-hidden="true"></span></button>
+    </div>
     <div class="game-tools"><button id="game-picker-button" type="button" aria-haspopup="dialog" aria-controls="game-picker" aria-label="Inne gry" translate="no">
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="12" y="2" width="6" height="6" rx="1"/><rect x="2" y="12" width="6" height="6" rx="1"/><rect x="12" y="12" width="6" height="6" rx="1"/></svg><span class="toolbar-label">Inne gry</span></button>
       <button id="undo" translate="no" dir="auto" hidden><span class="history-icon toolbar-icon" aria-hidden="true">↶</span><span class="history-label"></span></button>
@@ -67,7 +70,7 @@
   </section>
   <div class="footer-details">
     <a id="credits-link" href="credits.html" data-footer-copy="credits" translate="no">Autorzy i licencje</a>
-    <span id="footer-version" translate="no">v1.11.24</span>
+    <span id="footer-version" translate="no">v1.11.25</span>
     <span id="save-note" role="status" translate="no"></span>
   </div>
 </footer>
@@ -230,7 +233,7 @@
 <script src="progress-backup.js?v=scenic-themes-1"></script>
 <script src="preferences-strings.js?v=1.9.2"></script>
 <script src="progress-bar.js?v=1.11.0"></script>
-<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=scenic-themes-1"></script>
+<script src="statistics-reset.js?v=1.11.4"></script><script src="app.js?v=split-new-1"></script>
 <script>
   if (window === window.top && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline setup failed", error));
