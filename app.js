@@ -956,6 +956,13 @@
   };
   const fullscreenButton = byId('fullscreen');
   const expandOnly = byId('expand-table-only');
+  const standalone = matchMedia('(display-mode: standalone)');
+  const isInstalled = () => standalone.matches || navigator.standalone === true;
+  const updateFullscreenSetting = () => {
+    expandOnly.closest('.setting-item').hidden = isInstalled();
+  };
+  standalone.addEventListener('change', updateFullscreenSetting);
+  updateFullscreenSetting();
   const fullscreenPreferenceKey = 'pasjans.expand-table-only';
   try { expandOnly.checked = localStorage.getItem(fullscreenPreferenceKey) === 'true'; } catch {}
   expandOnly.onchange = () => {
@@ -973,8 +980,7 @@
       return;
     }
     tableOnly(true);
-    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-    if (expandOnly.checked || installed) return;
+    if (expandOnly.checked || isInstalled()) return;
     try {
       await document.documentElement.requestFullscreen();
       await screen.orientation?.lock?.('landscape');
