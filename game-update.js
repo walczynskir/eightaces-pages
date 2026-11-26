@@ -64,7 +64,8 @@
         resolve(parse(value));
       }
       channel.port1.onmessage = event => finish(event.data);
-      worker.postMessage('game-update-version', [channel.port2]);
+      try { worker.postMessage('game-update-version', [channel.port2]); }
+      catch { finish(); }
     });
   }
 
@@ -72,7 +73,7 @@
     const serviceWorker = navigator.serviceWorker;
     const registration = await serviceWorker?.getRegistration();
     if (!registration) return;
-    const deadline = Date.now() + 20000;
+    const deadline = Date.now() + 45000;
     let updateError;
     registration.update().catch(error => { updateError = error; });
     // An installed update may already be waiting or start installing during update().

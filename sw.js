@@ -1,5 +1,5 @@
 const cachePrefix = 'eight-aces-offline-';
-const cacheName = cachePrefix + '1.12.2';
+const cacheName = cachePrefix + '1.12.3';
 const scope = self.registration.scope;
 const assetNames = [
   "shared-theme-components.css",
@@ -35,7 +35,27 @@ const assets = new Set(assetNames.map(name => new URL(name, scope).href));
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(cacheName);
-    await cache.addAll([...assets].map(url => new Request(url, { cache: 'reload' })));
+    try {
+      await cache.addAll([...assets].map(url => new Request(url, { cache: 'reload' })));
+    } catch {
+      // A transient failure in one request makes addAll reject the entire batch.
+      // Recover without activating until every required offline asset is present.
+      const pending = [...assets];
+      for (let index = 0; index < pending.length; index += 8) {
+        await Promise.all(pending.slice(index, index + 8).map(async url => {
+          if (await cache.match(url)) return;
+          for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+              await cache.add(new Request(url, { cache: 'reload' }));
+              return;
+            } catch (error) {
+              if (attempt === 2) throw error;
+              await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 450));
+            }
+          }
+        }));
+      }
+    }
     await self.skipWaiting();
   })());
 });
