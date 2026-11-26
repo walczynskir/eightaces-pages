@@ -1,6 +1,7 @@
 (() => {
   const engine = PasjansEngine;
   const scoring = PasjansResults;
+  const progressBackup = PasjansProgressBackup;
   const i18n = DominoI18n;
   const byId = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
@@ -38,9 +39,9 @@
     it: 'Rame e patina', uk: 'Мідь і патина'
   };
   const customThemeLabels = { garden: gardenLabels, classic: classicLabels, tropics: tropicsLabels, beach: beachLabels, copper: copperLabels };
-  const featuredThemes = ['classic', 'garden', 'tropics', 'beach'];
+  const featuredThemes = ['classic', 'garden', 'tropics', 'beach', 'ukraine'];
   const prefs = { language: 'pl', theme: 'classic', contrast: false, large: false, sameSuit: false, recycle: false, kingsOnly: true, showCounts: false, showUndo: false };
-  const rewardWins = { 'orange-grove': 3, copper: 5, 'starry-sky': 10 };
+  const rewardIds = progressBackup.rewardIds;
   const gallery = byId('theme-gallery');
   const galleryCopy = {
     pl: ['Więcej motywów…', 'Za osiągnięcia', 'Zamknij', 'Pomarańczowy gaj', 'wygranych', 'Zablokowany', 'Aktywny'],
@@ -53,6 +54,11 @@
     ar: ['المزيد من السمات…', 'سمات الإنجازات', 'إغلاق', 'بستان البرتقال', 'انتصارات', 'مقفل', 'نشط'],
     hi: ['और थीम…', 'उपलब्धि की थीम', 'बंद करें', 'संतरे का बाग', 'जीत', 'बंद', 'सक्रिय'],
     'zh-Hans': ['更多主题…', '成就主题', '关闭', '橙园', '胜场', '未解锁', '当前']
+  };
+  const completedLabels = {
+    pl: 'ukończone partie', en: 'completed games', de: 'abgeschlossene Partien', es: 'partidas completadas',
+    fr: 'parties terminées', it: 'partite completate', uk: 'завершені партії', ar: 'ألعاب مكتملة',
+    hi: 'पूरे खेल', 'zh-Hans': '完成的牌局'
   };
   const galleryLabels = () => galleryCopy[prefs.language] ?? galleryCopy.en;
   function themeName(value) {
@@ -80,10 +86,8 @@
     const achievement = byId('gallery-rewards');
     ordinary.replaceChildren();
     achievement.replaceChildren();
-    const extraThemes = Object.keys(themes)
-      .filter(value => !featuredThemes.includes(value))
-      .sort((left, right) => (rewardWins[left] ?? 0) - (rewardWins[right] ?? 0));
-    for (const value of [...featuredThemes, ...extraThemes]) {
+    const ordinaryIds = Object.keys(themes).filter(id => !rewardIds.includes(id));
+    for (const value of [...ordinaryIds, ...rewardIds]) {
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.type = 'button';
@@ -105,11 +109,11 @@
       const name = document.createElement('strong');
       name.textContent = themeName(value);
       button.append(name);
-      if (rewardWins[value] || prefs.theme === value) {
+      const reward = progressBackup.rewardProgress(value, results);
+      if (reward || prefs.theme === value) {
         const details = document.createElement('small');
-        const threshold = rewardWins[value];
-        details.textContent = threshold
-          ? (button.disabled ? wins + '/' : '') + threshold + ' ' + winsLabel
+        details.textContent = reward
+          ? (button.disabled ? reward.count + '/' : '') + reward.goal + ' ' + (reward.wins ? winsLabel : completedLabels[prefs.language])
           : activeLabel;
         if (button.disabled) details.textContent += ' · ' + lockedLabel;
         button.append(details);
@@ -120,7 +124,7 @@
         byId('theme').focus();
       };
       item.append(button);
-      (rewardWins[value] ? achievement : ordinary).append(item);
+      (reward ? achievement : ordinary).append(item);
     }
     gallery.showModal();
   }
@@ -146,7 +150,7 @@
     legacyCopper = stored?.legacyCopper ?? (wins >= 3);
     if (prefs.theme === 'andromeda') prefs.theme = 'starry-sky';
     if (prefs.theme === 'tangerine-grove') prefs.theme = 'orange-grove';
-    unlockedThemes = Array.isArray(stored?.unlockedThemes) ? stored.unlockedThemes.filter(id => Object.hasOwn(rewardWins, id)) : [];
+    unlockedThemes = Array.isArray(stored?.unlockedThemes) ? stored.unlockedThemes.filter(id => rewardIds.includes(id)) : [];
     rewarded = stored?.rewarded === true;
     if (stored?.state?.rows?.length === 8 && stored?.state?.goals?.length === 8 && scoring.valid(stored)) {
       state = stored.state;
@@ -181,9 +185,15 @@
     rewarded = true;
   }
   state.kingsOnly ??= prefs.kingsOnly;
-  const rewardThreshold = theme => theme === 'copper' && legacyCopper ? 3 : (rewardWins[theme] ?? 0);
-  const themeLocked = theme => !unlockedThemes.includes(theme) && wins < rewardThreshold(theme);
-  const earnedThemes = () => Object.keys(rewardWins).filter(id => !themeLocked(id));
+  if (loadedSave && !loadedSave.scenicRewards) {
+    unlockedThemes.push('garden', 'tropics', 'beach');
+    for (const [id, goal] of Object.entries({ 'orange-grove': 3, copper: legacyCopper ? 3 : 5, 'starry-sky': 10 })) {
+      if (wins >= goal) unlockedThemes.push(id);
+    }
+  }
+  let initialState = structuredClone(loadedSave?.initialState ?? history[0] ?? state);
+  const earnedThemes = () => progressBackup.earnedThemes(results, unlockedThemes);
+  const themeLocked = theme => rewardIds.includes(theme) && !earnedThemes().includes(theme);
   if (!thumbnailTheme && (themeLocked(prefs.theme) || !Object.hasOwn(themes, prefs.theme))) prefs.theme = 'classic';
   const newGameLabels = ['Nowy pasjans', 'New solitaire', 'Nuevo solitario', 'Neue Patience',
     '新接龙', 'नया सॉलिटेयर', 'Nouveau solitaire', 'سوليتير جديد', 'Nuovo solitario', 'Новий пасьянс'];
@@ -193,7 +203,7 @@
   const tr = text => i18n.text(text, prefs.language);
   const refKey = ref => ref.group + (ref.index ?? '') + (ref.count > 1 ? '-' + ref.count : '');
 
-  const saveValue = () => ({ prefs, state, history, future, wins, rewarded, legacyCopper, unlockedThemes: earnedThemes(), results, session });
+  const saveValue = () => ({ prefs, state, initialState, history, future, wins, rewarded, scenicRewards: true, legacyCopper, unlockedThemes: earnedThemes(), results, session });
   const serializeSave = () => JSON.stringify(saveValue());
   const lost = () => results.records[session.id]?.outcome === 'loss';
 
@@ -445,8 +455,8 @@
 
   function renderProgress() {
     if (thumbnailTheme) return;
-    const next = Object.keys(rewardWins).find(themeLocked);
-    const reward = next && { name: themeName(next), count: wins, goal: rewardThreshold(next), wins: true };
+    const next = rewardIds.find(themeLocked);
+    const reward = next && { name: themeName(next), ...progressBackup.rewardProgress(next, results) };
     const shownWins = statisticsReset.count('wins', wins);
     GamesChestProgressBar(prefs.language, shownWins, reward, () => {
       const copy = progressTransferStrings[prefs.language] ?? progressTransferStrings.en;
@@ -487,7 +497,7 @@
     byId('new-game').title = newGameLabel;
     byId('language-label').textContent = tr('Language');
     byId('theme-label').textContent = tr('Appearance');
-    const visibleThemes = featuredThemes.includes(prefs.theme) ? featuredThemes : [...featuredThemes, prefs.theme];
+    const visibleThemes = [...new Set([...featuredThemes.filter(id => !themeLocked(id)), prefs.theme])];
     themeSelect.replaceChildren(
       ...visibleThemes.map(value => new Option(themeName(value), value)),
       new Option(galleryLabels()[0], 'more')
@@ -682,25 +692,29 @@
     uk: 'Початок нового пасьянсу зарахує поточну партію як поразку.'
   };
   const newGameDialog = byId('confirm-new-game');
+  const restartLabels = {
+    pl: 'Rozegraj rozdanie od nowa', en: 'Restart this deal', de: 'Diese Partie neu starten',
+    es: 'Reiniciar este reparto', fr: 'Rejouer cette donne', it: 'Ricomincia questa mano',
+    uk: 'Почати цю роздачу заново', ar: 'أعد بدء هذه التوزيعة', hi: 'यह बाँट फिर से शुरू करें', 'zh-Hans': '重玩本局'
+  };
   byId('new-game').onclick = () => {
-    if (!Object.hasOwn(results.records, session.id)) {
-      pendingNewGame = session.id;
-      byId('confirm-new-title').textContent = tr('Start a new game?');
-      byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
-      byId('cancel-new').textContent = tr('Return to game');
-      byId('accept-new').textContent = byId('new-game').querySelector('.new-game-label').textContent;
-      newGameDialog.returnValue = 'cancel';
-      newGameDialog.showModal();
-      return;
-    }
-    startNewGame();
+    pendingNewGame = session.id;
+    byId('confirm-new-title').textContent = tr('Start a new game?');
+    const interrupted = !Object.hasOwn(results.records, session.id);
+    byId('confirm-new-description').hidden = !interrupted;
+    byId('confirm-new-description').textContent = replacementCopy[prefs.language] ?? replacementCopy.en;
+    byId('cancel-new').textContent = tr('Return to game');
+    byId('restart-deal').textContent = restartLabels[prefs.language] ?? restartLabels.en;
+    byId('accept-new').textContent = byId('new-game').querySelector('.new-game-label').textContent;
+    newGameDialog.returnValue = 'cancel';
+    newGameDialog.showModal();
   };
   newGameDialog.querySelector('form').onsubmit = event => {
     event.preventDefault();
-    const confirmed = event.submitter?.value === 'start' && pendingNewGame === session.id;
+    const choice = pendingNewGame === session.id ? event.submitter?.value : 'cancel';
     pendingNewGame = undefined;
-    newGameDialog.close(confirmed ? 'start' : 'cancel');
-    if (confirmed) startNewGame();
+    newGameDialog.close(choice);
+    if (choice === 'start' || choice === 'restart') startNewGame(choice === 'restart');
   };
   newGameDialog.oncancel = () => { pendingNewGame = undefined; };
   newGameDialog.onclose = () => {
@@ -708,21 +722,23 @@
     if (!newGameDialog.open) pendingNewGame = undefined;
   };
 
-  function startNewGame() {
+  function startNewGame(restart = false) {
     if (transitioning) return;
     transitioning = true;
     try {
       const nextResults = structuredClone(results);
-      scoring.finish(nextResults, session, 'loss', 'replaced');
-      const nextState = engine.deal(prefs);
-      const nextSession = newSession();
+      if (!restart) scoring.finish(nextResults, session, 'loss', 'replaced');
+      const nextState = restart ? { ...structuredClone(initialState), kingsOnly: state.kingsOnly } : engine.deal(prefs);
+      const nextSession = restart && !Object.hasOwn(results.records, session.id) ? session : newSession();
+      const nextInitial = structuredClone(nextState);
       const nextSave = { ...saveValue(), results: nextResults, session: nextSession,
-        state: nextState, history: [], future: [], rewarded: false };
+        state: nextState, initialState: nextInitial, history: [], future: [], rewarded: false };
       // Persist the result and replacement together before changing the visible game.
       localStorage.setItem(key, JSON.stringify(nextSave));
       results = nextResults;
       session = nextSession;
       state = nextState;
+      initialState = nextInitial;
       lastCollectTap = undefined;
       rewarded = false;
       history = [];
@@ -741,7 +757,9 @@
     lastCollectTap = undefined;
     to.push(state);
     const activeKingsOnly = state.kingsOnly;
-    state = from.pop();
+    const previous = from.pop();
+    state = from === history && !state.drawn.length && previous.drawn.length && from.at(-1)?.drawn.length === 0
+      ? from.pop() : previous;
     state.kingsOnly = activeKingsOnly;
     selected = undefined;
     save();
@@ -773,7 +791,6 @@
     };
   }
   const preferenceFiles = GamesChestBackup;
-  const progressBackup = PasjansProgressBackup;
   const preferenceSchema = { game: 'eight-aces', languages: i18n.languages,
     options: Object.fromEntries(['sameSuit', 'recycle', 'kingsOnly', 'showCounts', 'showUndo']
       .map(name => [name, value => typeof value === 'boolean'])) };
@@ -798,10 +815,8 @@
   }
   function planProgress(candidate) {
     const merged = progressBackup.merge(currentProgress(), candidate);
-    const total = scoring.winCount(merged.results);
     const imported = GamesChestPreferences.resolveTheme(candidate.preferences, prefs.theme,
-      id => Object.hasOwn(themes, id), id => merged.unlockedThemes.includes(id)
-        || total >= (id === 'copper' && merged.legacyCopper ? 3 : rewardWins[id] ?? 0));
+      id => Object.hasOwn(themes, id), id => !rewardIds.includes(id) || merged.unlockedThemes.includes(id));
     return { merged, imported };
   }
   function showProgressConfirmation(candidate) {

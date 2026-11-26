@@ -4,7 +4,23 @@
  const api=factory(node?require('./results.js'):root.PasjansResults,node?require('./engine.js'):root.PasjansEngine);
  if(node)module.exports=api;else root.PasjansProgressBackup=api;
 })(globalThis,(scoring,engine)=>{
- const rewardIds=['orange-grove','copper','starry-sky'];
+ const rewards={
+  garden:{goal:1,wins:false}, tropics:{goal:1,wins:true}, beach:{goal:5,wins:false},
+  'orange-grove':{goal:3,wins:true}, copper:{goal:10,wins:false}, 'starry-sky':{goal:5,wins:true}
+ };
+ const rewardIds=Object.keys(rewards);
+ const completedCount=results=>scoring.winCount(results)+Object.values(results.records)
+  .filter(record=>record.outcome==='loss'&&record.reason==='completed').length;
+ function rewardProgress(id,results){
+  const reward=rewards[id];
+  return reward&&{...reward,count:reward.wins?scoring.winCount(results):completedCount(results)};
+ }
+ function earnedThemes(results,unlocked){
+  return rewardIds.filter(id=>{
+   const {count,goal}=rewardProgress(id,results);
+   return unlocked.includes(id)||count>=goal;
+  });
+ }
  const exact=(v,keys)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
  function validProgress(v){
   if(!exact(v,['results','legacyCopper','unlockedThemes'])||typeof v.legacyCopper!=='boolean'
@@ -51,15 +67,13 @@
   }
   const results=scoring.merge(current.results,right);
   const legacyCopper=current.legacyCopper||incoming.progress.legacyCopper;
-  const wins=scoring.winCount(results);
-  const unlocked=new Set([...current.unlockedThemes,...incoming.progress.unlockedThemes]);
-  for(const id of rewardIds)if(wins>=(id==='orange-grove'?3:id==='copper'?(legacyCopper?3:5):10))unlocked.add(id);
+  const unlocked=earnedThemes(results,[...current.unlockedThemes,...incoming.progress.unlockedThemes]);
   let conflicts=0;
   for(const [id,record]of Object.entries(right.records))if(current.results.records[id]
    &&JSON.stringify(record)!==JSON.stringify(current.results.records[id]))conflicts++;
-  return {results,legacyCopper,unlockedThemes:rewardIds.filter(id=>unlocked.has(id)),conflicts};
+  return {results,legacyCopper,unlockedThemes:unlocked,conflicts};
  }
  const summary=progress=>({wins:scoring.winCount(progress.results),losses:Object.values(progress.results.records).filter(r=>r.outcome==='loss').length,
   unlocked:progress.unlockedThemes.length});
- return {validProgress,readLegacy,merge,summary,rewardIds};
+ return {validProgress,readLegacy,merge,summary,rewardIds,rewardProgress,earnedThemes};
 });
